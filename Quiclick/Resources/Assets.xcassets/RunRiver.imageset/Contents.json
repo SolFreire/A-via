@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "FreeSample-Vectorizer-io-Captura de Tela 2026-04-23 às 09.47.14.svg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
