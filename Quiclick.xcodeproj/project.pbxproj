@@ -151,6 +151,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quiclick/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Precisamos da sua permissão para leitura dos dados de exercício para exibi-los no app";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a edição na galeria ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -186,6 +187,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quiclick/Info.plist;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Precisamos da sua permissão para leitura dos dados de exercício para exibi-los no app";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a edição na galeria ";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

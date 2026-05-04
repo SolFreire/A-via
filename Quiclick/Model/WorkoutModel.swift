@@ -9,6 +9,7 @@ import SwiftData
 
 @Model
 class WorkoutModel: Identifiable{
+    
     var id : UUID
     var date: Date
     var duration: TimeInterval
@@ -32,5 +33,6 @@ class WorkoutModel: Identifiable{
             UIImage(data:$0)
         }
     }
+    
 }
 

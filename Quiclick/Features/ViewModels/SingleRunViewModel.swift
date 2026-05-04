@@ -29,8 +29,8 @@ final class SingleRunViewModel {
         type = .edit
     }
     
-    func confirmEdit(workout: WorkoutModel, context: ModelContext) {
-        //pickerImageData= updated with edit
+    func confirmEdit(workout: WorkoutModel, context: ModelContext, ImageView: some View) {
+        pickerImageData = renderFinalImage(view: ImageView)
         workout.imageData = pickerImageData
         type = .regular
         
@@ -49,6 +49,17 @@ final class SingleRunViewModel {
         }else{
             type = .regular
         }
+    }
+    
+    func renderFinalImage(view: some View) -> Data? {
+        let renderer = ImageRenderer(content: view)
         
+        renderer.scale = UIScreen.main.scale
+        
+        if let uiImage = renderer.uiImage {
+            return uiImage.pngData()
+        }
+        
+        return nil
     }
 }
