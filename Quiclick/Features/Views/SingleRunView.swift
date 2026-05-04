@@ -20,6 +20,9 @@ struct SingleRunView: View{
     @State private var pickerItem: PhotosPickerItem?
     @State private var pickerImage: Data?
     @State var hasPictureSaved: Bool?
+    @State var showImageSheet = false
+    
+    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"]
     
     let workout: WorkoutModel
     
@@ -148,11 +151,33 @@ struct SingleRunView: View{
     }
     
     var editSection: some View {
-        ZStack {
-                Color.gray.opacity(0.1)
-                Text("Área de edição (stickers aqui)")
-            }
-            .frame(width: 318, height: 187)
+        
+        ZStack{
+            RoundedRectangle(cornerRadius: 16)
+                .foregroundStyle(.gray.opacity(0.3))
+                .frame(width: 393, height: 262)
+            
+            VStack{
+                ScrollView(.horizontal) {
+                    LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 1)){
+                        ForEach(Stickers, id:\.self){ Sticker in
+                            RoundedRectangle(cornerRadius: 6)
+                                .overlay{
+                                    Image(Sticker)
+                                        .resizable()
+                                        .scaledToFit()
+                                }
+                                .frame(width: 75,height: 75)
+                                .aspectRatio(contentMode: .fit)
+                            //                            .onTapGesture {
+                            //                                tap(Image(Sticker))
+                            //                            }
+                        }
+                    }
+                    .foregroundColor(.gray)
+                }
+            }.padding(30)
+        }
     }
     
     @ToolbarContentBuilder
@@ -194,10 +219,11 @@ struct SingleRunView: View{
             if viewModel.type == .regular{
                 
                 Button {
-                    // share
+                    showImageSheet = true
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                 }
+                .imageShareSheet(isPresented: $showImageSheet, image: workout.image!)
             }
             
         }
@@ -220,4 +246,5 @@ func placeholder(icon: String) -> some View {
 
 #Preview {
     SingleRunView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 2246, distance: 1020))
+    
 }

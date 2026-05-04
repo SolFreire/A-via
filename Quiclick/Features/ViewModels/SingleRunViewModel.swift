@@ -49,6 +49,5 @@ final class SingleRunViewModel {
         }else{
             type = .regular
         }
-        
     }
 }
