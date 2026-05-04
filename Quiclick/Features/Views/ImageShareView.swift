@@ -14,7 +14,7 @@ struct ImageShareSheet: UIViewControllerRepresentable {
     
     func makeUIViewController(context: Context) -> some UIViewController {
         let activityViewController = UIActivityViewController(activityItems: images, applicationActivities: nil)
-        // activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.postToFacebook ]
+        activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop, UIActivity.ActivityType.assignToContact]
         
         return activityViewController
     }

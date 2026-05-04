@@ -22,6 +22,9 @@ struct SingleRunView: View{
     @State var hasPictureSaved: Bool?
     @State var showImageSheet = false
     
+    @State var selectedStickers : [Sticker] = []
+
+    
     var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"]
     
     let workout: WorkoutModel
@@ -44,7 +47,7 @@ struct SingleRunView: View{
 
         
         VStack {
-                imageSection
+                imageSection()
                 
                 if viewModel.type == .edit {
                     editSection
@@ -72,7 +75,8 @@ struct SingleRunView: View{
             }
     }
     
-    var imageSection: some View {
+    @ViewBuilder
+    func imageSection() -> some View {
         Group {
             switch viewModel.type {
                 
@@ -84,10 +88,18 @@ struct SingleRunView: View{
             case .edit:
                 if(workout.imageData != nil){
                     if let image = workout.image {
-                              Image(uiImage: image)
-                                  .resizable()
-                                  .scaledToFill()
-                           }
+                        ZStack{
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                
+                                ForEach(selectedStickers.indices, id:\.self){ index in
+                                    StickerView(for: index)
+                                }
+                                
+                        }
+                         }
+
                     
                 }else{
                     if let image = viewModel.pickerImage {
@@ -109,6 +121,7 @@ struct SingleRunView: View{
         .clipped()
     }
     
+
     var infoSection: some View{
         VStack(alignment: .leading, spacing: 12){
                    Text(dateFormatter.string(from: workout.date))
@@ -160,18 +173,18 @@ struct SingleRunView: View{
             VStack{
                 ScrollView(.horizontal) {
                     LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 1)){
-                        ForEach(Stickers, id:\.self){ Sticker in
+                        ForEach(Stickers, id:\.self){ sticker in
                             RoundedRectangle(cornerRadius: 6)
                                 .overlay{
-                                    Image(Sticker)
+                                    Image(sticker)
                                         .resizable()
                                         .scaledToFit()
                                 }
                                 .frame(width: 75,height: 75)
                                 .aspectRatio(contentMode: .fit)
-                            //                            .onTapGesture {
-                            //                                tap(Image(Sticker))
-                            //                            }
+                                .onTapGesture {
+                                    selectedStickers.append(Sticker(name:sticker))
+                                }
                         }
                     }
                     .foregroundColor(.gray)
@@ -195,8 +208,7 @@ struct SingleRunView: View{
         ToolbarItem(placement: .confirmationAction){
             if viewModel.type == .edit{
                 Button("Done", systemImage: "checkmark"){
-                    viewModel.confirmEdit(workout:workout, context: context)
-                    
+                    viewModel.confirmEdit(workout:workout, context: context, ImageView: imageSection())
                 }
             }
         }
@@ -230,6 +242,47 @@ struct SingleRunView: View{
         
     }
     
+    func StickerView(for index: Int) -> some View{
+        let sticker = selectedStickers[index]
+        return Image(sticker.name)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 75,height: 75)
+            .scaleEffect(sticker.scale)
+            .rotationEffect(sticker.rotation)
+            .position(sticker.position)
+            .gesture(
+                dragGesture(index:index)
+                .simultaneously(with: magnificationGesture(index:index))
+                .simultaneously(with: rotationGesture(index:index))
+            )
+    }
+    
+    func magnificationGesture(index:Int) -> some Gesture{
+        MagnifyGesture()
+            .onChanged{value in
+                selectedStickers[index].scale = selectedStickers[index].lastScale * value.magnification
+            }
+            .onEnded{_ in
+                selectedStickers[index].lastScale = selectedStickers[index].scale
+            }
+    }
+    func rotationGesture(index:Int) -> some Gesture{
+        RotationGesture()
+            .onChanged{value in
+                selectedStickers[index].rotation = selectedStickers[index].lastRotation + value
+            }
+            .onEnded{_ in
+                selectedStickers[index].lastRotation = selectedStickers[index].rotation
+            }
+    }
+    func dragGesture(index:Int) -> some Gesture{
+        DragGesture()
+            .onChanged{value in
+                selectedStickers[index].position = value.location
+            }
+    }
+    
 }
 
 func placeholder(icon: String) -> some View {
@@ -241,6 +294,8 @@ func placeholder(icon: String) -> some View {
                 .font(.system(size: 50))
         }
 }
+
+
 
 
 
