@@ -1,20 +1,19 @@
 //
-//  RewardCard.swift
+//  BestTimeCardView.swift
 //  Quiclick
 //
-//  Created by Soraia Freire Batista on 23/04/26.
+//  Created by Soraia Freire Batista on 05/05/26.
 //
 
 import SwiftUI
 
-struct BestPaceCardView: View{
-
+struct BestTimeCardView: View{
     var body: some View{
         ZStack(){
-            Image("PaceCardImage")
+            Image("TimeCardImage")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 353, height: 160)
+                .frame(width: 173, height: 160)
                 .overlay {
                     Rectangle()
                         .fill(
@@ -27,42 +26,32 @@ struct BestPaceCardView: View{
                         )
                 }
                 .cornerRadius(12)
-                .shadow(radius: 4)
-                
+            
             Image(systemName: "chevron.right")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 14)
-                .offset(x:156,y:-56)
+                .offset(x:68,y:-56)
                 .foregroundColor(Color.white)
                 .bold()
-                Text("05:00")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.black.opacity(0.6))
+            Text("2h")
+                .font(.title)
+                .fontWeight(.bold)
+                .offset(x:-46,y:0)
+                .foregroundColor(Color.white.opacity(0.9))
                     
-            Text("Pace")
+            Text("Tempo")
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(Color.white)
-                .offset(x:-130,y:56)
+                .offset(x:-30,y:56)
+            
+        
 
         }
     }
 }
 
 #Preview {
-    BestPaceCardView()
-}
-
-extension Color {
-    init(hex: Int, opacity: Double = 1) {
-        self.init(
-            .sRGB,
-            red: Double((hex >> 16) & 0xff) / 255,
-            green: Double((hex >> 08) & 0xff) / 255,
-            blue: Double((hex >> 00) & 0xff) / 255,
-            opacity: opacity
-        )
-    }
+    BestTimeCardView()
 }

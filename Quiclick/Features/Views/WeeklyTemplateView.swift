@@ -5,9 +5,33 @@
 //  Created by Soraia Freire Batista on 27/04/26.
 //
 import SwiftUI
+import SwiftData
 
-struct WeeklyTemplateView: View{
+struct WeeklyTemplateView: View {
+    @Environment(\.modelContext) private var context
+    @Query(sort: \WorkoutModel.id)
+    private var workouts: [WorkoutModel]
+    
     var body: some View{
-        Text("Tela de Templates")
+        
+        VStack(alignment: .leading){
+            Text("Semana de Treinos")
+                .font(.title)
+                .bold()
+            VStack{
+                WeeklyCounterCardView()
+                HStack(){
+                    BestDistanceCardView()
+                    BestTimeCardView()
+                }
+                BestPaceCardView()
+            }
+        }
+        .padding()
     }
+}
+
+
+#Preview {
+    WeeklyTemplateView()
 }
