@@ -89,6 +89,7 @@ struct SingleRunView: View{
                 if(workout.imageData != nil){
                     if let image = workout.image {
                         ZStack{
+                            
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
@@ -97,8 +98,7 @@ struct SingleRunView: View{
                                     StickerView(for: index)
                                 }
                                 
-                        }
-                         }
+                        }                        }
 
                     
                 }else{
@@ -201,6 +201,7 @@ struct SingleRunView: View{
                 Button("Cancel", systemImage: "xmark") {
                     viewModel.cancelEditing(workout: workout)
                     pickerItem = nil
+                    selectedStickers = []
                 }
             }
         }
@@ -209,6 +210,7 @@ struct SingleRunView: View{
             if viewModel.type == .edit{
                 Button("Done", systemImage: "checkmark"){
                     viewModel.confirmEdit(workout:workout, context: context, ImageView: imageSection())
+                    selectedStickers = []
                 }
             }
         }

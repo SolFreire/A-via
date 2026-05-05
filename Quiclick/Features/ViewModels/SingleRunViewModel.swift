@@ -11,6 +11,7 @@ import SwiftData
 
 @MainActor
 @Observable
+
 final class SingleRunViewModel {
     
     var type: SingleRunView.ViewType = .noImage
