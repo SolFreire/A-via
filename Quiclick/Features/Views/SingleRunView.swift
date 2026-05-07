@@ -25,7 +25,7 @@ struct SingleRunView: View{
     @State var selectedStickers : [Sticker] = []
 
     
-    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"]
+    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     
     let workout: WorkoutModel
     
@@ -103,10 +103,17 @@ struct SingleRunView: View{
                     
                 }else{
                     if let image = viewModel.pickerImage {
-                        Image(uiImage:image)
-                            .resizable()
-                            .scaledToFill()
+                        ZStack{
+                            Image(uiImage:image)
+                                .resizable()
+                                .scaledToFill()
+                            
+                            ForEach(selectedStickers.indices, id:\.self){ index in
+                                StickerView(for: index)
+                            }
+                        }
                     }
+                       
                 }
                 
             case .regular:
@@ -172,7 +179,7 @@ struct SingleRunView: View{
             
             VStack{
                 ScrollView(.horizontal) {
-                    LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 1)){
+                    LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 2)){
                         ForEach(Stickers, id:\.self){ sticker in
                             RoundedRectangle(cornerRadius: 6)
                                 .overlay{

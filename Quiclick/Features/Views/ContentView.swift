@@ -14,7 +14,6 @@ struct ContentView: View {
     @Query(sort: \WorkoutModel.date, order: .reverse)
     private var workouts: [WorkoutModel]
     @State private var viewModel = WorkoutViewModel()
-
     var body: some View {
         NavigationStack{
             ScrollView{
@@ -28,8 +27,8 @@ struct ContentView: View {
                             .fontWeight(.medium)
                     }
                     if(workouts.isEmpty){
+                        Spacer()
                         Text("Parece que alguém ainda não começou a correr")
-                         
                     }
                     else{
                         ForEach(workouts){ workout in
