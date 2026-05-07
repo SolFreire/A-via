@@ -43,6 +43,19 @@ final class SingleRunViewModel {
         }
     }
     
+    func discardImage(workout: WorkoutModel, context: ModelContext){
+        pickerImage = nil
+        workout.imageData = nil
+        pickerImageData = nil
+        type = .noImage
+        do{
+            try context.save()
+        }catch{
+            print("Erro ao Salvar")
+            
+        }
+    }
+    
     func cancelEditing(workout: WorkoutModel) {
         pickerImage = nil
         if(workout.imageData == nil){

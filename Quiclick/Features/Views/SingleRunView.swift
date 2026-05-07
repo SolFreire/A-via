@@ -222,6 +222,7 @@ struct SingleRunView: View{
             }
         }
         
+
         ToolbarItem(placement: .topBarTrailing) {
             
             if viewModel.type == .regular{
@@ -230,6 +231,15 @@ struct SingleRunView: View{
                     viewModel.type = .edit
                 } label: {
                     Image(systemName: "pencil")
+                }
+            }
+            if viewModel.type == .edit{
+                
+                Button {
+                    selectedStickers = []
+                    viewModel.discardImage(workout: workout, context: context)
+                } label: {
+                    Image(systemName: "trash")
                 }
             }
             
