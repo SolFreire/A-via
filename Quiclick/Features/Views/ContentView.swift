@@ -19,32 +19,33 @@ struct ContentView: View {
     @State private var viewModel = WorkoutViewModel()
     var body: some View {
         NavigationStack{
-            ScrollView{
-                VStack(alignment: .leading, spacing: 20){
-                    VStack(alignment: .leading, spacing: 8){
-                        Text("Eai, Corredor?")
-                            .font(.largeTitle)
-                            .bold()
-                        Text("Corridas da Semana")
-                            .font(.title3)
-                            .fontWeight(.medium)
-                    }
-                    if(weeklyWorkouts.isEmpty){
-                        EmptyView()
-                    }
-                    else{
-                        ForEach(weeklyWorkouts){ workout in
-                            NavigationLink{
-                                SingleRunView(workout: workout)
-                            } label:{
-                                WorkoutCardView(workout: workout)
+            VStack(alignment:.leading, spacing: 8){
+                Text("Eai, Corredor?")
+                    .font(.largeTitle)
+                    .bold()
+                Text("Corridas da Semana")
+                    .font(.title3)
+                    .fontWeight(.medium)
+                if(weeklyWorkouts.isEmpty){
+                    EmptyView()
+                }
+                else{
+                    ScrollView{
+                        VStack(alignment: .leading, spacing: 20){
+                            VStack(alignment: .leading, spacing: 8){
+                                ForEach(weeklyWorkouts){ workout in
+                                    NavigationLink{
+                                        SingleRunView(workout: workout)
+                                    } label:{
+                                        WorkoutCardView(workout: workout)
+                                    }
+                                    
+                                }
                             }
-                                
                         }
                     }
-                }.padding()
-
-            }
+                }
+            }.padding()
         }.onAppear{
             Task{
                 await viewModel.requestAuthorization(context:context)

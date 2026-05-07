@@ -234,7 +234,9 @@ struct SingleRunView: View{
             }
             
         }
-        ToolbarSpacer(.fixed, placement:.topBarTrailing)
+        if #available(iOS 26.0, *) {
+            ToolbarSpacer(.fixed, placement:.topBarTrailing)
+        }
         ToolbarItem(placement: .topBarTrailing) {
             
             if viewModel.type == .regular{

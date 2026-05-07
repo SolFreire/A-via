@@ -43,7 +43,7 @@ struct WeeklyTemplateView: View {
     var body: some View {
         VStack(alignment: .leading) {
                     Text("Semana de Treinos")
-                        .font(.title)
+                        .font(.largeTitle)
                         .bold()
             if weeklyWorkouts.isEmpty {
                             EmptyWeekView()
