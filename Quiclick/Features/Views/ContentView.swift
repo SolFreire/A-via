@@ -56,9 +56,6 @@ struct ContentView: View {
             Task{
                 await viewModel.requestAuthorization(context:context)
             }
-            if viewModel.isDenied {
-                viewDenied = true
-            }
         }
 
     }
