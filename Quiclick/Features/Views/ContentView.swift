@@ -13,6 +13,9 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \WorkoutModel.date, order: .reverse)
     private var workouts: [WorkoutModel]
+    private var weeklyWorkouts: [WorkoutModel] {
+        workouts.filter { $0.date.isCurrentWeek }
+    }
     @State private var viewModel = WorkoutViewModel()
     var body: some View {
         NavigationStack{
@@ -26,12 +29,11 @@ struct ContentView: View {
                             .font(.title3)
                             .fontWeight(.medium)
                     }
-                    if(workouts.isEmpty){
-                        Spacer()
-                        Text("Parece que alguém ainda não começou a correr")
+                    if(weeklyWorkouts.isEmpty){
+                        EmptyView()
                     }
                     else{
-                        ForEach(workouts){ workout in
+                        ForEach(weeklyWorkouts){ workout in
                             NavigationLink{
                                 SingleRunView(workout: workout)
                             } label:{
@@ -40,7 +42,7 @@ struct ContentView: View {
                                 
                         }
                     }
-                }
+                }.padding()
 
             }
         }.onAppear{
