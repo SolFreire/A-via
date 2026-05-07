@@ -42,27 +42,28 @@ struct WeeklyTemplateView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-                    Text("Semana de Treinos")
+                    Text("Métricas da Semana")
                         .font(.largeTitle)
                         .bold()
             if weeklyWorkouts.isEmpty {
-                            EmptyWeekView()
-                        } else {
-                            VStack {
-                                WeeklyCounterCardView()
-                                HStack {
-                                    BestDistanceCardView(
-                                        viewtype: distanceViewType,
-                                        bestDistance: bestDistance
-                                    )
-                                    BestTimeCardView(
-                                        viewtype: timeViewType,
-                                        bestTime: bestTime
-                                    )
-                                }
-                                BestPaceCardView(bestPace: bestPace)
-                            }
-                        }
+                EmptyWeekView()
+            }
+            else {
+                VStack {
+                    WeeklyCounterCardView()
+                    HStack {
+                        BestDistanceCardView(
+                            viewtype: distanceViewType,
+                            bestDistance: bestDistance
+                        )
+                        BestTimeCardView(
+                            viewtype: timeViewType,
+                            bestTime: bestTime
+                        )
+                    }
+                    BestPaceCardView(bestPace: bestPace)
+                }
+            }
                 }        .padding()
         
     }

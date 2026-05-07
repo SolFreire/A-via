@@ -16,6 +16,7 @@ struct ContentView: View {
     private var weeklyWorkouts: [WorkoutModel] {
         workouts.filter { $0.date.isCurrentWeek }
     }
+    @State private var viewDenied = false
     @State private var viewModel = WorkoutViewModel()
     var body: some View {
         NavigationStack{
@@ -23,32 +24,40 @@ struct ContentView: View {
                 Text("Eai, Corredor?")
                     .font(.largeTitle)
                     .bold()
-                Text("Corridas da Semana")
-                    .font(.title3)
-                    .fontWeight(.medium)
-                if(weeklyWorkouts.isEmpty){
-                    EmptyView()
+                if viewModel.isLoading {
+                    HealthLoadingView()
                 }
-                else{
-                    ScrollView{
-                        VStack(alignment: .leading, spacing: 20){
-                            VStack(alignment: .leading, spacing: 8){
-                                ForEach(weeklyWorkouts){ workout in
-                                    NavigationLink{
-                                        SingleRunView(workout: workout)
-                                    } label:{
-                                        WorkoutCardView(workout: workout)
+                else {
+                    Text("Corridas da Semana")
+                        .font(.title3)
+                        .fontWeight(.medium)
+
+                    if weeklyWorkouts.isEmpty {
+                        EmptyView()
+                    } else {
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: 20) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    ForEach(weeklyWorkouts) { workout in
+                                        NavigationLink {
+                                            SingleRunView(workout: workout)
+                                        } label: {
+                                            WorkoutCardView(workout: workout)
+                                        }
                                     }
-                                    
                                 }
                             }
                         }
                     }
                 }
-            }.padding()
+            }
+            .padding()
         }.onAppear{
             Task{
                 await viewModel.requestAuthorization(context:context)
+            }
+            if viewModel.isDenied {
+                viewDenied = true
             }
         }
 

@@ -40,7 +40,7 @@ class HKManager{
     }
     
     private func workoutSamplesPredicate() -> NSPredicate {
-        let week = calendar.dateInterval(of: .weekOfYear, for: Date())
+//        let week = calendar.dateInterval(of: .weekOfYear, for: Date())
 //        let firstDayOfWeek = week?.start ?? Date()
         
 //        let datePredicate = HKQuery.predicateForSamples(
@@ -66,5 +66,4 @@ class HKManager{
         return try await query.result(for:store)
     
     }
-    
 }

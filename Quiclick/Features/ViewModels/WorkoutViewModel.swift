@@ -16,17 +16,25 @@ import SwiftData
 class WorkoutViewModel{
     var isAuthorized: Bool = false
     var errorMessage: String?
+    var isLoading: Bool = true
+    //var isDenied: Bool = false
     
     func requestAuthorization(context: ModelContext) async{
+        isLoading = true
         do{
             let success = try await HKManager.shared.requestAuthorization()
                 self.isAuthorized = success
+                //self.isDenied = !success
             if success{
                 await syncWorkoutData(context: context )
+            }
+            else{
+               //self.isDenied = true
             }
         } catch{
             self.errorMessage = error.localizedDescription
         }
+        isLoading = false
     }
     func syncWorkoutData(context: ModelContext) async{
         do{
