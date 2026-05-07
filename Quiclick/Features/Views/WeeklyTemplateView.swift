@@ -45,20 +45,24 @@ struct WeeklyTemplateView: View {
                     Text("Semana de Treinos")
                         .font(.title)
                         .bold()
-                    VStack {
-                        WeeklyCounterCardView()
-                        HStack {
-                            BestDistanceCardView(
-                                viewtype: distanceViewType,
-                                bestDistance: bestDistance
-                            )
-                            BestTimeCardView(
-                                viewtype: timeViewType,
-                                bestTime: bestTime
-                            )
+            if weeklyWorkouts.isEmpty {
+                            EmptyWeekView()
+                        } else {
+                            VStack {
+                                WeeklyCounterCardView()
+                                HStack {
+                                    BestDistanceCardView(
+                                        viewtype: distanceViewType,
+                                        bestDistance: bestDistance
+                                    )
+                                    BestTimeCardView(
+                                        viewtype: timeViewType,
+                                        bestTime: bestTime
+                                    )
+                                }
+                                BestPaceCardView(bestPace: bestPace)
+                            }
                         }
-                        BestPaceCardView(bestPace: bestPace)
-                    }
                 }        .padding()
         
     }
