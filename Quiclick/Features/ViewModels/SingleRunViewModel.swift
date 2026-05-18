@@ -4,6 +4,8 @@
 //
 //  Created by Soraia Freire Batista on 28/04/26.
 //
+//
+
 import SwiftUI
 import Foundation
 import SwiftData
@@ -35,6 +37,20 @@ final class SingleRunViewModel {
         workout.imageData = pickerImageData
         type = .regular
         
+        do{
+            try context.save()
+        }catch{
+            print("Erro ao Salvar")
+            
+        }
+    }
+    
+    
+    func discardImage(workout: WorkoutModel, context: ModelContext){
+        pickerImage = nil
+        workout.imageData = nil
+        pickerImageData = nil
+        type = .noImage
         do{
             try context.save()
         }catch{

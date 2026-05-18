@@ -25,7 +25,7 @@ struct SingleRunView: View{
     @State var selectedStickers : [Sticker] = []
 
     
-    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"]
+    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     
     let workout: WorkoutModel
     
@@ -45,8 +45,8 @@ struct SingleRunView: View{
     
     var body : some View{
 
-        
         VStack {
+            ScrollView(.vertical, showsIndicators: false){
                 imageSection()
                 
                 if viewModel.type == .edit {
@@ -54,6 +54,7 @@ struct SingleRunView: View{
                 } else {
                     infoSection
                 }
+            }
             }
             .toolbar {
                 toolbarContent
@@ -103,10 +104,17 @@ struct SingleRunView: View{
                     
                 }else{
                     if let image = viewModel.pickerImage {
-                        Image(uiImage:image)
-                            .resizable()
-                            .scaledToFill()
+                        ZStack{
+                            Image(uiImage:image)
+                                .resizable()
+                                .scaledToFill()
+                            
+                            ForEach(selectedStickers.indices, id:\.self){ index in
+                                StickerView(for: index)
+                            }
+                        }
                     }
+                       
                 }
                 
             case .regular:
@@ -128,37 +136,78 @@ struct SingleRunView: View{
                        .font(.title)
                        .fontWeight(.semibold)
                        .padding(.horizontal)
-       
-                   HStack(spacing:36){
-       
-                       VStack(alignment: .leading, spacing: 8){
-                           Text("Distância")
-                               .font(.body)
-                               .fontWeight(.medium)
-                           Text("\((workout.distance/1000).formatted()) km")
-                               .font(.title3)
-                               .fontWeight(.medium)
-                       }
-                       VStack(alignment: .leading, spacing: 8){
-                           Text("Tempo")
-                               .font(.body)
-                               .fontWeight(.medium)
-                           Text(formatDuration(workout.duration))
-                               .font(.title3)
-                               .fontWeight(.medium)
-                       }
-                   }
-                   .padding(.horizontal)
-                   VStack(alignment: .leading, spacing: 8){
-                       Text("Pace")
-                           .font(.body)
-                           .fontWeight(.medium)
-                       Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                           .font(.title3)
-                           .fontWeight(.medium)
-                   }.padding(.horizontal)
+            VStack(alignment: .leading){
+                ViewThatFits{
+                    VStack(alignment: .leading){
+                        HStack(spacing:36){
+                            
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Distância")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("\((workout.distance/1000).formatted()) km")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Tempo")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text(formatDuration(workout.duration))
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 8){
+                            Text("Pace")
+                                .font(.body)
+                                .fontWeight(.medium)
+                            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                                .font(.title3)
+                                .fontWeight(.medium)
+                        }
+                    }
+                    .padding(.horizontal)
+                    VStack(alignment: .leading,spacing: 8){
+                        HStack{
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Distância")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("\((workout.distance/1000).formatted()) km")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        HStack{
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Tempo")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text(formatDuration(workout.duration))
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        HStack{
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Pace")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                    }.padding(.horizontal)
+                    
+                }
+
+
+            }
                }
-               .frame(width:318, height: 187, alignment: .leading)
+               .frame(minWidth:318, minHeight: 187, alignment: .leading)
                .background(.gray.opacity(0.1))
         
     }
@@ -172,7 +221,7 @@ struct SingleRunView: View{
             
             VStack{
                 ScrollView(.horizontal) {
-                    LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 1)){
+                    LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 2)){
                         ForEach(Stickers, id:\.self){ sticker in
                             RoundedRectangle(cornerRadius: 6)
                                 .overlay{
@@ -192,7 +241,7 @@ struct SingleRunView: View{
             }.padding(30)
         }
     }
-    
+
     @ToolbarContentBuilder
     var toolbarContent: some ToolbarContent {
         
@@ -215,6 +264,7 @@ struct SingleRunView: View{
             }
         }
         
+
         ToolbarItem(placement: .topBarTrailing) {
             
             if viewModel.type == .regular{
@@ -225,9 +275,20 @@ struct SingleRunView: View{
                     Image(systemName: "pencil")
                 }
             }
+            if viewModel.type == .edit{
+                
+                Button {
+                    selectedStickers = []
+                    viewModel.discardImage(workout: workout, context: context)
+                } label: {
+                    Image(systemName: "trash")
+                }
+            }
             
         }
-        ToolbarSpacer(.fixed, placement:.topBarTrailing)
+        if #available(iOS 26.0, *) {
+            ToolbarSpacer(.fixed, placement:.topBarTrailing)
+        }
         ToolbarItem(placement: .topBarTrailing) {
             
             if viewModel.type == .regular{
