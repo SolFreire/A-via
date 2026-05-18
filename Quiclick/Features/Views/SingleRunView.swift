@@ -45,8 +45,8 @@ struct SingleRunView: View{
     
     var body : some View{
 
-        
         VStack {
+            ScrollView(.vertical, showsIndicators: false){
                 imageSection()
                 
                 if viewModel.type == .edit {
@@ -54,6 +54,7 @@ struct SingleRunView: View{
                 } else {
                     infoSection
                 }
+            }
             }
             .toolbar {
                 toolbarContent
@@ -135,37 +136,78 @@ struct SingleRunView: View{
                        .font(.title)
                        .fontWeight(.semibold)
                        .padding(.horizontal)
-       
-                   HStack(spacing:36){
-       
-                       VStack(alignment: .leading, spacing: 8){
-                           Text("Distância")
-                               .font(.body)
-                               .fontWeight(.medium)
-                           Text("\((workout.distance/1000).formatted()) km")
-                               .font(.title3)
-                               .fontWeight(.medium)
-                       }
-                       VStack(alignment: .leading, spacing: 8){
-                           Text("Tempo")
-                               .font(.body)
-                               .fontWeight(.medium)
-                           Text(formatDuration(workout.duration))
-                               .font(.title3)
-                               .fontWeight(.medium)
-                       }
-                   }
-                   .padding(.horizontal)
-                   VStack(alignment: .leading, spacing: 8){
-                       Text("Pace")
-                           .font(.body)
-                           .fontWeight(.medium)
-                       Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                           .font(.title3)
-                           .fontWeight(.medium)
-                   }.padding(.horizontal)
+            VStack(alignment: .leading){
+                ViewThatFits{
+                    VStack(alignment: .leading){
+                        HStack(spacing:36){
+                            
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Distância")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("\((workout.distance/1000).formatted()) km")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Tempo")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text(formatDuration(workout.duration))
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 8){
+                            Text("Pace")
+                                .font(.body)
+                                .fontWeight(.medium)
+                            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                                .font(.title3)
+                                .fontWeight(.medium)
+                        }
+                    }
+                    .padding(.horizontal)
+                    VStack(alignment: .leading,spacing: 8){
+                        HStack{
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Distância")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("\((workout.distance/1000).formatted()) km")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        HStack{
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Tempo")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text(formatDuration(workout.duration))
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        HStack{
+                            VStack(alignment: .leading, spacing: 8){
+                                Text("Pace")
+                                    .font(.body)
+                                    .fontWeight(.medium)
+                                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                    }.padding(.horizontal)
+                    
+                }
+
+
+            }
                }
-               .frame(width:318, height: 187, alignment: .leading)
+               .frame(minWidth:318, minHeight: 187, alignment: .leading)
                .background(.gray.opacity(0.1))
         
     }
@@ -199,7 +241,7 @@ struct SingleRunView: View{
             }.padding(30)
         }
     }
-    
+
     @ToolbarContentBuilder
     var toolbarContent: some ToolbarContent {
         

@@ -37,7 +37,7 @@ struct ContentView: View {
                     if weeklyWorkouts.isEmpty {
                         EmptyView()
                     } else {
-                        ScrollView {
+                        ScrollView(.vertical, showsIndicators: false){
                             VStack(alignment: .leading, spacing: 20) {
                                 VStack(alignment: .leading, spacing: 8) {
                                     ForEach(weeklyWorkouts) { workout in
@@ -46,6 +46,7 @@ struct ContentView: View {
                                         } label: {
                                             WorkoutCardView(workout: workout)
                                         }
+                                        .buttonStyle(PlainButtonStyle())
                                     }
                                 }
                             }

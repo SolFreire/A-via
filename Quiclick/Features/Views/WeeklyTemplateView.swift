@@ -49,22 +49,25 @@ struct WeeklyTemplateView: View {
                 EmptyWeekView()
             }
             else {
-                VStack {
-                    WeeklyCounterCardView()
-                    HStack {
-                        BestDistanceCardView(
-                            viewtype: distanceViewType,
-                            bestDistance: bestDistance
-                        )
-                        BestTimeCardView(
-                            viewtype: timeViewType,
-                            bestTime: bestTime
-                        )
+                ScrollView(.vertical,showsIndicators: false){
+                    VStack {
+                        WeeklyCounterCardView()
+                        HStack {
+                            BestDistanceCardView(
+                                viewtype: distanceViewType,
+                                bestDistance: bestDistance
+                            )
+                            BestTimeCardView(
+                                viewtype: timeViewType,
+                                bestTime: bestTime
+                            )
+                        }
+                        BestPaceCardView(bestPace: bestPace)
                     }
-                    BestPaceCardView(bestPace: bestPace)
                 }
             }
-                }        .padding()
+        }
+        .padding()
         
     }
 }
