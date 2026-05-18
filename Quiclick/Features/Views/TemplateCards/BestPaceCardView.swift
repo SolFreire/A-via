@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct BestPaceCardView: View{
-
+    var bestPace: Double
+    
     var body: some View{
         ZStack(){
             Image("PaceCardImage")
@@ -36,7 +37,7 @@ struct BestPaceCardView: View{
                 .offset(x:156,y:-56)
                 .foregroundColor(Color.white)
                 .bold()
-                Text("05:00")
+                Text("\(bestPace.formatted(.number.precision(.fractionLength(2))))")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(Color.black.opacity(0.6))
@@ -52,7 +53,7 @@ struct BestPaceCardView: View{
 }
 
 #Preview {
-    BestPaceCardView()
+    BestPaceCardView(bestPace: 4.30)
 }
 
 extension Color {

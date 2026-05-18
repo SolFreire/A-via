@@ -26,14 +26,14 @@ struct WorkoutCardView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(width:353, height: 283, alignment: .top)
+                        .frame(minWidth:353, maxWidth: .infinity, minHeight: 283, maxHeight: 283, alignment: .top)
                         .clipped()
                       
 
                }
             }else{
                 Rectangle()
-                    .frame(width:353, height: 283)
+                    .frame(minWidth:353, maxWidth: .infinity, minHeight: 283, maxHeight: 283)
                     .foregroundColor(.gray.opacity(0.2))
                     .overlay {
                         Image(systemName: "photo")
@@ -49,40 +49,53 @@ struct WorkoutCardView: View {
                         .padding(.horizontal)
 
                 HStack(spacing:30){
+                    ViewThatFits{
+                        HStack(spacing: 30){
+                            content
+                        }
+                        VStack(alignment: .leading){
+                            content
 
-                    VStack(alignment: .leading, spacing: 8){
-                        Text("Distância")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                        Text("\((workout.distance/1000).formatted()) km")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                    }
-                    VStack(alignment: .leading, spacing: 8){
-                        Text("Pace")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                        Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                    }
-                    VStack(alignment: .leading, spacing: 8){
-                        Text("Tempo")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                        Text(formatDuration(workout.duration))
-                            .font(.callout)
-                            .fontWeight(.medium)
+                        }
                     }
                 }
                     .padding(.horizontal)
             }
-            .frame(width:353, height: 116, alignment: .leading)
+            .frame(minWidth:353, maxWidth: .infinity, minHeight: 116, alignment: .leading)
             .background(.gray.opacity(0.1))
             
         }
         .cornerRadius(10)
     }
+    
+    @ViewBuilder
+    var content: some View {
+        VStack(alignment: .leading, spacing: 8){
+            Text("Distância")
+                .font(.caption)
+                .fontWeight(.medium)
+            Text("\((workout.distance/1000).formatted()) km")
+                .font(.callout)
+                .fontWeight(.medium)
+        }
+        VStack(alignment: .leading, spacing: 8){
+            Text("Pace")
+                .font(.caption)
+                .fontWeight(.medium)
+            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                .font(.callout)
+                .fontWeight(.medium)
+        }
+        VStack(alignment: .leading, spacing: 8){
+            Text("Tempo")
+                .font(.caption)
+                .fontWeight(.medium)
+            Text(formatDuration(workout.duration))
+                .font(.callout)
+                .fontWeight(.medium)
+        }
+    }
+    
     
 }
 

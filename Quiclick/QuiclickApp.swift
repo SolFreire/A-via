@@ -25,3 +25,5 @@ struct QuiclickApp: App {
         .modelContainer(for: WorkoutModel.self)
     }
 }
+
+
