@@ -16,7 +16,6 @@ struct ContentView: View {
     private var weeklyWorkouts: [WorkoutModel] {
         workouts.filter { $0.date.isCurrentWeek }
     }
-    @State private var viewDenied = false
     @State private var viewModel = WorkoutViewModel()
     var body: some View {
         NavigationStack{
@@ -26,6 +25,9 @@ struct ContentView: View {
                     .bold()
                 if viewModel.isLoading {
                     HealthLoadingView()
+                }
+                else if viewModel.isDenied {
+                    HealthDeniedView()
                 }
                 else {
                     Text("Corridas da Semana")

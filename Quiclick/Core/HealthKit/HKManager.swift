@@ -19,24 +19,17 @@ class HKManager{
     
     private init() {}
     
-    func requestAuthorization() async throws -> Bool{
+    func requestAuthorization() async throws -> Bool {
         guard HKHealthStore.isHealthDataAvailable() else {
             return false
         }
         let readTypes: Set<HKObjectType> = [
             HKObjectType.workoutType(),
         ]
-        return try await withCheckedThrowingContinuation {continuation in
-            store.requestAuthorization(toShare : [], read : readTypes)
-            {success, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(with:.success(success))
-                }
-            }
-        }
         
+        try await store.requestAuthorization(toShare: [], read: readTypes)
+
+        return true
     }
     
     private func workoutSamplesPredicate() -> NSPredicate {

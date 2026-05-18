@@ -26,20 +26,20 @@ struct HealthDeniedView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 32)
 
-//            Button {
-//                if let url = URL(string: UIApplication.openSettingsURLString) {
-//                    UIApplication.shared.open(url)
-//                }
-//            } label: {
-//                Label("Abrir Configurações", systemImage: "gear")
-//                    .font(.subheadline)
-//                    .fontWeight(.medium)
-//                    .padding(.horizontal, 24)
-//                    .padding(.vertical, 12)
-//                    .background(Color.gray.opacity(0.12))
-//                    .foregroundColor(.gray)
-//                    .cornerRadius(12)
-//            }
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Label("Abrir Configurações", systemImage: "gear")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                    .background(Color.gray.opacity(0.12))
+                    .foregroundColor(.gray)
+                    .cornerRadius(12)
+            }
 
             Spacer()
         }

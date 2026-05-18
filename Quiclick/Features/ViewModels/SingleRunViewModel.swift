@@ -4,6 +4,8 @@
 //
 //  Created by Soraia Freire Batista on 28/04/26.
 //
+//
+
 import SwiftUI
 import Foundation
 import SwiftData
@@ -42,6 +44,7 @@ final class SingleRunViewModel {
             
         }
     }
+    
     
     func discardImage(workout: WorkoutModel, context: ModelContext){
         pickerImage = nil
