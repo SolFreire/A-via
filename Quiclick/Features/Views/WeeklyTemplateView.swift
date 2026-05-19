@@ -39,35 +39,52 @@ struct WeeklyTemplateView: View {
     private var timeViewType: BestTimeCardView.ViewType {
         bestTime >= 7200 ? .twohoursrunning : .regular
     }
+    
+    @State private var imageName: String? = nil
 
     var body: some View {
-        VStack(alignment: .leading) {
-                    Text("Métricas da Semana")
-                        .font(.largeTitle)
-                        .bold()
-            if weeklyWorkouts.isEmpty {
-                EmptyWeekView()
-            }
-            else {
-                ScrollView(.vertical,showsIndicators: false){
-                    VStack {
-                        WeeklyCounterCardView()
-                        HStack {
-                            BestDistanceCardView(
-                                viewtype: distanceViewType,
-                                bestDistance: bestDistance
-                            )
-                            BestTimeCardView(
-                                viewtype: timeViewType,
-                                bestTime: bestTime
-                            )
+        NavigationStack {
+            VStack(alignment: .leading) {
+                Text("Métricas da Semana")
+                    .font(.largeTitle)
+                    .bold()
+                if weeklyWorkouts.isEmpty {
+                    EmptyWeekView()
+                }
+                else {
+                    ScrollView(.vertical,showsIndicators: false){
+                        VStack {
+                            WeeklyCounterCardView()
+                                .onTapGesture {
+                                    imageName = "WeeklyDistanceCardImage"
+                                }
+                            HStack {
+                                BestDistanceCardView(
+                                    viewtype: distanceViewType,
+                                    bestDistance: bestDistance
+                                ).onTapGesture {
+                                    imageName = "WeeklyDistanceCardImage"
+                                }
+                                BestTimeCardView(
+                                    viewtype: timeViewType,
+                                    bestTime: bestTime
+                                ).onTapGesture {
+                                    imageName = "WeeklyDistanceCardImage"
+                                }
+                            }
+                            BestPaceCardView(bestPace: bestPace)
+                                .onTapGesture {
+                                    imageName = "WeeklyDistanceCardImage"
+                                }
                         }
-                        BestPaceCardView(bestPace: bestPace)
+                    }
+                    .navigationDestination(item: $imageName) { imageName in
+                        TemplateShareView(image: UIImage(named: imageName))
                     }
                 }
             }
+            .padding()
         }
-        .padding()
         
     }
 }
