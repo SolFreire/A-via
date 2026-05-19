@@ -218,9 +218,9 @@ struct SingleRunView: View{
         ZStack{
             RoundedRectangle(cornerRadius: 16)
                 .foregroundStyle(.gray.opacity(0.3))
-                .frame(width: 393, height: 262)
+                .frame(maxWidth: 393, minHeight: 262, maxHeight: .infinity)
             
-            VStack{
+            VStack(alignment: .center){
                 ScrollView(.horizontal) {
                     LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 2)){
                         ForEach(Stickers, id:\.self){ sticker in
