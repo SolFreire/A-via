@@ -1,11 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "img-distâncialitoral.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "img-distâncialitoral.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
