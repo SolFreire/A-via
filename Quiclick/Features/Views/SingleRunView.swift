@@ -131,15 +131,15 @@ struct SingleRunView: View{
     
 
     var infoSection: some View{
-        VStack(alignment: .leading, spacing: 12){
+        VStack(alignment: .leading, spacing:-12){
                    Text(dateFormatter.string(from: workout.date))
                        .font(.title)
                        .fontWeight(.semibold)
-                       .padding(.horizontal)
+                       .padding()
             VStack(alignment: .leading){
                 ViewThatFits{
-                    VStack(alignment: .leading){
-                        HStack(spacing:36){
+                    VStack(alignment: .leading, spacing: 8){
+                        HStack(spacing:50){
                             
                             VStack(alignment: .leading, spacing: 8){
                                 Text("Distância")
@@ -168,7 +168,7 @@ struct SingleRunView: View{
                                 .fontWeight(.medium)
                         }
                     }
-                    .padding(.horizontal)
+                    .padding()
                     VStack(alignment: .leading,spacing: 8){
                         HStack{
                             VStack(alignment: .leading, spacing: 8){
@@ -207,8 +207,9 @@ struct SingleRunView: View{
 
             }
                }
-               .frame(minWidth:318, minHeight: 187, alignment: .leading)
+               .frame(minWidth:318, alignment: .leading)
                .background(.gray.opacity(0.1))
+               
         
     }
     

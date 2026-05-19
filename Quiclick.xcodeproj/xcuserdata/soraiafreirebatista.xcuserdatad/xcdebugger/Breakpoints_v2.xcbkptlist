@@ -167,6 +167,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
+<<<<<<< Updated upstream
             uuid = "EA9D938A-9B64-4041-80D8-4DDF12D4DCC4"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -177,8 +178,7 @@
             startingLineNumber = "38"
             endingLineNumber = "38"
             landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
+
       </BreakpointProxy>
    </Breakpoints>
 </Bucket>
