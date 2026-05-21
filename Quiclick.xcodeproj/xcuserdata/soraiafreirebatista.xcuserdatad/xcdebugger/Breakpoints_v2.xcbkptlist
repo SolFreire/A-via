@@ -48,7 +48,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "35"
             endingLineNumber = "35"
-            landmarkName = "requestAuthorization(context:)"
+            landmarkName = "syncWorkoutData(context:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -167,7 +167,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-<<<<<<< Updated upstream
             uuid = "EA9D938A-9B64-4041-80D8-4DDF12D4DCC4"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -178,7 +177,24 @@
             startingLineNumber = "38"
             endingLineNumber = "38"
             landmarkName = "body"
-
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "47632315-F488-482C-9BAB-64C698E10D6E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Quiclick/Features/Views/SingleRunView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "imageSection()"
+            landmarkType = "7">
+         </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
 </Bucket>
