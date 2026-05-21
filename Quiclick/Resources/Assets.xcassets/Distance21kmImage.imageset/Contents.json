@@ -1,12 +1,11 @@
 {
   "images" : [
     {
-      "filename" : "Img-semana-fundo.svg",
+      "filename" : "img-dist 21km.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "img-distâncialitoral.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

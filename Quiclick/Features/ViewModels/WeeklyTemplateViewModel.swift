@@ -15,8 +15,8 @@ import SwiftData
 final class WeeklyTemplateViewModel{
     
     let calendar = Calendar.current
-    var bestTimeViewType : BestTimeCardView.ViewType = .regular
-    var bestDistanceViewType : BestDistanceCardView.ViewType = .regular
+//    var bestTimeViewType : BestTimeCardView.ViewType = .regular
+//    var bestDistanceViewType : ViewType = .distanceregular
 
     
     func WeekBestPace(weeklyWorkouts:[WorkoutModel]) -> Double {
@@ -36,9 +36,9 @@ final class WeeklyTemplateViewModel{
                 bestTime = workout.duration
             }
         }
-        if(bestTime >= 7200){
-            bestTimeViewType = .twohoursrunning
-        }
+//        if(bestTime >= 7200){
+//            bestTimeViewType = .twohoursrunning
+//        }
         return bestTime
     }
     
@@ -49,11 +49,19 @@ final class WeeklyTemplateViewModel{
                 bestDistance = workout.distance
             }
         }
-        if(bestDistance >= 5000){
-            bestDistanceViewType = .fivekm
-        }
+//        if(bestDistance >= 5000){
+//            bestDistanceViewType = .distance5km
+//        }
         
         return bestDistance
+    }
+    
+    func weeklyTotalDistance(weeklyWorkouts:[WorkoutModel]) -> Int {
+        var totalDistance: Int = 0
+        for workout in weeklyWorkouts {
+            totalDistance += Int(workout.distance)/1000
+        }
+        return totalDistance
     }
     
 }
