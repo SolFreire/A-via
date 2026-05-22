@@ -365,5 +365,4 @@ func placeholder(icon: String) -> some View {
 
 #Preview {
     SingleRunView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 2246, distance: 1020))
-    
 }

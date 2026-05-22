@@ -20,8 +20,13 @@ struct WeeklyTemplateView: View {
     private var weeklyWorkouts: [WorkoutModel] {
         workouts.filter { $0.date.isCurrentWeek }
     }
+    
     private var bestDistance: Double {
-            viewModel.WeekBestDistance(weeklyWorkouts: weeklyWorkouts)
+        viewModel.WeekBestDistance(weeklyWorkouts: weeklyWorkouts)
+    }
+    
+    private var weeklyTotalDistance: Int {
+        viewModel.weeklyTotalDistance(weeklyWorkouts: weeklyWorkouts)
     }
 
     private var bestTime: TimeInterval {
@@ -31,61 +36,95 @@ struct WeeklyTemplateView: View {
     private var bestPace: Double {
         viewModel.WeekBestPace(weeklyWorkouts: weeklyWorkouts)
     }
-
-    private var distanceViewType: BestDistanceCardView.ViewType {
-        bestDistance >= 5000 ? .fivekm : .regular
+    
+    private var weeklyCounterViewType: ViewType {
+        .weeklydistance
     }
 
-    private var timeViewType: BestTimeCardView.ViewType {
-        bestTime >= 7200 ? .twohoursrunning : .regular
+    private var distanceViewType: ViewType {
+        if bestDistance >= 5000 && bestDistance < 10000 {
+            .distance5km
+        }
+        else if bestDistance >= 10000 && bestDistance < 15000 {
+            .distance10km
+        }
+        else if bestDistance >= 15000 && bestDistance < 21000 {
+            .distance15km
+        }
+        else if bestDistance >= 21000 && bestDistance < 42000 {
+            .distance21km
+        }
+        else if bestDistance >= 42000 {
+            .distance42km
+        }
+        else {
+            .distanceregular
+        }
+    }
+
+    private var timeViewType: ViewType {
+        bestTime >= 7200 ? .time2hours : .timeregular
     }
     
-    @State private var imageName: String? = nil
+    private var paceViewType: ViewType {
+        .bestpace
+    }
+    
+    @State private var metricViewType: ViewType? = nil
+    @State private var nameMetric: String? = nil
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                Text("Métricas da Semana")
-                    .font(.largeTitle)
-                    .bold()
+            
+            ScrollView(.vertical ,showsIndicators: false) {
                 if weeklyWorkouts.isEmpty {
                     EmptyWeekView()
-                }
-                else {
-                    ScrollView(.vertical,showsIndicators: false){
-                        VStack {
-                            WeeklyCounterCardView()
-                                .onTapGesture {
-                                    imageName = "WeeklyDistanceCardImage"
-                                }
-                            HStack {
-                                BestDistanceCardView(
-                                    viewtype: distanceViewType,
-                                    bestDistance: bestDistance
-                                ).onTapGesture {
-                                    imageName = "WeeklyDistanceCardImage"
-                                }
-                                BestTimeCardView(
-                                    viewtype: timeViewType,
-                                    bestTime: bestTime
-                                ).onTapGesture {
-                                    imageName = "WeeklyDistanceCardImage"
-                                }
+                } else {
+                    VStack {
+                        CardView(viewtype: weeklyCounterViewType)
+                            .onTapGesture {
+                                metricViewType = weeklyCounterViewType
+                                nameMetric = "Distância Percorrida na Semana"
                             }
-                            BestPaceCardView(bestPace: bestPace)
+                        
+                        HStack {
+                            if distanceViewType == .distanceregular {
+                                CardView(viewtype: distanceViewType)
+ 
+                            }
+                            else{
+                                CardView(viewtype: distanceViewType)
+                                    .onTapGesture {
+                                        metricViewType = distanceViewType
+                                        nameMetric = "Melhor Distância"
+                                    }
+                            }
+                            CardView(viewtype: timeViewType)
                                 .onTapGesture {
-                                    imageName = "WeeklyDistanceCardImage"
-                                }
+                                    metricViewType = timeViewType
+                                    nameMetric = "Melhor tempo"
+                            }
                         }
-                    }
-                    .navigationDestination(item: $imageName) { imageName in
-                        TemplateShareView(image: UIImage(named: imageName))
+                        
+                        CardView(viewtype: paceViewType)
+                            .onTapGesture {
+                                metricViewType = paceViewType
+                                nameMetric = "Melhor Pace"
+                            }
                     }
                 }
             }
-            .padding()
+            .navigationDestination(item: $metricViewType) { metricViewType in
+                TemplateShareView(
+                    metricViewType: metricViewType,
+                    titleMetric: nameMetric ?? "Métrica",
+                    imageTemplate: UIImage(named: metricViewType.image),
+                    bestPace: bestPace,
+                    weeklyDistance: weeklyTotalDistance,
+                    bestTime: bestTime)
+            }
+            .navigationTitle("Métricas da Semana")
         }
-        
     }
 }
 
