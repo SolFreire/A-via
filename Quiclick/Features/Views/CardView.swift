@@ -39,7 +39,7 @@ struct CardView: View{
         switch viewtype {
             
         case .distanceregular:
-            ZStack(){
+            ZStack(alignment: .bottomLeading){
                 
                 Image("EmptyDistanceCardView")
                     .resizable()
@@ -56,24 +56,28 @@ struct CardView: View{
                                 )
                             )
                     }
-                    .cornerRadius(12)
                     .blur(radius: 2)
+                    .border(Color.gray, width: 0.5)
+                    .cornerRadius(12)
+
                 
-                Text("Distância")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-12,y:56)
+                HStack{
+                    Text("Distância")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
                 Image(systemName: "lock.fill")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 30)
                     .foregroundColor(Color.white)
                     .bold()
+                    .offset(x: 68, y : -68)
                 
             }
         case .distance5km:
-            ZStack(){
+            ZStack(alignment: .bottomLeading){
                 Image("Distance5kmImage")
                     .resizable()
                     .scaledToFill()
@@ -96,19 +100,20 @@ struct CardView: View{
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .offset(x:144,y:-120)
                     .foregroundColor(Color.white)
                     .bold()
-                Text("Distância")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-12,y:56)
+                HStack{
+                    Text("Distância")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
                 
                 
             }
         case .distance10km:
-            ZStack(){
+            ZStack(alignment: .bottomLeading){
                 Image("Distance10kmImage")
                     .resizable()
                     .scaledToFill()
@@ -130,19 +135,20 @@ struct CardView: View{
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .offset(x:144,y:-120)
                     .foregroundColor(Color.white)
                     .bold()
-                Text("Distância")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-12,y:56)
+                HStack{
+                    Text("Distância")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
                 
                 
             }
         case .distance15km:
-            ZStack(){
+            ZStack(alignment: .bottomLeading){
                 Image("Distance15kmImage")
                     .resizable()
                     .scaledToFill()
@@ -164,19 +170,19 @@ struct CardView: View{
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .offset(x:144,y:-120)
                     .foregroundColor(Color.white)
                     .bold()
-                Text("Distância")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-12,y:56)
-                
+                HStack{
+                    Text("Distância")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
                 
             }
         case .distance21km:
-            ZStack(){
+            ZStack(alignment: .bottomLeading){
                 Image("Distance21kmImage")
                     .resizable()
                     .scaledToFill()
@@ -198,19 +204,20 @@ struct CardView: View{
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .offset(x:144,y:-120)
                     .foregroundColor(Color.white)
                     .bold()
-                Text("Distância")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-12,y:56)
+                HStack{
+                    Text("Distância")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
                 
                 
             }
         case .distance42km:
-            ZStack(){
+            ZStack(alignment: .bottomLeading){
                 Image("Distance42kmImage")
                     .resizable()
                     .scaledToFill()
@@ -232,14 +239,15 @@ struct CardView: View{
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .offset(x:144,y:-120)
                     .foregroundColor(Color.white)
                     .bold()
-                Text("Distância")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-12,y:56)
+                HStack{
+                    Text("Distância")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
                 
                 
             }
@@ -280,7 +288,7 @@ struct CardView: View{
             }
         
         case .timeregular:
-            ZStack(){
+            ZStack(alignment:.bottomLeading){
                 Image("TimeRegularImage")
                     .resizable()
                     .scaledToFill()
@@ -302,24 +310,18 @@ struct CardView: View{
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .offset(x:144,y:-120)
                     .foregroundColor(Color.white)
                     .bold()
-                
-//                Text("2h")
-//                    .font(.title)
-//                    .fontWeight(.bold)
-//                    .offset(x:-46,y:0)
-//                    .foregroundColor(Color.white.opacity(0.9))
-                        
-                Text("Tempo")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-30,y:56)
+                HStack{
+                    Text("Tempo")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
             }
         case .time2hours:
-            ZStack(){
+            ZStack(alignment: .bottomLeading){
                 Image("TimeCardImage")
                     .resizable()
                     .scaledToFit()
@@ -341,7 +343,7 @@ struct CardView: View{
                     .resizable()
                     .scaledToFit()
                     .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .offset(x:144,y:-120)
                     .foregroundColor(Color.white)
                     .bold()
                 Text("2h")
@@ -350,16 +352,17 @@ struct CardView: View{
                     .offset(x:-46,y:0)
                     .foregroundColor(Color.white.opacity(0.9))
                         
-                Text("Tempo")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    .offset(x:-30,y:56)
+                HStack{
+                    Text("Tempo")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                .padding(10)
             }
             
         case .weeklydistance:
             ZStack(alignment: .bottomLeading){
-                Image("WeeklyDistanceCardImage")
+                Image("WeeklyDistanceImage")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 353, height: 300)
@@ -392,4 +395,8 @@ struct CardView: View{
             }
         }
     }
+}
+
+#Preview {
+    CardView(viewtype: .distance42km)
 }

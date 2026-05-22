@@ -42,7 +42,6 @@ struct TemplateShareView: View {
                     showShareSheet = true
                 } label: {
                     Image(systemName: "square.and.arrow.up")
-                        .foregroundStyle(Color.black)
                 }
                 .imageShareSheet(isPresented: $showShareSheet, image: saveNewImage)
             }
