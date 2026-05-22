@@ -42,11 +42,24 @@ struct WeeklyTemplateView: View {
     }
 
     private var distanceViewType: ViewType {
-        bestDistance >= 42000 ? .distance42km :
-        bestDistance >= 21000 ? .distance21km :
-        bestDistance >= 15000 ? .distance15km :
-        bestDistance >= 10000 ? .distance10km :
-        bestDistance >= 5000 ? .distance5km : .distanceregular
+        if bestDistance >= 5000 && bestDistance < 10000 {
+            .distance5km
+        }
+        else if bestDistance >= 10000 && bestDistance < 15000 {
+            .distance10km
+        }
+        else if bestDistance >= 15000 && bestDistance < 21000 {
+            .distance15km
+        }
+        else if bestDistance >= 21000 && bestDistance < 42000 {
+            .distance21km
+        }
+        else if bestDistance >= 42000 {
+            .distance42km
+        }
+        else {
+            .distanceregular
+        }
     }
 
     private var timeViewType: ViewType {
@@ -75,17 +88,22 @@ struct WeeklyTemplateView: View {
                             }
                         
                         HStack {
-                            CardView(viewtype: distanceViewType)
-                                .onTapGesture {
-                                    metricViewType = distanceViewType
-                                    nameMetric = "Melhor Distância"
-                                }
-                            
+                            if distanceViewType == .distanceregular {
+                                CardView(viewtype: distanceViewType)
+ 
+                            }
+                            else{
+                                CardView(viewtype: distanceViewType)
+                                    .onTapGesture {
+                                        metricViewType = distanceViewType
+                                        nameMetric = "Melhor Distância"
+                                    }
+                            }
                             CardView(viewtype: timeViewType)
                                 .onTapGesture {
                                     metricViewType = timeViewType
                                     nameMetric = "Melhor tempo"
-                                }
+                            }
                         }
                         
                         CardView(viewtype: paceViewType)
@@ -100,7 +118,7 @@ struct WeeklyTemplateView: View {
                 TemplateShareView(
                     metricViewType: metricViewType,
                     titleMetric: nameMetric ?? "Métrica",
-                    image: UIImage(named: metricViewType.image),
+                    imageTemplate: UIImage(named: metricViewType.image),
                     bestPace: bestPace,
                     weeklyDistance: weeklyTotalDistance,
                     bestTime: bestTime)

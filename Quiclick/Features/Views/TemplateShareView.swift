@@ -13,11 +13,13 @@ struct TemplateShareView: View {
     @State private var showShareSheet: Bool = false
     let metricViewType: ViewType?
     let titleMetric: String
-    let image: UIImage?
+    let imageTemplate: UIImage?
     
     let bestPace: Double?
     let weeklyDistance: Int?
     let bestTime: TimeInterval?
+    
+    
     
     var saveNewImage:UIImage?{
         viewModel.renderFinalImage(view: imageSection()).flatMap{
@@ -52,8 +54,8 @@ struct TemplateShareView: View {
     
     @ViewBuilder
     func imageSection() -> some View {
-        if let image = image {
-            Image(uiImage: image)
+        if let imageTemplate = imageTemplate {
+            Image(uiImage: imageTemplate)
                 .resizable()
                 .scaledToFill()
                 .frame(width: 318, height: 476)
@@ -118,7 +120,7 @@ struct TemplateShareView: View {
     TemplateShareView(
         metricViewType: .timeregular,
         titleMetric: "Métricas",
-        image: UIImage(named: "TimeRegularImage"),
+        imageTemplate: UIImage(named: "TimeRegularImage"),
         bestPace: 1.43,
         weeklyDistance: 34,
         bestTime: 1800

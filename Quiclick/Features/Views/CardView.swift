@@ -28,7 +28,6 @@ enum ViewType : String, CaseIterable, Identifiable{
         case .time2hours: return "Time2HoursImage"
         case .weeklydistance: return "WeeklyDistanceCardImage"
         }
-    
     }
 }
 
@@ -58,24 +57,24 @@ struct CardView: View{
                             )
                     }
                     .cornerRadius(12)
+                    .blur(radius: 2)
                 
                 Text("Distância")
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(Color.white)
                     .offset(x:-12,y:56)
-                Image(systemName: "chevron.right")
+                Image(systemName: "lock.fill")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 14)
-                    .offset(x:68,y:-56)
+                    .frame(width: 30)
                     .foregroundColor(Color.white)
                     .bold()
                 
             }
         case .distance5km:
             ZStack(){
-                Image("DistanceCardImage")
+                Image("Distance5kmImage")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 173, height: 160)
@@ -110,9 +109,9 @@ struct CardView: View{
             }
         case .distance10km:
             ZStack(){
-                Image("DistanceCardImage")
+                Image("Distance10kmImage")
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: 173, height: 160)
                     .overlay {
                         Rectangle()
@@ -144,9 +143,9 @@ struct CardView: View{
             }
         case .distance15km:
             ZStack(){
-                Image("DistanceCardImage")
+                Image("Distance15kmImage")
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: 173, height: 160)
                     .overlay {
                         Rectangle()
@@ -178,7 +177,7 @@ struct CardView: View{
             }
         case .distance21km:
             ZStack(){
-                Image("DistanceCardImage")
+                Image("Distance21kmImage")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 173, height: 160)
@@ -212,7 +211,7 @@ struct CardView: View{
             }
         case .distance42km:
             ZStack(){
-                Image("DistanceCardImage")
+                Image("Distance42kmImage")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 173, height: 160)
@@ -282,7 +281,7 @@ struct CardView: View{
         
         case .timeregular:
             ZStack(){
-                Image("TimeCardImage")
+                Image("TimeRegularImage")
                     .resizable()
                     .scaledToFill()
                     .frame(width: 173, height: 160)
@@ -393,49 +392,4 @@ struct CardView: View{
             }
         }
     }
-    
-    
-    //        ZStack(alignment: .bottomLeading){
-    ////            Image("PaceCardImage")
-    ////                .resizable()
-    ////                .scaledToFit()
-    ////                .frame(width: 353, height: 160)
-    ////                .overlay {
-    //                    Rectangle()
-    //                        .fill(
-    //                            Gradient(
-    //                                stops: [
-    //                                    .init(color: Color.red, location: 0.5),
-    //                                    .init(color: Color.black.opacity(0.5), location: 1),
-    //                                ]
-    //                            )
-    //                        )
-    //                        .frame(width: 353, height: 160)
-    //                        .cornerRadius(12)
-    //
-    ////                }
-    ////                .cornerRadius(12)
-    ////                .shadow(radius: 4)
-    //
-    //            Image(systemName: "chevron.right")
-    //                .resizable()
-    //                .scaledToFit()
-    //                .frame(width: 14)
-    //                .offset(x:200,y:-56)
-    //                .foregroundColor(Color.white)
-    //                .bold()
-    //
-    //
-    //            HStack{
-    //                Text("Pace")
-    //                    .font(.title)
-    //                    .fontWeight(.bold)
-    //                    .foregroundColor(Color.white)
-    //            }.padding()
-    //
-    //        }
 }
-//
-//#Preview {
-//    CardView()
-//}
