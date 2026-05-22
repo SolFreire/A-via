@@ -59,7 +59,7 @@ struct WorkoutCardView: View {
                         }
                     }
                 }
-                    .padding(.horizontal)
+                .padding(.horizontal)
             }
             .frame(minWidth:353, maxWidth: .infinity, minHeight: 116, alignment: .leading)
             .background(.gray.opacity(0.1))
