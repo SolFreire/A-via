@@ -25,7 +25,7 @@ struct SingleRunView: View{
     @State var selectedStickers : [Sticker] = []
 
     
-    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
+    var Stickers = ["Metrics","StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     
     let workout: WorkoutModel
     
@@ -96,10 +96,11 @@ struct SingleRunView: View{
                                 .scaledToFill()
                                 
                                 ForEach(selectedStickers.indices, id:\.self){ index in
+
                                     StickerView(for: index)
                                 }
-                                
-                        }                        }
+                        }
+                    }
 
                     
                 }else{
@@ -235,6 +236,7 @@ struct SingleRunView: View{
                                 .onTapGesture {
                                     selectedStickers.append(Sticker(name:sticker))
                                 }
+                            
                         }
                     }
                     .foregroundColor(.gray)
@@ -306,12 +308,38 @@ struct SingleRunView: View{
         
     }
     
-    func StickerView(for index: Int) -> some View{
+    @ViewBuilder
+    func StickerView(for index: Int) -> some View {
         let sticker = selectedStickers[index]
-        return Image(sticker.name)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 75,height: 75)
+//
+        if sticker.name == "Metrics" {
+            VStack(alignment: .center, spacing: 12){
+                VStack(alignment: .center, spacing: 2){
+                    Text("Duração")
+                        .font(.system(size: 20 , weight: .semibold))
+                        .foregroundColor(Color.white)
+                    Text(formatDuration(workout.duration))
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                VStack(alignment: .center, spacing: 2){
+                    Text("Distância")
+                        .font(.system(size: 20 , weight: .semibold))
+                        .foregroundColor(Color.white)
+                    Text("\((workout.distance/1000).formatted()) km")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+                VStack(alignment: .center, spacing: 2){
+                    Text("Pace")
+                        .font(.system(size: 20 , weight: .semibold))
+                        .foregroundColor(Color.white)
+                    Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                        .font(.system(size: 34, weight: .bold))
+                        .foregroundColor(Color.white)
+                }
+
+            }
             .scaleEffect(sticker.scale)
             .rotationEffect(sticker.rotation)
             .position(sticker.position)
@@ -320,7 +348,46 @@ struct SingleRunView: View{
                 .simultaneously(with: magnificationGesture(index:index))
                 .simultaneously(with: rotationGesture(index:index))
             )
+        } else {
+            Image(sticker.name)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 75,height: 75)
+                .scaleEffect(sticker.scale)
+                .rotationEffect(sticker.rotation)
+                .position(sticker.position)
+                .gesture(
+                    dragGesture(index:index)
+                        .simultaneously(with: magnificationGesture(index:index))
+                        .simultaneously(with: rotationGesture(index:index))
+                )
+        }
     }
+    
+//func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
+//        return VStack(alignment: .center, spacing: 8){
+//            Text("Duração")
+//                .font(.largeTitle)
+//            Text(formatDuration(workout.duration))
+//                .font(.title3)
+//            Text("Distância")
+//                .font(.largeTitle)
+//            Text("\((workout.distance/1000).formatted()) km")
+//                .font(.title3)
+//            Text("Pace")
+//                .font(.largeTitle)
+//            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+//                .font(.largeTitle)
+//        }
+//        .scaleEffect(sticker.scale)
+//        .rotationEffect(sticker.rotation)
+//        .position(sticker.position)
+//        .gesture(
+//            dragGesture(index:index)
+//            .simultaneously(with: magnificationGesture(index:index))
+//            .simultaneously(with: rotationGesture(index:index))
+//        )
+//    }
     
     func magnificationGesture(index:Int) -> some Gesture{
         MagnifyGesture()
