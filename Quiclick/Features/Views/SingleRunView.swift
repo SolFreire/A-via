@@ -310,47 +310,50 @@ struct SingleRunView: View{
         if sticker.name == "Metrics" {
         MetricStickerViewRender(sticker: sticker, index: index, workout: workout)
         } else {
+            let scaledSize = 75 * sticker.scale
             ZStack{
                 Image(sticker.name)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 75,height: 75)
+                    .frame(width: scaledSize,height: scaledSize)
                     .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
-                
-                if(sticker.isSelected){
-                    Circle()
-                        .frame(width: 29,height: 29)
-                        .foregroundStyle(.gray)
-                        .overlay{
-                            Image(systemName:"arrow.down.left.arrow.up.right")
-                                .font(.system(size: 12, weight: .bold))
+                    .overlay {
+                        if(sticker.isSelected){
+                            Circle()
+                                .frame(width: 30,height: 30)
+                                .foregroundStyle(.gray)
+                                .overlay{
+                                    Image(systemName:"arrow.down.left.arrow.up.right")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                                .offset(x: scaledSize / 2, y: -scaledSize/2)
+                                .gesture(
+                                    dragAsMagnify(index:index)
+                                )
+                                
+
+                            
+                            Button{
+                                selectedStickers.remove(at: index)
+                            } label: {
+                                Image(systemName:"trash")
+                                    .font(.system(size: 12, weight: .bold))
+                            }
+                                .frame(width: 24,height: 24)
+                                .buttonStyle(.borderedProminent)
+                                .buttonBorderShape(.circle)
+                                .tint(.gray)
+                                .padding()
                                 .foregroundColor(.white)
+                                .offset(x: -scaledSize / 2, y: -scaledSize/2)
+
                         }
-                        .offset(x:34, y: -36)
-                        .gesture(
-                            dragAsMagnify(index:index)
-                        )
-                        
-
-                    
-                    Button{
-                        selectedStickers.remove(at: index)
-                    } label: {
-                        Image(systemName:"trash")
-                            .font(.system(size: 12, weight: .bold))
                     }
-                        .frame(width: 24,height: 24)
-                        .buttonStyle(.borderedProminent)
-                        .buttonBorderShape(.circle)
-                        .tint(.gray)
-                        .padding()
-                        .foregroundColor(.white)
-                        .offset(x:-34, y: -36)
-
-                }
+            
                 
             }
-                .scaleEffect(sticker.scale)
+//                .scaleEffect(sticker.scale)
                 .rotationEffect(sticker.rotation)
                 .position(sticker.position)
                 .gesture(
@@ -465,10 +468,13 @@ func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)
     func dragAsMagnify(index:Int) -> some Gesture{
         DragGesture()
             .onChanged{ value in
-                let width = Double(value.location.x)
-                if -50.0<width && width<70.0{
-                    selectedStickers[index].scale = selectedStickers[index].lastScale + width/100
-                }
+                let delta = -value.translation.height / (75/2)
+                let newScale = max(0.5, selectedStickers[index].lastScale + delta)
+                selectedStickers[index].scale = newScale
+//                let width = Double(value.location.x)
+//                if -50.0<width && width<70.0{
+//                    selectedStickers[index].scale = selectedStickers[index].lastScale + width/100
+//                }
             }
             .onEnded{ _ in
                 selectedStickers[index].lastScale = selectedStickers[index].scale
