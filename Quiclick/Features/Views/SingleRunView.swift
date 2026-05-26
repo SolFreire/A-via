@@ -21,20 +21,15 @@ struct SingleRunView: View{
     @State private var pickerImage: Data?
     @State var hasPictureSaved: Bool?
     @State var showImageSheet = false
-    
     @State var selectedStickers : [Sticker] = []
-
     
-    var Stickers = ["Metrics","StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
-    
+    var Stickers = ["Metrics","a-viaSticker", "StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     let workout: WorkoutModel
-    
     let dateFormatter={
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy HH:mm"
         return formatter
     }()
-
     var showsBackButton: Bool {
         if viewModel.type == .edit {
             return true
@@ -42,7 +37,6 @@ struct SingleRunView: View{
             return false
         }
     }
-    
     var body : some View{
 
         VStack {
@@ -96,7 +90,6 @@ struct SingleRunView: View{
                                 .scaledToFill()
                                 
                                 ForEach(selectedStickers.indices, id:\.self){ index in
-
                                     StickerView(for: index)
                                 }
                         }
@@ -129,7 +122,6 @@ struct SingleRunView: View{
         .frame(width: 318, height: 476)
         .clipped()
     }
-    
 
     var infoSection: some View{
         VStack(alignment: .leading, spacing:-12){
@@ -234,6 +226,7 @@ struct SingleRunView: View{
                                 .frame(width: 75,height: 75)
                                 .aspectRatio(contentMode: .fit)
                                 .onTapGesture {
+                                    selectedStickers.forEach { $0.isSelected = false }
                                     selectedStickers.append(Sticker(name:sticker))
                                 }
                             
@@ -251,8 +244,9 @@ struct SingleRunView: View{
         ToolbarItem(placement: .cancellationAction) {
             if viewModel.type == .edit {
                 Button("Cancel", systemImage: "xmark") {
-                    viewModel.cancelEditing(workout: workout)
                     pickerItem = nil
+                    pickerImage = nil
+                    viewModel.cancelEditing(workout: workout)
                     selectedStickers = []
                 }
             }
@@ -261,6 +255,7 @@ struct SingleRunView: View{
         ToolbarItem(placement: .confirmationAction){
             if viewModel.type == .edit{
                 Button("Done", systemImage: "checkmark"){
+                    selectedStickers.forEach { $0.isSelected = false }
                     viewModel.confirmEdit(workout:workout, context: context, ImageView: imageSection())
                     selectedStickers = []
                 }
@@ -313,46 +308,48 @@ struct SingleRunView: View{
         let sticker = selectedStickers[index]
 //
         if sticker.name == "Metrics" {
-            VStack(alignment: .center, spacing: 12){
-                VStack(alignment: .center, spacing: 2){
-                    Text("Duração")
-                        .font(.system(size: 20 , weight: .semibold))
-                        .foregroundColor(Color.white)
-                    Text(formatDuration(workout.duration))
-                        .font(.system(size: 34, weight: .bold))
-                        .foregroundColor(Color.white)
-                }
-                VStack(alignment: .center, spacing: 2){
-                    Text("Distância")
-                        .font(.system(size: 20 , weight: .semibold))
-                        .foregroundColor(Color.white)
-                    Text("\((workout.distance/1000).formatted()) km")
-                        .font(.system(size: 34, weight: .bold))
-                        .foregroundColor(Color.white)
-                }
-                VStack(alignment: .center, spacing: 2){
-                    Text("Pace")
-                        .font(.system(size: 20 , weight: .semibold))
-                        .foregroundColor(Color.white)
-                    Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                        .font(.system(size: 34, weight: .bold))
-                        .foregroundColor(Color.white)
-                }
-
-            }
-            .scaleEffect(sticker.scale)
-            .rotationEffect(sticker.rotation)
-            .position(sticker.position)
-            .gesture(
-                dragGesture(index:index)
-                .simultaneously(with: magnificationGesture(index:index))
-                .simultaneously(with: rotationGesture(index:index))
-            )
+        MetricStickerViewRender(sticker: sticker, index: index, workout: workout)
         } else {
-            Image(sticker.name)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 75,height: 75)
+            ZStack{
+                Image(sticker.name)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 75,height: 75)
+                    .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
+                
+                if(sticker.isSelected){
+                    Circle()
+                        .frame(width: 29,height: 29)
+                        .foregroundStyle(.gray)
+                        .overlay{
+                            Image(systemName:"arrow.down.left.arrow.up.right")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+                        .offset(x:34, y: -36)
+                        .gesture(
+                            dragAsMagnify(index:index)
+                        )
+                        
+
+                    
+                    Button{
+                        selectedStickers.remove(at: index)
+                    } label: {
+                        Image(systemName:"trash")
+                            .font(.system(size: 12, weight: .bold))
+                    }
+                        .frame(width: 24,height: 24)
+                        .buttonStyle(.borderedProminent)
+                        .buttonBorderShape(.circle)
+                        .tint(.gray)
+                        .padding()
+                        .foregroundColor(.white)
+                        .offset(x:-34, y: -36)
+
+                }
+                
+            }
                 .scaleEffect(sticker.scale)
                 .rotationEffect(sticker.rotation)
                 .position(sticker.position)
@@ -360,34 +357,85 @@ struct SingleRunView: View{
                     dragGesture(index:index)
                         .simultaneously(with: magnificationGesture(index:index))
                         .simultaneously(with: rotationGesture(index:index))
+                        .simultaneously(with: TapGesture().onEnded{sticker.isSelected.toggle()})
                 )
+
         }
     }
     
-//func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
-//        return VStack(alignment: .center, spacing: 8){
-//            Text("Duração")
-//                .font(.largeTitle)
-//            Text(formatDuration(workout.duration))
-//                .font(.title3)
-//            Text("Distância")
-//                .font(.largeTitle)
-//            Text("\((workout.distance/1000).formatted()) km")
-//                .font(.title3)
-//            Text("Pace")
-//                .font(.largeTitle)
-//            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-//                .font(.largeTitle)
-//        }
-//        .scaleEffect(sticker.scale)
-//        .rotationEffect(sticker.rotation)
-//        .position(sticker.position)
-//        .gesture(
-//            dragGesture(index:index)
-//            .simultaneously(with: magnificationGesture(index:index))
-//            .simultaneously(with: rotationGesture(index:index))
-//        )
-//    }
+func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
+    return ZStack{
+        VStack(alignment: .center, spacing: 12){
+            VStack(alignment: .center, spacing: 2){
+                Text("Duração")
+                    .font(.system(size: 20 , weight: .semibold))
+                    .foregroundColor(Color.white)
+                Text(formatDuration(workout.duration))
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(Color.white)
+            }
+            VStack(alignment: .center, spacing: 2){
+                Text("Distância")
+                    .font(.system(size: 20 , weight: .semibold))
+                    .foregroundColor(Color.white)
+                Text("\((workout.distance/1000).formatted()) km")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(Color.white)
+            }
+            VStack(alignment: .center, spacing: 2){
+                Text("Pace")
+                    .font(.system(size: 20 , weight: .semibold))
+                    .foregroundColor(Color.white)
+                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundColor(Color.white)
+            }
+            Image("a-viaSticker")
+                .resizable()
+                .frame(width:40, height: 40)
+                .offset(x: -6, y: 0)
+        }
+        .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
+        if(sticker.isSelected){
+            
+            Circle()
+                .frame(width: 29,height: 29)
+                .foregroundStyle(.gray)
+                .overlay{
+                    Image(systemName:"arrow.down.left.arrow.up.right")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundColor(.white)
+                }
+                .offset(x:71, y: -133)
+                .gesture(
+                    dragAsMagnify(index:index)
+                )
+            Button{
+                selectedStickers.remove(at: index)
+            } label: {
+                Image(systemName:"trash")
+                    .font(.system(size: 12, weight: .bold))
+            }
+                .frame(width: 24,height: 24)
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.circle)
+                .tint(.gray)
+                .padding()
+                .foregroundColor(.white)
+                .offset(x:-71, y: -133)
+
+        }
+    }
+    .scaleEffect(sticker.scale)
+    .rotationEffect(sticker.rotation)
+    .position(sticker.position)
+    .gesture(
+        dragGesture(index:index)
+            .simultaneously(with: magnificationGesture(index:index))
+            .simultaneously(with: rotationGesture(index:index))
+            .simultaneously(with: TapGesture().onEnded{sticker.isSelected.toggle()})
+        )
+    }
     
     func magnificationGesture(index:Int) -> some Gesture{
         MagnifyGesture()
@@ -411,6 +459,19 @@ struct SingleRunView: View{
         DragGesture()
             .onChanged{value in
                 selectedStickers[index].position = value.location
+            }
+    }
+    
+    func dragAsMagnify(index:Int) -> some Gesture{
+        DragGesture()
+            .onChanged{ value in
+                let width = Double(value.location.x)
+                if -50.0<width && width<70.0{
+                    selectedStickers[index].scale = selectedStickers[index].lastScale + width/100
+                }
+            }
+            .onEnded{ _ in
+                selectedStickers[index].lastScale = selectedStickers[index].scale
             }
     }
     
