@@ -61,6 +61,7 @@ final class SingleRunViewModel {
     
     func cancelEditing(workout: WorkoutModel) {
         pickerImage = nil
+        pickerImageData = nil
         if(workout.imageData == nil){
             type = .noImage
         }else{

@@ -20,6 +20,8 @@ class Sticker{
     var lastScale : CGFloat = 1.0
     var lastRotation : Angle = .zero
     
+    var isSelected: Bool = false
+    
     init(name: String) {
         self.name = name
     }
