@@ -306,7 +306,6 @@ struct SingleRunView: View{
     @ViewBuilder
     func StickerView(for index: Int) -> some View {
         let sticker = selectedStickers[index]
-//
         if sticker.name == "Metrics" {
         MetricStickerViewRender(sticker: sticker, index: index, workout: workout)
         } else {
@@ -353,7 +352,6 @@ struct SingleRunView: View{
             
                 
             }
-//                .scaleEffect(sticker.scale)
                 .rotationEffect(sticker.rotation)
                 .position(sticker.position)
                 .gesture(
@@ -367,69 +365,75 @@ struct SingleRunView: View{
     }
     
 func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
+    let scaledSize = 150 * sticker.scale
+    let relativeHeight = -((scaledSize/2) * 1.732)
     return ZStack{
         VStack(alignment: .center, spacing: 12){
             VStack(alignment: .center, spacing: 2){
                 Text("Duração")
-                    .font(.system(size: 20 , weight: .semibold))
+                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
                     .foregroundColor(Color.white)
                 Text(formatDuration(workout.duration))
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: 32 * sticker.scale, weight: .bold))
                     .foregroundColor(Color.white)
             }
             VStack(alignment: .center, spacing: 2){
                 Text("Distância")
-                    .font(.system(size: 20 , weight: .semibold))
+                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
                     .foregroundColor(Color.white)
                 Text("\((workout.distance/1000).formatted()) km")
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: 32 * sticker.scale, weight: .bold))
                     .foregroundColor(Color.white)
             }
             VStack(alignment: .center, spacing: 2){
                 Text("Pace")
-                    .font(.system(size: 20 , weight: .semibold))
+                    .font(.system(size: 20 * sticker.scale, weight: .semibold))
                     .foregroundColor(Color.white)
                 Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: 32 * sticker.scale, weight: .bold))
                     .foregroundColor(Color.white)
             }
             Image("a-viaSticker")
                 .resizable()
-                .frame(width:40, height: 40)
+                .frame(width:40 * sticker.scale, height: 40*sticker.scale)
                 .offset(x: -6, y: 0)
         }
         .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
-        if(sticker.isSelected){
-            
-            Circle()
-                .frame(width: 29,height: 29)
-                .foregroundStyle(.gray)
-                .overlay{
-                    Image(systemName:"arrow.down.left.arrow.up.right")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundColor(.white)
-                }
-                .offset(x:71, y: -133)
-                .gesture(
-                    dragAsMagnify(index:index)
-                )
-            Button{
-                selectedStickers.remove(at: index)
-            } label: {
-                Image(systemName:"trash")
-                    .font(.system(size: 12, weight: .bold))
-            }
-                .frame(width: 24,height: 24)
-                .buttonStyle(.borderedProminent)
-                .buttonBorderShape(.circle)
-                .tint(.gray)
-                .padding()
-                .foregroundColor(.white)
-                .offset(x:-71, y: -133)
+        .overlay {
+            if(sticker.isSelected){
+                Circle()
+                    .frame(width: 30,height: 30)
+                    .foregroundStyle(.gray)
+                    .overlay{
+                        Image(systemName:"arrow.down.left.arrow.up.right")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .offset(x: scaledSize / 2, y: relativeHeight)
+                    .gesture(
+                        dragAsMagnify(index:index)
+                    )
+                    
 
+                
+                Button{
+                    selectedStickers.remove(at: index)
+                } label: {
+                    Image(systemName:"trash")
+                        .font(.system(size: 12, weight: .bold))
+                }
+                    .frame(width: 24,height: 24)
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.circle)
+                    .tint(.gray)
+                    .padding()
+                    .foregroundColor(.white)
+                    .offset(x: -scaledSize / 2, y: relativeHeight)
+
+            }
         }
     }
-    .scaleEffect(sticker.scale)
+    .frame(width: scaledSize, height: scaledSize)
     .rotationEffect(sticker.rotation)
     .position(sticker.position)
     .gesture(
