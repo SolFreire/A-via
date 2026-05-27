@@ -10,25 +10,38 @@ import PhotosUI
 import SwiftData
 
 struct SingleRunView: View{
-    
+
     enum ViewType {
         case regular, edit, noImage
     }
-    
+
     @State private var viewModel = SingleRunViewModel()
     @Environment(\.modelContext) private var context
     @State private var pickerItem: PhotosPickerItem?
     @State private var pickerImage: Data?
     @State var hasPictureSaved: Bool?
     @State var showImageSheet = false
-    
+
     @State var selectedStickers : [Sticker] = []
 
+//    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     
-    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
+//    enum Stickers {
+//        var StickersMetrics: [""]
+//        var StickersLocals: ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"]
+//        var StickersAccessories: ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
+//    }
     
+    var Stickers: [String: [String]] = [
+        "Métricas": [],
+        "Locais": ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"],
+        "Acessórios": ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
+    ]
+    
+    
+
     let workout: WorkoutModel
-    
+
     let dateFormatter={
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy HH:mm"
@@ -43,80 +56,102 @@ struct SingleRunView: View{
         }
     }
     
+    //Provisório:
+    @State private var tabs: [String] = ["Métricas", "Locais", "Acessórios"]
+    @State private var activeTab: String = "Métricas"
+    @State private var contentStickers: [String] = []
+    //---------------------------
+    
+    
     var body : some View{
 
         VStack {
-            ScrollView(.vertical, showsIndicators: false){
-                imageSection()
+            
+            Group {
                 
                 if viewModel.type == .edit {
+                    
+                    
+                    imageSection()
+                    Spacer()
                     editSection
+                    
+                    
                 } else {
-                    infoSection
-                }
-            }
-            }
-            .toolbar {
-                toolbarContent
-            }
-            .onChange(of: pickerItem){
-                Task {
-                    if let loaded = try? await pickerItem?.loadTransferable(type: Data.self){
-                        pickerImage = loaded
-                        viewModel.startEditing(with: pickerImage!)
-                    }else{
-                        print("Failed to load image")
+                    ScrollView(.vertical, showsIndicators: false){
+                        
+                        imageSection()
+                        Spacer()
+                        infoSection
+                        
                     }
                 }
             }
-            .navigationBarBackButtonHidden(showsBackButton)
-            .toolbar(.hidden, for: .tabBar)
-            .onAppear(){
-                viewModel.readData(workout: workout)
+            
+            
+                
+        }
+        .toolbar {
+            toolbarContent
+        }
+        .onChange(of: pickerItem){
+            Task {
+                if let loaded = try? await pickerItem?.loadTransferable(type: Data.self){
+                    pickerImage = loaded
+                    viewModel.startEditing(with: pickerImage!)
+                }else{
+                    print("Failed to load image")
+                }
             }
-    }
-    
+        }
+        .navigationBarBackButtonHidden(showsBackButton)
+        .toolbar(.hidden, for: .tabBar)
+        .onAppear(){
+            viewModel.readData(workout: workout)
+        }
+        .ignoresSafeArea(edges: .bottom)    }
+
     @ViewBuilder
     func imageSection() -> some View {
         Group {
             switch viewModel.type {
-                
+
             case .noImage:
                 PhotosPicker(selection: $pickerItem, matching: .images) {
                     placeholder(icon: "photo.badge.plus")
                 }
-                
+
             case .edit:
                 if(workout.imageData != nil){
                     if let image = workout.image {
                         ZStack{
-                            
+
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
-                                
+
                                 ForEach(selectedStickers.indices, id:\.self){ index in
                                     StickerView(for: index)
                                 }
-                                
+
                         }                        }
 
-                    
+
                 }else{
                     if let image = viewModel.pickerImage {
                         ZStack{
                             Image(uiImage:image)
                                 .resizable()
                                 .scaledToFill()
-                            
+
                             ForEach(selectedStickers.indices, id:\.self){ index in
                                 StickerView(for: index)
                             }
                         }
                     }
-                       
+
                 }
-                
+
             case .regular:
                 if let image = workout.image {
                           Image(uiImage: image)
@@ -128,7 +163,6 @@ struct SingleRunView: View{
         .frame(width: 318, height: 476)
         .clipped()
     }
-    
 
     var infoSection: some View{
         VStack(alignment: .leading, spacing:-12){
@@ -140,7 +174,7 @@ struct SingleRunView: View{
                 ViewThatFits{
                     VStack(alignment: .leading, spacing: 8){
                         HStack(spacing:50){
-                            
+
                             VStack(alignment: .leading, spacing: 8){
                                 Text("Distância")
                                     .font(.body)
@@ -158,7 +192,7 @@ struct SingleRunView: View{
                                     .fontWeight(.medium)
                             }
                         }
-                        
+
                         VStack(alignment: .leading, spacing: 8){
                             Text("Pace")
                                 .font(.body)
@@ -201,7 +235,7 @@ struct SingleRunView: View{
                             }
                         }
                     }.padding(.horizontal)
-                    
+
                 }
 
 
@@ -209,43 +243,74 @@ struct SingleRunView: View{
                }
                .frame(minWidth:318, alignment: .leading)
                .background(.gray.opacity(0.1))
-               
-        
+
+
     }
-    
+
     var editSection: some View {
         
-        ZStack{
-            RoundedRectangle(cornerRadius: 16)
-                .foregroundStyle(.gray.opacity(0.3))
-                .frame(maxWidth: 393, minHeight: 262, maxHeight: .infinity)
+        VStack(alignment: .center){
             
-            VStack(alignment: .center){
-                ScrollView(.horizontal) {
-                    LazyHGrid(rows: Array(repeating: .init(.flexible(), spacing: 6.0), count: 2)){
-                        ForEach(Stickers, id:\.self){ sticker in
-                            RoundedRectangle(cornerRadius: 6)
-                                .overlay{
-                                    Image(sticker)
-                                        .resizable()
-                                        .scaledToFit()
+            HStack (spacing: 5) {
+                ForEach(tabs, id: \.self) {tab in
+                    Button (action: {
+                        withAnimation(.snappy) {
+                            activeTab = tab
+                            for key in Stickers.keys {
+                                if tab == key {
+                                    contentStickers = Stickers[key]!
                                 }
-                                .frame(width: 75,height: 75)
-                                .aspectRatio(contentMode: .fit)
-                                .onTapGesture {
-                                    selectedStickers.append(Sticker(name:sticker))
-                                }
+                            }
                         }
+                    }) {
+                        Text(tab)
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(
+                                activeTab == tab ?
+                                    Color(red: 1, green: 204/255, blue: 0) :
+                                    Color.white)
+                            .padding(5)
+                            .background(
+                                activeTab == tab ?
+                                    Color(red: 143/255, green:74/255, blue:53/255).opacity(0.6) :
+                                    Color(red: 66/255, green: 66/255, blue: 66/255))
+                            .cornerRadius(5)
+                            .fontWeight(.semibold)
                     }
-                    .foregroundColor(.gray)
+                    .buttonStyle(.plain)
                 }
-            }.padding(30)
+            }
+            .padding(.bottom, 20)
+            
+            ScrollView(.horizontal) {
+                LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 2), spacing: 6.0){
+                    ForEach(contentStickers, id:\.self){ sticker in
+                        RoundedRectangle(cornerRadius: 6)
+                            .frame(width: 75,height: 75)
+                            .overlay{
+                                Image(sticker)
+                                    .resizable()
+                                    .scaledToFit()
+                            }
+                            .aspectRatio(contentMode: .fit)
+                            .onTapGesture {
+                                selectedStickers.append(Sticker(name:sticker))
+                            }
+                    }.foregroundColor(.gray)
+                    
+                    
+                }
+            }
+            
         }
+        .padding(25)
+        .background(Color.black.opacity(0.8))
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 16, topTrailingRadius: 16))
     }
 
     @ToolbarContentBuilder
     var toolbarContent: some ToolbarContent {
-        
+
         ToolbarItem(placement: .cancellationAction) {
             if viewModel.type == .edit {
                 Button("Cancel", systemImage: "xmark") {
@@ -255,7 +320,7 @@ struct SingleRunView: View{
                 }
             }
         }
-        
+
         ToolbarItem(placement: .confirmationAction){
             if viewModel.type == .edit{
                 Button("Done", systemImage: "checkmark"){
@@ -264,12 +329,12 @@ struct SingleRunView: View{
                 }
             }
         }
-        
+
 
         ToolbarItem(placement: .topBarTrailing) {
-            
+
             if viewModel.type == .regular{
-                
+
                 Button {
                     viewModel.type = .edit
                 } label: {
@@ -277,7 +342,7 @@ struct SingleRunView: View{
                 }
             }
             if viewModel.type == .edit{
-                
+
                 Button {
                     selectedStickers = []
                     viewModel.discardImage(workout: workout, context: context)
@@ -285,15 +350,15 @@ struct SingleRunView: View{
                     Image(systemName: "trash")
                 }
             }
-            
+
         }
         if #available(iOS 26.0, *) {
             ToolbarSpacer(.fixed, placement:.topBarTrailing)
         }
         ToolbarItem(placement: .topBarTrailing) {
-            
+
             if viewModel.type == .regular{
-                
+
                 Button {
                     showImageSheet = true
                 } label: {
@@ -301,11 +366,11 @@ struct SingleRunView: View{
                 }
                 .imageShareSheet(isPresented: $showImageSheet, image: workout.image!)
             }
-            
+
         }
-        
+
     }
-    
+
     func StickerView(for index: Int) -> some View{
         let sticker = selectedStickers[index]
         return Image(sticker.name)
@@ -321,7 +386,7 @@ struct SingleRunView: View{
                 .simultaneously(with: rotationGesture(index:index))
             )
     }
-    
+
     func magnificationGesture(index:Int) -> some Gesture{
         MagnifyGesture()
             .onChanged{value in
@@ -346,7 +411,7 @@ struct SingleRunView: View{
                 selectedStickers[index].position = value.location
             }
     }
-    
+
 }
 
 func placeholder(icon: String) -> some View {
