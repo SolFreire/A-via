@@ -23,23 +23,13 @@ struct SingleRunView: View{
     @State var showImageSheet = false
 
     @State var selectedStickers : [Sticker] = []
-
-//    var Stickers = ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi", "StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
-    
-//    enum Stickers {
-//        var StickersMetrics: [""]
-//        var StickersLocals: ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"]
-//        var StickersAccessories: ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
-//    }
     
     var Stickers: [String: [String]] = [
-        "Métricas": [],
+        "Métricas": ["Metrics"],
         "Locais": ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"],
         "Acessórios": ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     ]
     
-    
-
     let workout: WorkoutModel
 
     let dateFormatter={
@@ -47,7 +37,6 @@ struct SingleRunView: View{
         formatter.dateFormat = "dd/MM/yyyy HH:mm"
         return formatter
     }()
-
     var showsBackButton: Bool {
         if viewModel.type == .edit {
             return true
@@ -134,7 +123,8 @@ struct SingleRunView: View{
                                     StickerView(for: index)
                                 }
 
-                        }                        }
+                        }                        
+                    }
 
 
                 }else{
@@ -314,8 +304,11 @@ struct SingleRunView: View{
         ToolbarItem(placement: .cancellationAction) {
             if viewModel.type == .edit {
                 Button("Cancel", systemImage: "xmark") {
+                    pickerItem = nil
+                    pickerImage = nil
                     viewModel.cancelEditing(workout: workout)
                     pickerItem = nil
+                    pickerImage = nil
                     selectedStickers = []
                 }
             }
@@ -324,6 +317,7 @@ struct SingleRunView: View{
         ToolbarItem(placement: .confirmationAction){
             if viewModel.type == .edit{
                 Button("Done", systemImage: "checkmark"){
+                    selectedStickers.forEach { $0.isSelected = false }
                     viewModel.confirmEdit(workout:workout, context: context, ImageView: imageSection())
                     selectedStickers = []
                 }
@@ -370,21 +364,146 @@ struct SingleRunView: View{
         }
 
     }
-
-    func StickerView(for index: Int) -> some View{
+    
+    @ViewBuilder
+    func StickerView(for index: Int) -> some View {
         let sticker = selectedStickers[index]
-        return Image(sticker.name)
-            .resizable()
-            .scaledToFit()
-            .frame(width: 75,height: 75)
-            .scaleEffect(sticker.scale)
-            .rotationEffect(sticker.rotation)
-            .position(sticker.position)
-            .gesture(
-                dragGesture(index:index)
-                .simultaneously(with: magnificationGesture(index:index))
-                .simultaneously(with: rotationGesture(index:index))
-            )
+        if sticker.name == "Metrics" {
+        MetricStickerViewRender(sticker: sticker, index: index, workout: workout)
+        } else {
+            let scaledSize = 75 * sticker.scale
+            ZStack{
+                Image(sticker.name)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: scaledSize,height: scaledSize)
+                    .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
+                    .overlay {
+                        if(sticker.isSelected){
+                            Circle()
+                                .frame(width: 30,height: 30)
+                                .foregroundStyle(.gray)
+                                .overlay{
+                                    Image(systemName:"arrow.down.left.arrow.up.right")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                                .offset(x: scaledSize / 2, y: -scaledSize/2)
+                                .gesture(
+                                    dragAsMagnify(index:index)
+                                )
+                                
+
+                            
+                            Button{
+                                selectedStickers.remove(at: index)
+                            } label: {
+                                Image(systemName:"trash")
+                                    .font(.system(size: 12, weight: .bold))
+                            }
+                                .frame(width: 24,height: 24)
+                                .buttonStyle(.borderedProminent)
+                                .buttonBorderShape(.circle)
+                                .tint(.gray)
+                                .padding()
+                                .foregroundColor(.white)
+                                .offset(x: -scaledSize / 2, y: -scaledSize/2)
+
+                        }
+                    }
+            
+                
+            }
+                .rotationEffect(sticker.rotation)
+                .position(sticker.position)
+                .gesture(
+                    dragGesture(index:index)
+                        .simultaneously(with: magnificationGesture(index:index))
+                        .simultaneously(with: rotationGesture(index:index))
+                        .simultaneously(with: TapGesture().onEnded{sticker.isSelected.toggle()})
+                )
+
+        }
+    }
+    
+    func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
+    let scaledSize = 150 * sticker.scale
+    let relativeHeight = -((scaledSize/2) * 1.732)
+    return ZStack{
+        VStack(alignment: .center, spacing: 12){
+            VStack(alignment: .center, spacing: 2){
+                Text("Duração")
+                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
+                    .foregroundColor(Color.white)
+                Text(formatDuration(workout.duration))
+                    .font(.system(size: 32 * sticker.scale, weight: .bold))
+                    .foregroundColor(Color.white)
+            }
+            VStack(alignment: .center, spacing: 2){
+                Text("Distância")
+                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
+                    .foregroundColor(Color.white)
+                Text("\((workout.distance/1000).formatted()) km")
+                    .font(.system(size: 32 * sticker.scale, weight: .bold))
+                    .foregroundColor(Color.white)
+            }
+            VStack(alignment: .center, spacing: 2){
+                Text("Pace")
+                    .font(.system(size: 20 * sticker.scale, weight: .semibold))
+                    .foregroundColor(Color.white)
+                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                    .font(.system(size: 32 * sticker.scale, weight: .bold))
+                    .foregroundColor(Color.white)
+            }
+            Image("a-viaSticker")
+                .resizable()
+                .frame(width:40 * sticker.scale, height: 40*sticker.scale)
+                .offset(x: -6, y: 0)
+        }
+        .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
+        .overlay {
+            if(sticker.isSelected){
+                Circle()
+                    .frame(width: 30,height: 30)
+                    .foregroundStyle(.gray)
+                    .overlay{
+                        Image(systemName:"arrow.down.left.arrow.up.right")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .offset(x: scaledSize / 2, y: relativeHeight)
+                    .gesture(
+                        dragAsMagnify(index:index)
+                    )
+                    
+
+                
+                Button{
+                    selectedStickers.remove(at: index)
+                } label: {
+                    Image(systemName:"trash")
+                        .font(.system(size: 12, weight: .bold))
+                }
+                    .frame(width: 24,height: 24)
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.circle)
+                    .tint(.gray)
+                    .padding()
+                    .foregroundColor(.white)
+                    .offset(x: -scaledSize / 2, y: relativeHeight)
+
+            }
+        }
+    }
+    .frame(width: scaledSize, height: scaledSize)
+    .rotationEffect(sticker.rotation)
+    .position(sticker.position)
+    .gesture(
+        dragGesture(index:index)
+            .simultaneously(with: magnificationGesture(index:index))
+            .simultaneously(with: rotationGesture(index:index))
+            .simultaneously(with: TapGesture().onEnded{sticker.isSelected.toggle()})
+        )
     }
 
     func magnificationGesture(index:Int) -> some Gesture{
@@ -411,7 +530,23 @@ struct SingleRunView: View{
                 selectedStickers[index].position = value.location
             }
     }
-
+    
+    func dragAsMagnify(index:Int) -> some Gesture{
+        DragGesture()
+            .onChanged{ value in
+                let delta = -value.translation.height / (75/2)
+                let newScale = max(0.5, selectedStickers[index].lastScale + delta)
+                selectedStickers[index].scale = newScale
+//                let width = Double(value.location.x)
+//                if -50.0<width && width<70.0{
+//                    selectedStickers[index].scale = selectedStickers[index].lastScale + width/100
+//                }
+            }
+            .onEnded{ _ in
+                selectedStickers[index].lastScale = selectedStickers[index].scale
+            }
+    }
+    
 }
 
 func placeholder(icon: String) -> some View {
@@ -423,9 +558,6 @@ func placeholder(icon: String) -> some View {
                 .font(.system(size: 50))
         }
 }
-
-
-
 
 
 #Preview {

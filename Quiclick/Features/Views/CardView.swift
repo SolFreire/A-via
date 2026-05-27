@@ -26,7 +26,7 @@ enum ViewType : String, CaseIterable, Identifiable{
         case .bestpace: return "BestPaceImage"
         case .timeregular: return "TimeRegularImage"
         case .time2hours: return "Time2HoursImage"
-        case .weeklydistance: return "WeeklyDistanceCardImage"
+        case .weeklydistance: return "WeeklyDistanceImage"
         }
     }
 }

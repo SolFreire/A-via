@@ -101,10 +101,16 @@ struct WorkoutCardView: View {
 
 func formatDuration(_ duration : Double) -> String{
     let total = duration
+    var durationformated : String = ""
     let hours = floor(total/3600)
     let minuts = floor((total - (hours*3600))/60)
     let seconds = floor(total.truncatingRemainder(dividingBy: 60))
-    let durationformated : String = "\(hours.formatted())h \(minuts.formatted())m \(seconds.formatted())s "
+    if hours == 0{
+         durationformated = "\(minuts.formatted())m \(seconds.formatted())s "
+    }
+    else{
+        durationformated = "\(hours.formatted())h \(minuts.formatted())m \(seconds.formatted())s "
+    }
     return durationformated
 }
 
