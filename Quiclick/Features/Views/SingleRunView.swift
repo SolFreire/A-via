@@ -247,6 +247,8 @@ struct SingleRunView: View{
                     pickerItem = nil
                     pickerImage = nil
                     viewModel.cancelEditing(workout: workout)
+                    pickerItem = nil
+                    pickerImage = nil
                     selectedStickers = []
                 }
             }
@@ -364,7 +366,7 @@ struct SingleRunView: View{
         }
     }
     
-func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
+    func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
     let scaledSize = 150 * sticker.scale
     let relativeHeight = -((scaledSize/2) * 1.732)
     return ZStack{
@@ -496,9 +498,6 @@ func placeholder(icon: String) -> some View {
                 .font(.system(size: 50))
         }
 }
-
-
-
 
 
 #Preview {
