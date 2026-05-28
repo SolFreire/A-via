@@ -23,12 +23,14 @@ struct SingleRunView: View{
     @State var showImageSheet = false
 
     @State var selectedStickers : [Sticker] = []
+
     
     var Stickers: [String: [String]] = [
         "Métricas": ["Metrics"],
         "Locais": ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"],
         "Acessórios": ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     ]
+
     
     let workout: WorkoutModel
 
@@ -48,7 +50,7 @@ struct SingleRunView: View{
     //Provisório:
     @State private var tabs: [String] = ["Métricas", "Locais", "Acessórios"]
     @State private var activeTab: String = "Métricas"
-    @State private var contentStickers: [String] = []
+    @State private var contentStickers: [String] = ["Metrics"]
     //---------------------------
     
     
@@ -273,25 +275,25 @@ struct SingleRunView: View{
             .padding(.bottom, 20)
             
             ScrollView(.horizontal) {
-                LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 2), spacing: 6.0){
-                    ForEach(contentStickers, id:\.self){ sticker in
-                        RoundedRectangle(cornerRadius: 6)
-                            .frame(width: 75,height: 75)
-                            .overlay{
-                                Image(sticker)
-                                    .resizable()
-                                    .scaledToFit()
-                            }
-                            .aspectRatio(contentMode: .fit)
-                            .onTapGesture {
-                                selectedStickers.append(Sticker(name:sticker))
-                            }
-                    }.foregroundColor(.gray)
-                    
-                    
-                }
+
+                        LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
+                            ForEach(contentStickers, id:\.self){ sticker in
+                                RoundedRectangle(cornerRadius: 6)
+                                    .frame(width: 75,height: 75)
+                                    .overlay{
+                                        Image(sticker)
+                                            .resizable()
+                                            .scaledToFit()
+                                    }
+                                    .aspectRatio(contentMode: .fit)
+                                    .onTapGesture {
+                                        selectedStickers.append(Sticker(name:sticker))
+                                    }
+                            }.foregroundColor(.gray)
+                    }
+
             }
-            
+            .padding(.bottom, 20)
         }
         .padding(25)
         .background(Color.black.opacity(0.8))
@@ -537,10 +539,6 @@ struct SingleRunView: View{
                 let delta = -value.translation.height / (75/2)
                 let newScale = max(0.5, selectedStickers[index].lastScale + delta)
                 selectedStickers[index].scale = newScale
-//                let width = Double(value.location.x)
-//                if -50.0<width && width<70.0{
-//                    selectedStickers[index].scale = selectedStickers[index].lastScale + width/100
-//                }
             }
             .onEnded{ _ in
                 selectedStickers[index].lastScale = selectedStickers[index].scale
