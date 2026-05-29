@@ -8,7 +8,20 @@
 import SwiftUI
 
 struct EmptyView: View {
+    @State private var showingSheet: Bool = false
     var body: some View {
+        HStack(spacing: 16) {
+            Spacer()
+            Button{
+                showingSheet = true
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .resizable()
+                    .foregroundStyle(Color.gray)
+                    .frame(width: 36, height: 36)
+            }
+        }
+        .padding()
         VStack(spacing: 16) {
             Spacer()
 
@@ -32,6 +45,9 @@ struct EmptyView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 40)
+        .sheet(isPresented: $showingSheet) {
+            HealthDeniedView()
+        }
     }
 }
 

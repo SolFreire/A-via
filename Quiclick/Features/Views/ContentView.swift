@@ -26,9 +26,6 @@ struct ContentView: View {
                 if viewModel.isLoading {
                     HealthLoadingView()
                 }
-                else if viewModel.isDenied {
-                    HealthDeniedView()
-                }
                 else {
                     Text("Corridas da Semana")
                         .font(.title3)

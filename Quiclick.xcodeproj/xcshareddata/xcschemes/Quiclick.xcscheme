@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "7961E0392F9A3F2500D45D8F"
-               BuildableName = "Quiclick.app"
-               BlueprintName = "Quiclick"
+               BuildableName = "a-via.app"
+               BlueprintName = "a-via"
                ReferencedContainer = "container:Quiclick.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,8 +46,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7961E0392F9A3F2500D45D8F"
-            BuildableName = "Quiclick.app"
-            BlueprintName = "Quiclick"
+            BuildableName = "a-via.app"
+            BlueprintName = "a-via"
             ReferencedContainer = "container:Quiclick.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -63,8 +63,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "7961E0392F9A3F2500D45D8F"
-            BuildableName = "Quiclick.app"
-            BlueprintName = "Quiclick"
+            BuildableName = "a-via.app"
+            BlueprintName = "a-via"
             ReferencedContainer = "container:Quiclick.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

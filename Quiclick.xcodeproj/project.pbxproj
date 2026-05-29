@@ -7,17 +7,17 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		7961E03A2F9A3F2500D45D8F /* Quiclick.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quiclick.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7961E03A2F9A3F2500D45D8F /* a-via.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "a-via.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		7961E0472F9A3F2700D45D8F /* Exceptions for "Quiclick" folder in "Quiclick" target */ = {
+		7961E0472F9A3F2700D45D8F /* Exceptions for "Quiclick" folder in "a-via" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 				Model/MetricsSticker.swift,
 			);
-			target = 7961E0392F9A3F2500D45D8F /* Quiclick */;
+			target = 7961E0392F9A3F2500D45D8F /* a-via */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -25,7 +25,7 @@
 		7961E03C2F9A3F2500D45D8F /* Quiclick */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				7961E0472F9A3F2700D45D8F /* Exceptions for "Quiclick" folder in "Quiclick" target */,
+				7961E0472F9A3F2700D45D8F /* Exceptions for "Quiclick" folder in "a-via" target */,
 			);
 			path = Quiclick;
 			sourceTree = "<group>";
@@ -54,7 +54,7 @@
 		7961E03B2F9A3F2500D45D8F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7961E03A2F9A3F2500D45D8F /* Quiclick.app */,
+				7961E03A2F9A3F2500D45D8F /* a-via.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -62,9 +62,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7961E0392F9A3F2500D45D8F /* Quiclick */ = {
+		7961E0392F9A3F2500D45D8F /* a-via */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7961E0482F9A3F2700D45D8F /* Build configuration list for PBXNativeTarget "Quiclick" */;
+			buildConfigurationList = 7961E0482F9A3F2700D45D8F /* Build configuration list for PBXNativeTarget "a-via" */;
 			buildPhases = (
 				7961E0362F9A3F2500D45D8F /* Sources */,
 				7961E0372F9A3F2500D45D8F /* Frameworks */,
@@ -77,11 +77,11 @@
 			fileSystemSynchronizedGroups = (
 				7961E03C2F9A3F2500D45D8F /* Quiclick */,
 			);
-			name = Quiclick;
+			name = "a-via";
 			packageProductDependencies = (
 			);
 			productName = Quiclick;
-			productReference = 7961E03A2F9A3F2500D45D8F /* Quiclick.app */;
+			productReference = 7961E03A2F9A3F2500D45D8F /* a-via.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -113,7 +113,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7961E0392F9A3F2500D45D8F /* Quiclick */,
+				7961E0392F9A3F2500D45D8F /* a-via */,
 			);
 		};
 /* End PBXProject section */
@@ -147,11 +147,13 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Quiclick/Quiclick.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = NVHUZQ5SCG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quiclick/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "a-via";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Este aplicativo precisa acessar os seus dados de saúde para exibir seu histórico e informações atualizadas.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Precisamos de permissão para atualizar seus dados de saúde e manter seu progresso sincronizado com o Apple Health.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a foto editada na galeria de fotos para compartilhamento";
@@ -160,7 +162,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -186,11 +188,13 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Quiclick/Quiclick.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = NVHUZQ5SCG;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Quiclick/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "a-via";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Este aplicativo precisa acessar os seus dados de saúde para exibir seu histórico e informações atualizadas.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Precisamos de permissão para atualizar seus dados de saúde e manter seu progresso sincronizado com o Apple Health.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a foto editada na galeria de fotos para compartilhamento";
@@ -199,7 +203,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -350,7 +354,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7961E0482F9A3F2700D45D8F /* Build configuration list for PBXNativeTarget "Quiclick" */ = {
+		7961E0482F9A3F2700D45D8F /* Build configuration list for PBXNativeTarget "a-via" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7961E0492F9A3F2700D45D8F /* Debug */,
