@@ -30,24 +30,26 @@ struct ContentView: View {
                     Text("Corridas da Semana")
                         .font(.title3)
                         .fontWeight(.medium)
-
-                    if weeklyWorkouts.isEmpty {
-                        EmptyView()
-                    } else {
-                        ScrollView(.vertical, showsIndicators: false){
-                            VStack(alignment: .leading, spacing: 20) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    ForEach(weeklyWorkouts) { workout in
-                                        NavigationLink {
-                                            SingleRunView(workout: workout)
-                                        } label: {
-                                            WorkoutCardView(workout: workout)
-                                        }
-                                        .buttonStyle(PlainButtonStyle())
+                    ScrollView(.vertical, showsIndicators: false){
+                        if weeklyWorkouts.isEmpty {
+                            EmptyView()
+                        }
+                        VStack(alignment: .leading, spacing: 20) {
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(weeklyWorkouts) { workout in
+                                    NavigationLink {
+                                        SingleRunView(workout: workout)
+                                    } label: {
+                                        WorkoutCardView(workout: workout)
                                     }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                         }
+                    }
+                    .refreshable {
+                        Task{
+                            await viewModel.requestAuthorization(context:context)}
                     }
                 }
             }
@@ -57,7 +59,6 @@ struct ContentView: View {
                 await viewModel.requestAuthorization(context:context)
             }
         }
-
     }
 }
 

@@ -23,7 +23,7 @@ struct EmptyView: View {
         }
         .padding()
         VStack(spacing: 16) {
-            Spacer()
+            Spacer(minLength: 150)
 
             Image(systemName: "figure.run.circle")
                 .resizable()

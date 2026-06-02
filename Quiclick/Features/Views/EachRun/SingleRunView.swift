@@ -33,7 +33,6 @@ struct SingleRunView: View{
 
     
     let workout: WorkoutModel
-
     let dateFormatter={
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy HH:mm"
@@ -122,7 +121,7 @@ struct SingleRunView: View{
                                 .scaledToFill()
 
                                 ForEach(selectedStickers.indices, id:\.self){ index in
-                                    StickerView(for: index)
+                                    StickersView(for: index)
                                 }
 
                         }                        
@@ -137,7 +136,7 @@ struct SingleRunView: View{
                                 .scaledToFill()
 
                             ForEach(selectedStickers.indices, id:\.self){ index in
-                                StickerView(for: index)
+                                StickersView(for: index)
                             }
                         }
                     }
@@ -368,183 +367,11 @@ struct SingleRunView: View{
     }
     
     @ViewBuilder
-    func StickerView(for index: Int) -> some View {
+    func StickersView(for index: Int) -> some View {
         let sticker = selectedStickers[index]
-        if sticker.name == "Metrics" {
-        MetricStickerViewRender(sticker: sticker, index: index, workout: workout)
-        } else {
-            let scaledSize = 75 * sticker.scale
-            ZStack{
-                Image(sticker.name)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: scaledSize,height: scaledSize)
-                    .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
-                    .overlay {
-                        if(sticker.isSelected){
-                            Circle()
-                                .frame(width: 30,height: 30)
-                                .foregroundStyle(.gray)
-                                .overlay{
-                                    Image(systemName:"arrow.down.left.arrow.up.right")
-                                        .font(.system(size: 12, weight: .bold))
-                                        .foregroundColor(.white)
-                                }
-                                .offset(x: scaledSize / 2, y: -scaledSize/2)
-                                .gesture(
-                                    dragAsMagnify(index:index)
-                                )
-                                
-
-                            
-                            Button{
-                                selectedStickers.remove(at: index)
-                            } label: {
-                                Image(systemName:"trash")
-                                    .font(.system(size: 12, weight: .bold))
-                            }
-                                .frame(width: 24,height: 24)
-                                .buttonStyle(.borderedProminent)
-                                .buttonBorderShape(.circle)
-                                .tint(.gray)
-                                .padding()
-                                .foregroundColor(.white)
-                                .offset(x: -scaledSize / 2, y: -scaledSize/2)
-
-                        }
-                    }
-            
-                
-            }
-                .rotationEffect(sticker.rotation)
-                .position(sticker.position)
-                .gesture(
-                    dragGesture(index:index)
-                        .simultaneously(with: magnificationGesture(index:index))
-                        .simultaneously(with: rotationGesture(index:index))
-                        .simultaneously(with: TapGesture().onEnded{sticker.isSelected.toggle()})
-                )
-
-        }
+        StickerView(selectedStickers: $selectedStickers, index: index, sticker: sticker, workout: workout)
     }
-    
-    func MetricStickerViewRender(sticker: Sticker,index: Int, workout: WorkoutModel)-> some View{
-    let scaledSize = 150 * sticker.scale
-    let relativeHeight = -((scaledSize/2) * 1.732)
-    return ZStack{
-        VStack(alignment: .center, spacing: 12){
-            VStack(alignment: .center, spacing: 2){
-                Text("Duração")
-                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
-                    .foregroundColor(Color.white)
-                Text(formatDuration(workout.duration))
-                    .font(.system(size: 32 * sticker.scale, weight: .bold))
-                    .foregroundColor(Color.white)
-            }
-            VStack(alignment: .center, spacing: 2){
-                Text("Distância")
-                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
-                    .foregroundColor(Color.white)
-                Text("\((workout.distance/1000).formatted()) km")
-                    .font(.system(size: 32 * sticker.scale, weight: .bold))
-                    .foregroundColor(Color.white)
-            }
-            VStack(alignment: .center, spacing: 2){
-                Text("Pace")
-                    .font(.system(size: 20 * sticker.scale, weight: .semibold))
-                    .foregroundColor(Color.white)
-                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                    .font(.system(size: 32 * sticker.scale, weight: .bold))
-                    .foregroundColor(Color.white)
-            }
-            Image("a-viaSticker")
-                .resizable()
-                .frame(width:40 * sticker.scale, height: 40*sticker.scale)
-                .offset(x: -6, y: 0)
-        }
-        .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
-        .overlay {
-            if(sticker.isSelected){
-                Circle()
-                    .frame(width: 30,height: 30)
-                    .foregroundStyle(.gray)
-                    .overlay{
-                        Image(systemName:"arrow.down.left.arrow.up.right")
-                            .font(.system(size: 12, weight: .bold))
-                            .foregroundColor(.white)
-                    }
-                    .offset(x: scaledSize / 2, y: relativeHeight)
-                    .gesture(
-                        dragAsMagnify(index:index)
-                    )
-                    
-
-                
-                Button{
-                    selectedStickers.remove(at: index)
-                } label: {
-                    Image(systemName:"trash")
-                        .font(.system(size: 12, weight: .bold))
-                }
-                    .frame(width: 24,height: 24)
-                    .buttonStyle(.borderedProminent)
-                    .buttonBorderShape(.circle)
-                    .tint(.gray)
-                    .padding()
-                    .foregroundColor(.white)
-                    .offset(x: -scaledSize / 2, y: relativeHeight)
-
-            }
-        }
-    }
-    .frame(width: scaledSize, height: scaledSize)
-    .rotationEffect(sticker.rotation)
-    .position(sticker.position)
-    .gesture(
-        dragGesture(index:index)
-            .simultaneously(with: magnificationGesture(index:index))
-            .simultaneously(with: rotationGesture(index:index))
-            .simultaneously(with: TapGesture().onEnded{sticker.isSelected.toggle()})
-        )
-    }
-
-    func magnificationGesture(index:Int) -> some Gesture{
-        MagnifyGesture()
-            .onChanged{value in
-                selectedStickers[index].scale = selectedStickers[index].lastScale * value.magnification
-            }
-            .onEnded{_ in
-                selectedStickers[index].lastScale = selectedStickers[index].scale
-            }
-    }
-    func rotationGesture(index:Int) -> some Gesture{
-        RotationGesture()
-            .onChanged{value in
-                selectedStickers[index].rotation = selectedStickers[index].lastRotation + value
-            }
-            .onEnded{_ in
-                selectedStickers[index].lastRotation = selectedStickers[index].rotation
-            }
-    }
-    func dragGesture(index:Int) -> some Gesture{
-        DragGesture()
-            .onChanged{value in
-                selectedStickers[index].position = value.location
-            }
-    }
-    
-    func dragAsMagnify(index:Int) -> some Gesture{
-        DragGesture()
-            .onChanged{ value in
-                let delta = -value.translation.height / (75/2)
-                let newScale = max(0.5, selectedStickers[index].lastScale + delta)
-                selectedStickers[index].scale = newScale
-            }
-            .onEnded{ _ in
-                selectedStickers[index].lastScale = selectedStickers[index].scale
-            }
-    }
-    
+   
 }
 
 func placeholder(icon: String) -> some View {
