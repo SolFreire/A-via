@@ -13,32 +13,31 @@ struct WorkoutCardView: View {
     
     let dateFormatter={
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy"
+        formatter.dateFormat = "MMM d, yyyy"
+        formatter.locale = Locale(identifier:"pt_BR")
         return formatter
     }()
     
 
     var body: some View {
 
-        VStack(spacing: 0) {
+        HStack(spacing: 0) {
             if(workout.imageData != nil){
                 if let image = workout.image {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(minWidth:353, maxWidth: .infinity, minHeight: 283, maxHeight: 283, alignment: .top)
+                        .frame( maxWidth: 72, minHeight: 107, maxHeight: 147, alignment: .top)
                         .clipped()
-                      
-
-               }
+                }
             }else{
                 Rectangle()
-                    .frame(minWidth:353, maxWidth: .infinity, minHeight: 283, maxHeight: 283)
+                    .frame( maxWidth: 72, minHeight: 107, maxHeight: 147)
                     .foregroundColor(.gray.opacity(0.2))
                     .overlay {
-                        Image(systemName: "photo")
+                        Image(systemName: "plus.circle.fill")
                             .foregroundStyle(.white)
-                            .font(.system(size: 50))
+                            .font(.system(size: 40))
                     }
                     .clipped()
             }
@@ -50,7 +49,7 @@ struct WorkoutCardView: View {
 
                 HStack(spacing:30){
                     ViewThatFits{
-                        HStack(spacing: 30){
+                        HStack(spacing: 40){
                             content
                         }
                         VStack(alignment: .leading){
@@ -61,7 +60,7 @@ struct WorkoutCardView: View {
                 }
                 .padding(.horizontal)
             }
-            .frame(minWidth:353, maxWidth: .infinity, minHeight: 116, alignment: .leading)
+            .frame(minWidth:353, maxWidth: .infinity, minHeight: 147, alignment: .leading)
             .background(.gray.opacity(0.1))
             
         }
@@ -73,30 +72,28 @@ struct WorkoutCardView: View {
         VStack(alignment: .leading, spacing: 8){
             Text("Distância")
                 .font(.caption)
-                .fontWeight(.medium)
+                .fontWeight(.semibold)
             Text("\((workout.distance/1000).formatted()) km")
-                .font(.callout)
-                .fontWeight(.medium)
-        }
-        VStack(alignment: .leading, spacing: 8){
-            Text("Pace")
-                .font(.caption)
-                .fontWeight(.medium)
-            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                .font(.callout)
-                .fontWeight(.medium)
+                .font(.headline)
+                .fontWeight(.regular)
         }
         VStack(alignment: .leading, spacing: 8){
             Text("Tempo")
                 .font(.caption)
-                .fontWeight(.medium)
+                .fontWeight(.semibold)
             Text(formatDuration(workout.duration))
-                .font(.callout)
-                .fontWeight(.medium)
+                .font(.headline)
+                .fontWeight(.regular)
+        }
+        VStack(alignment: .leading, spacing: 8){
+            Text("Pace")
+                .font(.caption)
+                .fontWeight(.semibold)
+            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                .font(.headline)
+                .fontWeight(.regular)
         }
     }
-    
-    
 }
 
 func formatDuration(_ duration : Double) -> String{
