@@ -13,58 +13,71 @@ struct WorkoutCardView: View {
     
     let dateFormatter={
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy"
+        formatter.locale = Locale(identifier:"pt-BR")
+        formatter.dateFormat = "dd 'de' MMMM 'de' yyyy"
         return formatter
     }()
     
-
+    
     var body: some View {
-
-        VStack(spacing: 0) {
+        
+        HStack(spacing: 0) {
             if(workout.imageData != nil){
                 if let image = workout.image {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(minWidth:353, maxWidth: .infinity, minHeight: 283, maxHeight: 283, alignment: .top)
+                        .frame( maxWidth: 72, idealHeight: 107,maxHeight: 147, alignment: .top)
                         .clipped()
-                      
-
-               }
+                }
             }else{
                 Rectangle()
-                    .frame(minWidth:353, maxWidth: .infinity, minHeight: 283, maxHeight: 283)
+                    .frame( maxWidth: 72, idealHeight: 107,maxHeight: 147)
                     .foregroundColor(.gray.opacity(0.2))
                     .overlay {
-                        Image(systemName: "photo")
+                        Image(systemName: "plus.circle.fill")
                             .foregroundStyle(.white)
-                            .font(.system(size: 50))
+                            .font(.system(size: 40))
                     }
-                    .clipped()
             }
-            VStack(alignment: .leading, spacing: 12){
+            VStack(alignment: .leading, spacing : 12){
+                
                 Text(dateFormatter.string(from: workout.date))
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .padding(.horizontal)
-
-                HStack(spacing:30){
-                    ViewThatFits{
-                        HStack(spacing: 30){
-                            content
-                        }
-                        VStack(alignment: .leading){
-                            content
-
-                        }
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal)
+                
+                HStack(spacing :30){
+                    VStack(alignment: .leading, spacing: 6){
+                        Text("Distância")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text("\((workout.distance/1000).formatted()) km")
+                            .font(.headline)
+                            .fontWeight(.regular)
                     }
-                }
-                .padding(.horizontal)
+                    VStack(alignment: .leading, spacing: 6){
+                        Text("Tempo")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text(formatDuration(workout.duration))
+                            .font(.headline)
+                            .fontWeight(.regular)
+                    }
+                    VStack(alignment: .leading, spacing: 6){
+                        Text("Pace")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                            .font(.headline)
+                            .fontWeight(.regular)
+                    }
+                }.padding(.horizontal)
+                
             }
-            .frame(minWidth:353, maxWidth: .infinity, minHeight: 116, alignment: .leading)
-            .background(.gray.opacity(0.1))
-            
         }
+        .frame(minWidth:287, maxWidth: .infinity, idealHeight: 107, maxHeight: 147, alignment: .leading)
+        .background(.gray.opacity(0.1))
         .cornerRadius(10)
     }
     
@@ -73,30 +86,28 @@ struct WorkoutCardView: View {
         VStack(alignment: .leading, spacing: 8){
             Text("Distância")
                 .font(.caption)
-                .fontWeight(.medium)
+                .fontWeight(.semibold)
             Text("\((workout.distance/1000).formatted()) km")
-                .font(.callout)
-                .fontWeight(.medium)
-        }
-        VStack(alignment: .leading, spacing: 8){
-            Text("Pace")
-                .font(.caption)
-                .fontWeight(.medium)
-            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                .font(.callout)
-                .fontWeight(.medium)
+                .font(.headline)
+                .fontWeight(.semibold)
         }
         VStack(alignment: .leading, spacing: 8){
             Text("Tempo")
                 .font(.caption)
-                .fontWeight(.medium)
+                .fontWeight(.semibold)
             Text(formatDuration(workout.duration))
-                .font(.callout)
-                .fontWeight(.medium)
+                .font(.headline)
+                .fontWeight(.semibold)
+        }
+        VStack(alignment: .leading, spacing: 8){
+            Text("Pace")
+                .font(.caption)
+                .fontWeight(.semibold)
+            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                .font(.headline)
+                .fontWeight(.semibold)
         }
     }
-    
-    
 }
 
 func formatDuration(_ duration : Double) -> String{
@@ -115,5 +126,5 @@ func formatDuration(_ duration : Double) -> String{
 }
 
 #Preview {
-    WorkoutCardView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 2222, distance: 1000))
+    WorkoutCardView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 2222, distance: 1234))
 }
