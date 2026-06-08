@@ -44,9 +44,6 @@ struct EmptyWeekView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 40)
-        .sheet(isPresented: $showingSheet) {
-            HealthDeniedView()
-        }
     }
 }
 
