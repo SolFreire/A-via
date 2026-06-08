@@ -8,45 +8,45 @@
 import SwiftUI
 
 struct EmptyView: View {
-    @State private var showingSheet: Bool = false
+
     var body: some View {
-        HStack(spacing: 16) {
-            Spacer()
-            Button{
-                showingSheet = true
-            } label: {
-                Image(systemName: "questionmark.circle")
-                    .resizable()
-                    .foregroundStyle(Color.gray)
-                    .frame(width: 36, height: 36)
-            }
-        }
-        .padding()
-        VStack(spacing: 16) {
-            Spacer(minLength: 150)
 
-            Image(systemName: "figure.run.circle")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 72, height: 72)
-                .foregroundColor(.secondary.opacity(0.5))
+        VStack(alignment: .center, spacing: 16) {
 
-            Text("Nenhuma corrida essa semana")
-                .font(.headline)
-                .foregroundColor(.primary)
+            Text("Nenhuma corrida aqui!")
+                .font(.title3)
+                .bold()
 
-            Text("Registre seu primeiro treino no Fitness para conseguir vê-lo aqui.")
-                .font(.subheadline)
+            Text("Você pode ter Negado acesso ao Health")
+                .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
+            Text("Você pode liberar o acesso em:")
+                .font(.body)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+            Text("Saúde -> Compartilhamento -> a-via")
+                .font(.footnote)
+                .bold()
+                .multilineTextAlignment(.center)
+            Button{
+                healthRedirection()
+            }label:{Image(systemName: "heart.text.square.fill");Text("Ir para o Saúde")}
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.roundedRectangle)
+                .padding(10)
+                .tint(.limeButtons)
+                .foregroundStyle(Color.black)
 
-            Spacer()
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 40)
-        .sheet(isPresented: $showingSheet) {
-            HealthDeniedView()
+    }
+    func healthRedirection() {
+        if let url = URL(string:"x-apple-health://"){
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
         }
     }
 }

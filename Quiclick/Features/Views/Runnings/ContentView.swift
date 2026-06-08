@@ -16,17 +16,20 @@ struct ContentView: View {
     @State private var viewModel = WorkoutViewModel()
     var body: some View {
         NavigationStack{
-            VStack(alignment:.leading, spacing: 8){
-                Text("Eai, Corredor?")
+            VStack(alignment:.leading, spacing: 6){
+                Text("Avia, corredor!")
                     .font(.largeTitle)
+                    .bold()
+                Text("Suas Corridas")
+                    .font(.title3)
                     .bold()
                 if viewModel.isLoading {
                     HealthLoadingView()
                 }
                 else {
-                    Text("Corridas da Semana")
+                    Text("Corridas recentes")
                         .font(.title3)
-                        .fontWeight(.medium)
+                        .bold()
                     ScrollView(.vertical, showsIndicators: false){
                         if workouts.isEmpty {
                             EmptyView()
