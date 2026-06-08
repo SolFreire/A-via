@@ -13,8 +13,8 @@ struct WorkoutCardView: View {
     
     let dateFormatter={
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d, yyyy"
-        formatter.locale = Locale(identifier:"pt_BR")
+        formatter.locale = Locale(identifier:"pt-BR")
+        formatter.dateFormat = "dd 'de' MMMM 'de' yyyy"
         return formatter
     }()
     
