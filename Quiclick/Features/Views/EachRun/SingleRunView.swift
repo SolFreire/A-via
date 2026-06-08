@@ -33,11 +33,6 @@ struct SingleRunView: View{
 
     
     let workout: WorkoutModel
-    let dateFormatter={
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy HH:mm"
-        return formatter
-    }()
     var showsBackButton: Bool {
         if viewModel.type == .edit {
             return true
@@ -115,7 +110,6 @@ struct SingleRunView: View{
                 if(workout.imageData != nil){
                     if let image = workout.image {
                         ZStack{
-
                             Image(uiImage: image)
                                 .resizable()
                                 .scaledToFill()
@@ -123,11 +117,8 @@ struct SingleRunView: View{
                                 ForEach(selectedStickers.indices, id:\.self){ index in
                                     StickersView(for: index)
                                 }
-
                         }                        
                     }
-
-
                 }else{
                     if let image = viewModel.pickerImage {
                         ZStack{
@@ -157,34 +148,36 @@ struct SingleRunView: View{
 
     var infoSection: some View{
         VStack(alignment: .leading, spacing:-12){
-                   Text(dateFormatter.string(from: workout.date))
-                       .font(.title)
-                       .fontWeight(.semibold)
-                       .padding()
+            Text("Informações da Corrida")
+                .font(.headline)
+                .fontWeight(.bold)
+                .foregroundColor(.limeButtons)
+                .padding()
+            Text(dateFormatter.string(from: workout.date))
+               .font(.title3)
+               .fontWeight(.bold)
+               .padding()
             VStack(alignment: .leading){
-                ViewThatFits{
-                    VStack(alignment: .leading, spacing: 8){
-                        HStack(spacing:50){
-
-                            VStack(alignment: .leading, spacing: 8){
-                                Text("Distância")
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                Text("\((workout.distance/1000).formatted()) km")
-                                    .font(.title3)
-                                    .fontWeight(.medium)
-                            }
-                            VStack(alignment: .leading, spacing: 8){
-                                Text("Tempo")
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                Text(formatDuration(workout.duration))
-                                    .font(.title3)
-                                    .fontWeight(.medium)
-                            }
+                    VStack(alignment: .leading, spacing: 12){
+                        HStack(spacing: 50){
+                            Text("Distância")
+                                .font(.body)
+                                .fontWeight(.medium)
+                            
+                            Text("\((workout.distance/1000).formatted()) km")
+                                .font(.title3)
+                                .fontWeight(.medium)
+                        }
+                        HStack(spacing: 70){
+                            Text("Tempo")
+                                .font(.body)
+                                .fontWeight(.medium)
+                            Text(formatDuration(workout.duration))
+                                .font(.title3)
+                                .fontWeight(.medium)
                         }
 
-                        VStack(alignment: .leading, spacing: 8){
+                        HStack(spacing: 80){
                             Text("Pace")
                                 .font(.body)
                                 .fontWeight(.medium)
@@ -192,110 +185,87 @@ struct SingleRunView: View{
                                 .font(.title3)
                                 .fontWeight(.medium)
                         }
+                        
                     }
-                    .padding()
-                    VStack(alignment: .leading,spacing: 8){
-                        HStack{
-                            VStack(alignment: .leading, spacing: 8){
-                                Text("Distância")
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                Text("\((workout.distance/1000).formatted()) km")
-                                    .font(.title3)
-                                    .fontWeight(.medium)
-                            }
-                        }
-                        HStack{
-                            VStack(alignment: .leading, spacing: 8){
-                                Text("Tempo")
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                Text(formatDuration(workout.duration))
-                                    .font(.title3)
-                                    .fontWeight(.medium)
-                            }
-                        }
-                        HStack{
-                            VStack(alignment: .leading, spacing: 8){
-                                Text("Pace")
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                                    .font(.title3)
-                                    .fontWeight(.medium)
-                            }
-                        }
-                    }.padding(.horizontal)
-
-                }
+                    .padding(16)
 
 
             }
                }
                .frame(minWidth:318, alignment: .leading)
-               .background(.gray.opacity(0.1))
-
+               .background(.carbonCards)
+               .cornerRadius(12)
 
     }
 
     var editSection: some View {
+        VStack(alignment: .leading, spacing: 16){
+            Text("Stickers")
+                .font(.headline)
+                .padding(.horizontal,26)
+                .foregroundStyle(.limeButtons)
         
-        VStack(alignment: .center){
-            
-            HStack (spacing: 5) {
-                ForEach(tabs, id: \.self) {tab in
-                    Button (action: {
-                        withAnimation(.snappy) {
-                            activeTab = tab
-                            for key in Stickers.keys {
-                                if tab == key {
-                                    contentStickers = Stickers[key]!
+            VStack(alignment: .center){
+                HStack (spacing: 5) {
+                    ForEach(tabs, id: \.self) {tab in
+                        Button (action: {
+                            withAnimation(.snappy) {
+                                activeTab = tab
+                                for key in Stickers.keys {
+                                    if tab == key {
+                                        contentStickers = Stickers[key]!
+                                    }
                                 }
                             }
+                        }) {
+                            Text(tab)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(
+                                    activeTab == tab ?
+                                    Color(.limeButtons) :
+                                        Color.white)
+                                .padding(2)
+                                .background(
+                                    activeTab == tab ?
+                                        Color(.limeButtons).opacity(0.2) :
+                                        Color(.carbonCards)
+                                )
+                                .cornerRadius(6)
+                                .fontWeight(.semibold)
                         }
-                    }) {
-                        Text(tab)
-                            .frame(maxWidth: .infinity)
-                            .foregroundStyle(
-                                activeTab == tab ?
-                                    Color(red: 1, green: 204/255, blue: 0) :
-                                    Color.white)
-                            .padding(5)
-                            .background(
-                                activeTab == tab ?
-                                    Color(red: 143/255, green:74/255, blue:53/255).opacity(0.6) :
-                                    Color(red: 66/255, green: 66/255, blue: 66/255))
-                            .cornerRadius(5)
-                            .fontWeight(.semibold)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
-            }
-            .padding(.bottom, 20)
-            
-            ScrollView(.horizontal) {
+                .padding(.bottom, 20)
+                
+                ScrollView(.horizontal) {
 
-                        LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
-                            ForEach(contentStickers, id:\.self){ sticker in
-                                RoundedRectangle(cornerRadius: 6)
-                                    .frame(width: 75,height: 75)
-                                    .overlay{
-                                        Image(sticker)
-                                            .resizable()
-                                            .scaledToFit()
-                                    }
-                                    .aspectRatio(contentMode: .fit)
-                                    .onTapGesture {
-                                        selectedStickers.append(Sticker(name:sticker))
-                                    }
-                            }.foregroundColor(.gray)
-                    }
+                            LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
+                                ForEach(contentStickers, id:\.self){ sticker in
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .frame(width: 80,height: 80)
+                                        .overlay{
+                                            Image(sticker)
+                                                .resizable()
+                                                .scaledToFit()
+                                                .padding(5)
+                                        }
+                                        .aspectRatio(contentMode: .fit)
+                                        .onTapGesture {
+                                            selectedStickers.append(Sticker(name:sticker))
+                                        }
+                                }.foregroundColor(.black.opacity(0.3))
+                        }
 
+                }
+                .padding(.bottom, 20)
             }
-            .padding(.bottom, 20)
+            .padding(14)
+            .background(.carbonCards)
+            .clipShape(UnevenRoundedRectangle(topLeadingRadius: 16, topTrailingRadius: 16))
         }
-        .padding(25)
-        .background(Color.black.opacity(0.8))
+        .padding(16)
+        .background(.carbonCards)
         .clipShape(UnevenRoundedRectangle(topLeadingRadius: 16, topTrailingRadius: 16))
     }
 

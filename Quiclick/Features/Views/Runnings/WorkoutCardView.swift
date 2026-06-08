@@ -11,14 +11,6 @@ struct WorkoutCardView: View {
     
     let workout: WorkoutModel
     
-    let dateFormatter={
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier:"pt-BR")
-        formatter.dateFormat = "dd 'de' MMMM 'de' yyyy"
-        return formatter
-    }()
-    
-    
     var body: some View {
         
         HStack(spacing: 0) {
@@ -54,7 +46,7 @@ struct WorkoutCardView: View {
                             .fontWeight(.semibold)
                         Text("\((workout.distance/1000).formatted()) km")
                             .font(.headline)
-                            .fontWeight(.regular)
+                            .fontWeight(.semibold)
                     }
                     VStack(alignment: .leading, spacing: 6){
                         Text("Tempo")
@@ -62,7 +54,7 @@ struct WorkoutCardView: View {
                             .fontWeight(.semibold)
                         Text(formatDuration(workout.duration))
                             .font(.headline)
-                            .fontWeight(.regular)
+                            .fontWeight(.semibold)
                     }
                     VStack(alignment: .leading, spacing: 6){
                         Text("Pace")
@@ -70,14 +62,14 @@ struct WorkoutCardView: View {
                             .fontWeight(.semibold)
                         Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
                             .font(.headline)
-                            .fontWeight(.regular)
+                            .fontWeight(.semibold)
                     }
                 }.padding(.horizontal)
                 
             }
         }
         .frame(minWidth:287, maxWidth: .infinity, idealHeight: 107, maxHeight: 147, alignment: .leading)
-        .background(.gray.opacity(0.1))
+        .background(.carbonCards)
         .cornerRadius(10)
     }
     
