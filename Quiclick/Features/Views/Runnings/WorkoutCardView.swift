@@ -43,12 +43,12 @@ struct WorkoutCardView: View {
             VStack(alignment: .leading, spacing : 12){
                 
                 Text(dateFormatter.string(from: workout.date))
-                    .font(.title)
+                    .font(.title3)
                     .fontWeight(.semibold)
                     .padding(.horizontal)
                 
                 HStack(spacing :30){
-                    VStack(alignment: .leading, spacing: 8){
+                    VStack(alignment: .leading, spacing: 6){
                         Text("Distância")
                             .font(.caption)
                             .fontWeight(.semibold)
@@ -56,7 +56,7 @@ struct WorkoutCardView: View {
                             .font(.headline)
                             .fontWeight(.regular)
                     }
-                    VStack(alignment: .leading, spacing: 8){
+                    VStack(alignment: .leading, spacing: 6){
                         Text("Tempo")
                             .font(.caption)
                             .fontWeight(.semibold)
@@ -64,7 +64,7 @@ struct WorkoutCardView: View {
                             .font(.headline)
                             .fontWeight(.regular)
                     }
-                    VStack(alignment: .leading, spacing: 8){
+                    VStack(alignment: .leading, spacing: 6){
                         Text("Pace")
                             .font(.caption)
                             .fontWeight(.semibold)
@@ -89,7 +89,7 @@ struct WorkoutCardView: View {
                 .fontWeight(.semibold)
             Text("\((workout.distance/1000).formatted()) km")
                 .font(.headline)
-                .fontWeight(.regular)
+                .fontWeight(.semibold)
         }
         VStack(alignment: .leading, spacing: 8){
             Text("Tempo")
@@ -97,7 +97,7 @@ struct WorkoutCardView: View {
                 .fontWeight(.semibold)
             Text(formatDuration(workout.duration))
                 .font(.headline)
-                .fontWeight(.regular)
+                .fontWeight(.semibold)
         }
         VStack(alignment: .leading, spacing: 8){
             Text("Pace")
@@ -105,7 +105,7 @@ struct WorkoutCardView: View {
                 .fontWeight(.semibold)
             Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
                 .font(.headline)
-                .fontWeight(.regular)
+                .fontWeight(.semibold)
         }
     }
 }
