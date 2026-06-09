@@ -16,66 +16,74 @@ struct ContentView: View {
     @State private var viewModel = WorkoutViewModel()
     var body: some View {
         NavigationStack{
-            VStack(alignment:.leading, spacing: 6){
-                HStack{
-                    Text("Avia, corredor!")
-                        .font(.largeTitle)
-                        .bold()
-                    Spacer()
-                    Button{
-                        //CalendarView()
-                    }label:{Image(systemName: "calendar")}
-                        .font(.system(size: 28))
-                        .foregroundStyle(.limeButtons)
+            ScrollView(.vertical) {
+                VStack(alignment:.leading, spacing: 6){
+                                HStack{
+                                    Text("Avia, corredor!")
+                                        .font(.largeTitle)
+                                        .bold()
+                                    Spacer()
+                                    Button{
+                                        //CalendarView()
+                                    }label:{Image(systemName: "calendar")}
+                                        .font(.system(size: 28))
+                                        .foregroundStyle(.limeButtons)
 
-                }
-                Text("Suas Corridas")
-                    .font(.title3)
-                    .bold()
-                
-                //temp
-                Rectangle()
-                    .frame(width: 359, height: 140)
-                    .cornerRadius(10)
-                    .padding(.vertical, 30)
-                
-                VStack(alignment:.leading, spacing:16){
-                    Text("Corridas recentes")
-                        .font(.title3)
-                        .bold()
-                        .padding(.top, 10)
-                    if viewModel.isLoading {
-                        HealthLoadingView()
-                    }
-                    else{
-                        ScrollView(.vertical, showsIndicators: false){
-                            if workouts.isEmpty {
-                                EmptyView()
-                                    .padding(40)
-                            }
-                            VStack(alignment: .leading, spacing: 20) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    ForEach(workouts) { workout in
-                                        NavigationLink {
-                                            SingleRunView(workout: workout)
-                                        } label: {
-                                            WorkoutCardView(workout: workout)
-                                        }
-                                        .buttonStyle(PlainButtonStyle())
-                                    }
                                 }
-                            }
-                        }
-                        .refreshable {
-                            Task{
-                                await viewModel.requestAuthorization(context:context)}
-                        }
-                    }
+                                Text("Suas Corridas")
+                                    .font(.title3)
+                                    .bold()
+                                
+                                //temp
+                                NavigationLink {
+                                    if !workouts.isEmpty {
+                                        SingleRunView(workout: workouts.first!)
+                                    }
+                                } label: {
+                                    MainCard()
+                                        .multilineTextAlignment(.leading)
+                                }
+                                .padding(.vertical, 30)
+                                .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
+                                
+                                
+                                VStack(alignment:.leading, spacing:16){
+                                    Text("Corridas recentes")
+                                        .font(.title3)
+                                        .bold()
+                                        .padding(.top, 10)
+                                    if viewModel.isLoading {
+                                        HealthLoadingView()
+                                    }
+                                    else{
+                                        if workouts.isEmpty {
+                                            EmptyView()
+                                                .padding(40)
+                                        }
+                                        VStack(alignment: .leading, spacing: 20) {
+                                            VStack(alignment: .leading, spacing: 8) {
+                                                ForEach(workouts) { workout in
+                                                    NavigationLink {
+                                                        SingleRunView(workout: workout)
+                                                    } label: {
+                                                        WorkoutCardView(workout: workout)
+                                                    }
+                                                    .buttonStyle(PlainButtonStyle())
+                                                }
+                                            }
+                                        }
+                                        .refreshable {
+                                            Task{
+                                                await viewModel.requestAuthorization(context:context)}
+                                        }
+                                    }
 
-                }
-                
+                                }
+                                
+                            }
+                            .padding()
             }
-            .padding()
+            
         }.onAppear{
             Task{
                 await viewModel.requestAuthorization(context:context)
