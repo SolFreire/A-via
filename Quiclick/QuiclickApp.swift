@@ -21,9 +21,9 @@ struct QuiclickApp: App {
                     WeeklyTemplateView()
                 }
             }
+            .tint(.limeButtons)
         }
         .modelContainer(for: WorkoutModel.self)
     }
 }
-
 

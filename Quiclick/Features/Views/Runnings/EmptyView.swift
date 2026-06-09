@@ -17,7 +17,7 @@ struct EmptyView: View {
                 .font(.title3)
                 .bold()
 
-            Text("Você pode ter Negado acesso ao Health")
+            Text("Você pode ter Negado acesso ao Saúde")
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -25,7 +25,7 @@ struct EmptyView: View {
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-            Text("Saúde -> Compartilhamento -> a-via")
+            Text("Saúde -> Compartilhamento -> Aplicativos -> a-via")
                 .font(.footnote)
                 .bold()
                 .multilineTextAlignment(.center)

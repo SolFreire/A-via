@@ -17,41 +17,63 @@ struct ContentView: View {
     var body: some View {
         NavigationStack{
             VStack(alignment:.leading, spacing: 6){
-                Text("Avia, corredor!")
-                    .font(.largeTitle)
-                    .bold()
+                HStack{
+                    Text("Avia, corredor!")
+                        .font(.largeTitle)
+                        .bold()
+                    Spacer()
+                    Button{
+                        //CalendarView()
+                    }label:{Image(systemName: "calendar")}
+                        .font(.system(size: 28))
+                        .foregroundStyle(.limeButtons)
+
+                }
                 Text("Suas Corridas")
                     .font(.title3)
                     .bold()
-                if viewModel.isLoading {
-                    HealthLoadingView()
-                }
-                else {
+                
+                //temp
+                Rectangle()
+                    .frame(width: 359, height: 140)
+                    .cornerRadius(10)
+                    .padding(.vertical, 30)
+                
+                VStack(alignment:.leading, spacing:16){
                     Text("Corridas recentes")
                         .font(.title3)
                         .bold()
-                    ScrollView(.vertical, showsIndicators: false){
-                        if workouts.isEmpty {
-                            EmptyView()
-                        }
-                        VStack(alignment: .leading, spacing: 20) {
-                            VStack(alignment: .leading, spacing: 8) {
-                                ForEach(workouts) { workout in
-                                    NavigationLink {
-                                        SingleRunView(workout: workout)
-                                    } label: {
-                                        WorkoutCardView(workout: workout)
+                        .padding(.top, 10)
+                    if viewModel.isLoading {
+                        HealthLoadingView()
+                    }
+                    else{
+                        ScrollView(.vertical, showsIndicators: false){
+                            if workouts.isEmpty {
+                                EmptyView()
+                                    .padding(40)
+                            }
+                            VStack(alignment: .leading, spacing: 20) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    ForEach(workouts) { workout in
+                                        NavigationLink {
+                                            SingleRunView(workout: workout)
+                                        } label: {
+                                            WorkoutCardView(workout: workout)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
                                     }
-                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
                         }
+                        .refreshable {
+                            Task{
+                                await viewModel.requestAuthorization(context:context)}
+                        }
                     }
-                    .refreshable {
-                        Task{
-                            await viewModel.requestAuthorization(context:context)}
-                    }
+
                 }
+                
             }
             .padding()
         }.onAppear{
