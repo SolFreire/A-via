@@ -197,6 +197,39 @@ struct SingleRunView: View{
                .cornerRadius(12)
 
     }
+    
+    var editSectionContent: some View {
+        HStack (alignment: .center, spacing: 5){
+            ForEach(tabs, id: \.self) {tab in
+                Button (action: {
+                    withAnimation(.snappy) {
+                        activeTab = tab
+                        for key in Stickers.keys {
+                            if tab == key {
+                                contentStickers = Stickers[key]!
+                            }
+                        }
+                    }
+                }) {
+                    Text(tab)
+                        .frame(maxWidth: .infinity)
+                        .foregroundStyle(
+                            activeTab == tab ?
+                            Color(.limeButtons) :
+                                Color.white)
+                        .padding(2)
+                        .background(
+                            activeTab == tab ?
+                                Color(.limeButtons).opacity(0.2) :
+                                Color(.carbonCards)
+                        )
+                        .cornerRadius(6)
+                        .fontWeight(.semibold)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
 
     var editSection: some View {
         VStack(alignment: .leading, spacing: 16){
@@ -206,59 +239,40 @@ struct SingleRunView: View{
                 .foregroundStyle(.limeButtons)
         
             VStack(alignment: .center){
-                HStack (spacing: 5) {
-                    ForEach(tabs, id: \.self) {tab in
-                        Button (action: {
-                            withAnimation(.snappy) {
-                                activeTab = tab
-                                for key in Stickers.keys {
-                                    if tab == key {
-                                        contentStickers = Stickers[key]!
-                                    }
-                                }
-                            }
-                        }) {
-                            Text(tab)
-                                .frame(maxWidth: .infinity)
-                                .foregroundStyle(
-                                    activeTab == tab ?
-                                    Color(.limeButtons) :
-                                        Color.white)
-                                .padding(2)
-                                .background(
-                                    activeTab == tab ?
-                                        Color(.limeButtons).opacity(0.2) :
-                                        Color(.carbonCards)
-                                )
-                                .cornerRadius(6)
-                                .fontWeight(.semibold)
-                        }
-                        .buttonStyle(.plain)
+                
+                ViewThatFits {
+                    editSectionContent
+                        .padding(.bottom, 20)
+                    ScrollView(.horizontal) {
+                        editSectionContent
+                            .padding(.bottom, 20)
                     }
                 }
-                .padding(.bottom, 20)
+                
                 
                 ScrollView(.horizontal) {
 
-                            LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
-                                ForEach(contentStickers, id:\.self){ sticker in
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .frame(width: 80,height: 80)
-                                        .overlay{
-                                            Image(sticker)
-                                                .resizable()
-                                                .scaledToFit()
-                                                .padding(5)
-                                        }
-                                        .aspectRatio(contentMode: .fit)
-                                        .onTapGesture {
-                                            selectedStickers.append(Sticker(name:sticker))
-                                        }
-                                }.foregroundColor(.black.opacity(0.3))
+                    LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
+                        ForEach(contentStickers, id:\.self){ sticker in
+                            RoundedRectangle(cornerRadius: 10)
+                                .frame(width: 80,height: 80)
+                                .overlay{
+                                    Image(sticker)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .padding(5)
+                                }
+                                .aspectRatio(contentMode: .fit)
+                                .onTapGesture {
+                                    selectedStickers.append(Sticker(name:sticker))
+                                }
                         }
+                        .foregroundColor(.black.opacity(0.3))
+                    }
 
                 }
                 .padding(.bottom, 20)
+                
             }
             .padding(14)
             .background(.carbonCards)
