@@ -18,17 +18,16 @@ struct ContentView: View {
         NavigationStack{
             ScrollView(.vertical) {
                 VStack(alignment:.leading, spacing: 6){
-                                HStack{
-                                    Text("Avia, corredor!")
-                                        .font(.largeTitle)
-                                        .bold()
-                                    Spacer()
-                                    Button{
-                                        //CalendarView()
-                                    }label:{Image(systemName: "calendar")}
-                                        .font(.system(size: 28))
-                                        .foregroundStyle(.limeButtons)
-
+                            HStack{
+                                Text("Avia, corredor!")
+                                    .font(.largeTitle)
+                                    .bold()
+                                Spacer()
+                                NavigationLink{
+                                    CalendarView(workouts: workouts)
+                                }label:{Image(systemName: "calendar")}
+                                    .font(.system(size: 28))
+                                    .foregroundStyle(.limeButtons)
                                 }
                                 Text("Suas Corridas")
                                     .font(.title3)
