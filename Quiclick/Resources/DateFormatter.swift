@@ -12,3 +12,22 @@ let dateFormatter: DateFormatter = {
     formatter.dateFormat = "dd 'de' MMMM 'de' yyyy"
     return formatter
 }()
+
+let monthFormatterString: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier:"pt-BR")
+    formatter.dateFormat = "MMMM 'de' yyyy"
+    return formatter
+}()
+
+let dayFormatterString: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.locale = Locale(identifier:"pt-BR")
+    formatter.dateFormat = "dd"
+    return formatter
+}()
+extension String {
+    var firstUppercased: String {
+        prefix(1).uppercased() + dropFirst()
+    }
+}
