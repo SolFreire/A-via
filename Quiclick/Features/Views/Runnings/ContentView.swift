@@ -35,16 +35,24 @@ struct ContentView: View {
                                     .bold()
                                 
                                 //temp
-                                NavigationLink {
-                                    if !workouts.isEmpty {
+                                if !workouts.isEmpty {
+                                    NavigationLink {
+                                    
                                         SingleRunView(workout: workouts.first!)
+                                        
+                                    } label: {
+                                        MainCard()
+                                            .multilineTextAlignment(.leading)
                                     }
-                                } label: {
-                                    MainCard()
-                                        .multilineTextAlignment(.leading)
+                                    .padding(.vertical, 30)
+                                    .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
                                 }
-                                .padding(.vertical, 30)
-                                .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
+                                else {
+                                    MainCard()
+//                                        .multilineTextAlignment(.leading)
+                                        .padding(.vertical, 30)
+                                        .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
+                                }
                                 
                                 
                                 VStack(alignment:.leading, spacing:16){
