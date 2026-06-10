@@ -22,11 +22,12 @@ struct ContentView: View {
                         .font(.largeTitle)
                         .bold()
                     Spacer()
-                    Button{
-                        //CalendarView()
+                    NavigationLink{
+                        CalendarView(workouts: workouts)
                     }label:{Image(systemName: "calendar")}
                         .font(.system(size: 28))
                         .foregroundStyle(.limeButtons)
+                        .padding(.trailing, 10)
 
                 }
                 Text("Suas Corridas")
