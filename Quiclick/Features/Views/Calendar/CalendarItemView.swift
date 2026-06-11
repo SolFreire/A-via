@@ -40,7 +40,7 @@ struct CalendarItemView: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .overlay(alignment: .topLeading) {
             Text(dayFormatterString.string(from: workout.date))
-                .font(.system(size: 22, weight: .bold))
+                .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.limeCalendarNumbers)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)

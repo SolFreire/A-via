@@ -26,7 +26,7 @@ struct FeaturedWorkoutView: View {
             }
 
             Text(dayFormatterString.string(from: workout.date))
-                .font(.system(size: 28, weight: .bold))
+                .font(.system(size: 20, weight: .bold))
                 .foregroundStyle(.limeCalendarNumbers)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)

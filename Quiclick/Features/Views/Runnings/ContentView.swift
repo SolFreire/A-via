@@ -14,6 +14,7 @@ struct ContentView: View {
     @Query(sort: \WorkoutModel.date, order: .reverse)
     private var workouts: [WorkoutModel]
     @State private var viewModel = WorkoutViewModel()
+    private var recentWorkouts:[WorkoutModel] = []
     var body: some View {
         NavigationStack{
             ScrollView(.vertical) {
@@ -59,17 +60,20 @@ struct ContentView: View {
                                             EmptyView()
                                                 .padding(40)
                                         }
-                                        VStack(alignment: .leading, spacing: 20) {
-                                            VStack(alignment: .leading, spacing: 8) {
-                                                ForEach(workouts[0...6]) { workout in
-                                                    NavigationLink {
-                                                        SingleRunView(workout: workout)
-                                                    } label: {
-                                                        WorkoutCardView(workout: workout)
+                                        else{
+                                            VStack(alignment: .leading, spacing: 20) {
+                                                VStack(alignment: .leading, spacing: 8) {
+                                                    ForEach(workouts, id: \.self) { workout in
+                                                        NavigationLink {
+                                                            SingleRunView(workout: workout)
+                                                        } label: {
+                                                            WorkoutCardView(workout: workout)
+                                                        }
+                                                        .buttonStyle(PlainButtonStyle())
                                                     }
-                                                    .buttonStyle(PlainButtonStyle())
                                                 }
                                             }
+
                                         }
                                     }
 
