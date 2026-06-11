@@ -24,8 +24,8 @@ struct WorkoutCardView: View {
                 }
             }else{
                 Rectangle()
-                    .frame( maxWidth: 72, idealHeight: 107)
-                    .foregroundColor(.gray.opacity(0.2))
+                    .frame( maxWidth: 72, idealHeight: 107,maxHeight: 147)
+                    .foregroundColor(.blankCard)
                     .overlay {
                         Image(systemName: "plus.circle.fill")
                             .foregroundStyle(.white)
