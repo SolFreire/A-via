@@ -12,7 +12,7 @@ import SwiftData
 struct SingleRunView: View{
 
     enum ViewType {
-        case regular, edit, noImage
+        case regular, edit, noImage, resize
     }
 
     @State private var viewModel = SingleRunViewModel()
@@ -53,26 +53,21 @@ struct SingleRunView: View{
         VStack {
             
             Group {
-                
-                if viewModel.type == .edit {
-                    
-                    
+                switch viewModel.type {
+                case .edit:
                     imageSection()
                     Spacer()
                     editSection
-                    
-                    
-                } else {
-                    ScrollView(.vertical, showsIndicators: false){
-                        
-                        imageSection()
-                        Spacer()
-                        infoSection
-                        
+                case .resize:
+                    imageSection()
+                    Spacer()
+                    resizeSection
+                default:
+                    ScrollView(.vertical, showsIndicators: false) {
+                        imageSection(); Spacer(); infoSection
                     }
                 }
             }
-            
             
                 
         }
@@ -83,7 +78,7 @@ struct SingleRunView: View{
             Task {
                 if let loaded = try? await pickerItem?.loadTransferable(type: Data.self){
                     pickerImage = loaded
-                    viewModel.startEditing(with: pickerImage!)
+                    viewModel.startResize(with: pickerImage!)
                 }else{
                     print("Failed to load image")
                 }
@@ -105,7 +100,20 @@ struct SingleRunView: View{
                 PhotosPicker(selection: $pickerItem, matching: .images) {
                     placeholder(icon: "photo.badge.plus")
                 }
-
+                
+            case .resize:
+                if let image = viewModel.pickerImage {
+                    CroppableImage(
+                        image: image,
+                        cropSize: frameSize(for: viewModel.cropFormat,
+                                            maxWidth: 318, maxHeight: 600),
+                        scale: $viewModel.cropScale,
+                        offset: $viewModel.cropOffset
+                    )
+                    .overlay{
+                        frameImageView(format : viewModel.cropFormat)
+                    }
+                }
             case .edit:
                 if(workout.imageData != nil){
                     if let image = workout.image {
@@ -140,7 +148,9 @@ struct SingleRunView: View{
                               .resizable()
                               .scaledToFill()
                        }
+                
             }
+            
         }
         .frame(width: 318, height: 476)
         .clipped()
@@ -196,6 +206,45 @@ struct SingleRunView: View{
                .background(.carbonCards)
                .cornerRadius(12)
 
+    }
+    
+    var resizeSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Redimensionamento")
+                .font(.headline)
+                .padding(.horizontal, 26)
+                .padding(.bottom, 12)
+                .foregroundStyle(.limeButtons)
+            Spacer()
+            HStack(spacing: 12) {
+                ForEach(CropFormat.allCases) { format in
+                    Button {
+                        withAnimation(.snappy) { viewModel.selectFormat(format) }
+                    } label: {
+                        VStack(spacing: 4) {
+                            Image(systemName: format.icon)
+                                .rotationEffect(format.iconRotation)
+                            Text(format.label).font(.caption)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        .background(viewModel.cropFormat == format
+                                    ? Color(.limeButtons).opacity(0.2)
+                                    : Color(.carbonCards))
+                        .foregroundStyle(viewModel.cropFormat == format
+                                         ? Color(.limeButtons) : .white)
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            Spacer()
+        }
+        .padding(16)
+        .frame( minHeight: 200, maxHeight: 250, alignment: .top)
+        .background(.carbonCards)
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 16, topTrailingRadius: 16))
     }
 
     var editSection: some View {
@@ -283,6 +332,13 @@ struct SingleRunView: View{
                     selectedStickers = []
                 }
             }
+            if viewModel.type == .resize {
+                Button("Cancel", systemImage: "xmark") {
+                    pickerItem = nil
+                    pickerImage = nil
+                    viewModel.cancelResize()
+                }
+            }
         }
 
         ToolbarItem(placement: .confirmationAction){
@@ -293,7 +349,13 @@ struct SingleRunView: View{
                     selectedStickers = []
                 }
             }
+            if viewModel.type == .resize{
+                Button("Done", systemImage: "checkmark"){
+                    viewModel.confirmResize()
+                }
+            }
         }
+        
 
 
         ToolbarItem(placement: .topBarTrailing) {
@@ -331,9 +393,7 @@ struct SingleRunView: View{
                 }
                 .imageShareSheet(isPresented: $showImageSheet, image: workout.image!)
             }
-
         }
-
     }
     
     @ViewBuilder
