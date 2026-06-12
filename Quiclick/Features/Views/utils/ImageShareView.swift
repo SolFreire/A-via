@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+import LinkPresentation
 
 struct ImageShareSheet: UIViewControllerRepresentable {
     let images: [UIImage]
@@ -39,3 +39,5 @@ extension View {
         return sheet(isPresented: isPresented, content: { ImageShareSheet(images: [image]) } )
     }
 }
+
+
