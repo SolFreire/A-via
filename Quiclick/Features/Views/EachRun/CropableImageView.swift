@@ -17,6 +17,14 @@ struct CroppableImage: View {
     @GestureState private var drag: CGSize = .zero
 
     var body: some View {
+        
+        let liveScale = scale * pinch
+        let liveOffset = clampedOffset(
+            CGSize(width: offset.width + drag.width,
+                   height: offset.height + drag.height),
+                    scale: liveScale
+        )
+
         Color.black
             .overlay {
                 
@@ -25,8 +33,7 @@ struct CroppableImage: View {
                     .scaledToFill()
                     .scaleEffect(scale * pinch)
                     .offset(
-                        x: offset.width + drag.width,
-                        y: offset.height + drag.height
+                        liveOffset
                     )
             }
             .frame(width: cropSize.width, height: cropSize.height)
@@ -36,16 +43,34 @@ struct CroppableImage: View {
                 DragGesture()
                     .updating($drag) { v, s, _ in s = v.translation }
                     .onEnded { v in
-                        offset.width  += v.translation.width
-                        offset.height += v.translation.height
+                        let combined = CGSize(width: offset.width + v.translation.width,height: offset.height + v.translation.height)
+                        offset = clampedOffset(combined, scale: scale)
                     }
             )
             .simultaneousGesture(
                 MagnificationGesture()
                     .updating($pinch) { v, s, _ in s = v }
-                    .onEnded { v in scale = max(1, scale * v)
-                    print("x: \(offset.width + drag.width), y: \(offset.height + drag.height), ofsw: \(offset.width), ofsh: \(offset.height), scale: \(scale), pinch: \(pinch)")}
+                    .onEnded { v in
+                        scale = max(1, scale * v)
+                        offset = clampedOffset(offset, scale: scale)}
             )
+    }
+    
+    private func clampedOffset(_ proposed: CGSize, scale: CGFloat) -> CGSize {
+        let imgSize = image.size
+        let fill = max(cropSize.width / imgSize.width,
+                       cropSize.height / imgSize.height)
+
+        let displayedW = imgSize.width  * fill * scale
+        let displayedH = imgSize.height * fill * scale
+
+        let maxX = max(0, (displayedW - cropSize.width)  / 2)
+        let maxY = max(0, (displayedH - cropSize.height) / 2)
+
+        return CGSize(
+            width:  min(max(proposed.width,  -maxX), maxX),
+            height: min(max(proposed.height, -maxY), maxY)
+        )
     }
 }
 
@@ -89,4 +114,5 @@ func crop(_ image: UIImage,
     return UIGraphicsImageRenderer(size: export, format: format).image { _ in
         UIImage(cgImage: cropped).draw(in: CGRect(origin: .zero, size: export))
     }
+
 }

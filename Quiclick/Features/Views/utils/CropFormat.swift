@@ -57,6 +57,7 @@ func frameSize(for format: CropFormat, maxWidth: CGFloat, maxHeight: CGFloat) ->
         w = h * r.width / r.height
     }
     return CGSize(width: w, height: h)
+    
 
 }
 
