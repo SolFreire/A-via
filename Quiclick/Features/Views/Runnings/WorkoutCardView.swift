@@ -44,7 +44,7 @@ struct WorkoutCardView: View {
                         Text("Distância")
                             .font(.caption)
                             .fontWeight(.semibold)
-                        Text("\((workout.distance/1000).formatted()) km")
+                        Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
                             .font(.headline)
                             .fontWeight(.semibold)
                     }

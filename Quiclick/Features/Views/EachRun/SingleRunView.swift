@@ -175,7 +175,7 @@ struct SingleRunView: View{
                                 .font(.body)
                                 .fontWeight(.medium)
                             
-                            Text("\((workout.distance/1000).formatted()) km")
+                            Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2))))) km")
                                 .font(.title3)
                                 .fontWeight(.medium)
                         }
