@@ -9,7 +9,8 @@ import SwiftUI
 func magnificationGesture(sticker:Sticker) -> some Gesture{
     MagnifyGesture()
         .onChanged{value in
-            sticker.scale = sticker.lastScale * value.magnification
+            let newScale = min(max(0.5, sticker.lastScale * value.magnification), 1.5)
+            sticker.scale = newScale
         }
         .onEnded{_ in
             sticker.lastScale = sticker.scale
@@ -35,7 +36,7 @@ func dragAsMagnify(sticker:Sticker) -> some Gesture{
     DragGesture()
         .onChanged{ value in
             let delta = -value.translation.height / (75/2)
-            let newScale = max(0.5, sticker.lastScale + delta)
+            let newScale = min(max(0.5, sticker.lastScale + delta), 1.5)
             sticker.scale = newScale
         }
         .onEnded{ _ in
