@@ -26,7 +26,7 @@ struct SingleRunView: View{
 
     
     var Stickers: [String: [String]] = [
-        "Métricas": ["Metrics", "MetricsH"],
+        "Métricas": ["Metrics", "MetricsH","StickerMedal"],
         "Locais": ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"],
         "Acessórios": ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     ]
@@ -44,7 +44,7 @@ struct SingleRunView: View{
     //Provisório:
     @State private var tabs: [String] = ["Métricas", "Locais", "Acessórios"]
     @State private var activeTab: String = "Métricas"
-    @State private var contentStickers: [String] = ["Metrics", "MetricsH"]
+    @State private var contentStickers: [String] = ["Metrics", "MetricsH", "StickerMedal"]
     //---------------------------
     
     
@@ -125,7 +125,8 @@ struct SingleRunView: View{
                                 ForEach(selectedStickers.indices, id:\.self){ index in
                                     StickersView(for: index)
                                 }
-                        }                        
+                        }
+                        .onTapGesture{selectedStickers.forEach { $0.isSelected = false }}
                     }
                 }else{
                     if let image = viewModel.pickerImage {
