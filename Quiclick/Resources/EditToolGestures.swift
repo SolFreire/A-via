@@ -42,3 +42,15 @@ func dragAsMagnify(sticker:Sticker) -> some Gesture{
             sticker.lastScale = sticker.scale
         }
 }
+
+func dragasRotate(sticker:Sticker) -> some Gesture{
+    DragGesture()
+        .onChanged{ value in
+            let base = sticker.lastRotation
+            let center = sticker.position
+//            let startAngle = atan2(Double(value.startLocation.y - center.y),
+        }
+        .onEnded{ _ in
+            sticker.lastRotation = sticker.rotation
+        }
+}
