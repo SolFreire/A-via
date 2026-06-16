@@ -139,6 +139,7 @@ struct SingleRunView: View{
                                 StickersView(for: index)
                             }
                         }
+                        .onTapGesture{selectedStickers.forEach { $0.isSelected = false }}
                     }
 
                 }
@@ -175,7 +176,7 @@ struct SingleRunView: View{
                                 .font(.body)
                                 .fontWeight(.medium)
                             
-                            Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2))))) km")
+                            Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
                                 .font(.title3)
                                 .fontWeight(.medium)
                         }
@@ -192,7 +193,7 @@ struct SingleRunView: View{
                             Text("Pace")
                                 .font(.body)
                                 .fontWeight(.medium)
-                            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                            Text("\(paceformatter(workout.pace))/km")
                                 .font(.title3)
                                 .fontWeight(.medium)
                         }
@@ -404,17 +405,6 @@ struct SingleRunView: View{
     }
    
 }
-
-func placeholder(icon: String) -> some View {
-    Rectangle()
-        .foregroundColor(.gray.opacity(0.2))
-        .overlay {
-            Image(systemName: icon)
-                .foregroundStyle(.white)
-                .font(.system(size: 50))
-        }
-}
-
 
 #Preview {
     SingleRunView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 2246, distance: 1020))

@@ -39,7 +39,7 @@ struct WorkoutCardView: View {
                     .fontWeight(.semibold)
                     .padding(.horizontal)
                 
-                HStack(spacing :30){
+                HStack(spacing :2){
                     VStack(alignment: .leading, spacing: 6){
                         Text("Distância")
                             .font(.caption)
@@ -48,6 +48,7 @@ struct WorkoutCardView: View {
                             .font(.headline)
                             .fontWeight(.semibold)
                     }
+                    Spacer()
                     VStack(alignment: .leading, spacing: 6){
                         Text("Tempo")
                             .font(.caption)
@@ -56,11 +57,12 @@ struct WorkoutCardView: View {
                             .font(.headline)
                             .fontWeight(.semibold)
                     }
+                    Spacer()
                     VStack(alignment: .leading, spacing: 6){
                         Text("Pace")
                             .font(.caption)
                             .fontWeight(.semibold)
-                        Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                        Text("\(paceformatter(workout.pace))/km")
                             .font(.headline)
                             .fontWeight(.semibold)
                     }
@@ -95,7 +97,7 @@ struct WorkoutCardView: View {
             Text("Pace")
                 .font(.caption)
                 .fontWeight(.semibold)
-            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+            Text("\(paceformatter(workout.pace))/km")
                 .font(.headline)
                 .fontWeight(.semibold)
         }
@@ -118,5 +120,5 @@ func formatDuration(_ duration : Double) -> String{
 }
 
 #Preview {
-    WorkoutCardView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 2222, distance: 1234))
+    WorkoutCardView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 1025, distance: 1234))
 }
