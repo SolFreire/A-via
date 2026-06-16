@@ -33,5 +33,6 @@ class WorkoutModel: Identifiable{
             UIImage(data:$0)
         }
     }
+    
 }
 

@@ -14,10 +14,10 @@ struct StickerView: View {
     let sticker : Sticker
     let workout: WorkoutModel
     var body: some View {
-        let scaledSize = 75 * sticker.scale
-        let scaledSizeMetrics = 150 * sticker.scale
-        let relativeHeight = -((scaledSizeMetrics/2) * 1.732)
+        
         if sticker.name == "Metrics"{
+            let scaledSize = 150 * sticker.scale
+            let relativeHeight = -((scaledSize/2) * 1.732)
             ZStack{
                 MetricsVerticalSticker
                     .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
@@ -31,12 +31,21 @@ struct StickerView: View {
                                         .font(.system(size: 12, weight: .bold))
                                         .foregroundColor(.white)
                                 }
-                                .offset(x: scaledSizeMetrics  / 2, y: relativeHeight)
+                                .offset(x: scaledSize  / 2, y: relativeHeight)
                                 .gesture(
                                     dragAsMagnify(sticker: sticker)
                                 )
                             
-                            
+                            Circle()
+                                .foregroundStyle(.gray)
+                                .overlay {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                                .frame(width: 30, height: 30)
+                                .offset(x: scaledSize / 2, y: -relativeHeight )
+                                .gesture(dragasRotate(sticker: sticker))
                             
                             Button{
                                 selectedStickers.remove(at: index)
@@ -50,7 +59,7 @@ struct StickerView: View {
                             .tint(.gray)
                             .padding()
                             .foregroundColor(.white)
-                            .offset(x: -scaledSizeMetrics  / 2, y: -relativeHeight)
+                            .offset(x: -scaledSize  / 2, y: -relativeHeight)
                             
                             Button{
                                 changeColor.toggle()
@@ -64,7 +73,7 @@ struct StickerView: View {
                                 .tint(.gray)
                                 .padding()
                                 .foregroundColor(.white)
-                                .offset(x: -scaledSizeMetrics / 2, y: relativeHeight)
+                                .offset(x: -scaledSize / 2, y: relativeHeight)
                             if(changeColor){
                                 VStack(){
                                     Button{
@@ -91,13 +100,13 @@ struct StickerView: View {
                                             .frame(width: 24)
                                     }
                                 }
-                                    .offset(x: -(scaledSizeMetrics / 2) - 40, y: relativeHeight)
+                                    .offset(x: -(scaledSize / 2) - 40, y: relativeHeight)
                             }
                             
                         }
                     }
             }
-            .frame(width: scaledSizeMetrics , height: scaledSizeMetrics )
+            .frame(width: scaledSize , height: scaledSize )
             .rotationEffect(sticker.rotation)
             .position(sticker.position)
             .gesture(
@@ -108,6 +117,9 @@ struct StickerView: View {
             )
         }
         else if sticker.name == "MetricsH"{
+            let scaledSize = 280 * sticker.scale
+            let relativeHeight = -((scaledSize/2) * 0.15)
+            
             ZStack{
                 MetricsHorizontalSticker
                     .border(sticker.isSelected ? Color.gray.opacity(0.5) : Color.clear)
@@ -121,13 +133,20 @@ struct StickerView: View {
                                         .font(.system(size: 12, weight: .bold))
                                         .foregroundColor(.white)
                                 }
-                                .offset(x: scaledSizeMetrics  / 2, y: relativeHeight)
+                                .offset(x: scaledSize  / 2, y: relativeHeight)
                                 .gesture(
                                     dragAsMagnify(sticker: sticker)
                                 )
-                            
-                            
-                            
+                            Circle()
+                                .foregroundStyle(.gray)
+                                .overlay {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundColor(.white)
+                                }
+                                .frame(width: 30, height: 30)
+                                .offset(x: scaledSize / 2, y: -relativeHeight / 2)
+                                .gesture(dragasRotate(sticker: sticker))
                             Button{
                                 selectedStickers.remove(at: index)
                             } label: {
@@ -140,7 +159,7 @@ struct StickerView: View {
                             .tint(.gray)
                             .padding()
                             .foregroundColor(.white)
-                            .offset(x: -scaledSizeMetrics  / 2, y: -relativeHeight)
+                            .offset(x: -scaledSize  / 2, y: -relativeHeight)
                             
                             Button{
                                 changeColor.toggle()
@@ -154,7 +173,7 @@ struct StickerView: View {
                                 .tint(.gray)
                                 .padding()
                                 .foregroundColor(.white)
-                                .offset(x: -scaledSizeMetrics / 2, y: relativeHeight)
+                                .offset(x: -scaledSize / 2, y: relativeHeight)
                             if(changeColor){
                                 VStack(){
                                     Button{
@@ -181,12 +200,12 @@ struct StickerView: View {
                                             .frame(width: 24)
                                     }
                                 }
-                                    .offset(x: -(scaledSizeMetrics / 2) - 40, y: relativeHeight)
+                                    .offset(x: -(scaledSize / 2) - 40, y: relativeHeight)
                             }
                         }
                     }
             }
-            .frame(width: scaledSizeMetrics , height: scaledSizeMetrics )
+            .frame(width: scaledSize , height: scaledSize )
             .rotationEffect(sticker.rotation)
             .position(sticker.position)
             .gesture(
@@ -197,6 +216,7 @@ struct StickerView: View {
             )
         }
         else{
+            let scaledSize = 75 * sticker.scale
             ZStack{
                 Image(sticker.name)
                     .resizable()
@@ -315,7 +335,7 @@ struct StickerView: View {
                 Text("Distância")
                     .font(.system(size: 20 * sticker.scale , weight: .semibold))
                     .foregroundColor(sticker.color)
-                Text("\((workout.distance/1000).formatted()) km")
+                Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
                     .font(.system(size: 32 * sticker.scale, weight: .bold))
                     .foregroundColor(sticker.color)
             }
@@ -323,7 +343,7 @@ struct StickerView: View {
                 Text("Pace")
                     .font(.system(size: 20 * sticker.scale, weight: .semibold))
                     .foregroundColor(sticker.color)
-                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                Text("\(paceformatter(workout.pace))/km")
                     .font(.system(size: 32 * sticker.scale, weight: .bold))
                     .foregroundColor(sticker.color)
             }
@@ -336,36 +356,38 @@ struct StickerView: View {
         }
     }
     var MetricsHorizontalSticker : some View{
-        HStack(alignment: .center, spacing: 12){
-            VStack(alignment: .center, spacing: 2){
-                Text("Duração")
-                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
-                    .foregroundColor(sticker.color)
-                Text(formatDuration(workout.duration))
-                    .font(.system(size: 32 * sticker.scale, weight: .bold))
-                    .foregroundColor(sticker.color)
-            }
-            VStack(alignment: .center, spacing: 2){
-                Text("Distância")
-                    .font(.system(size: 20 * sticker.scale , weight: .semibold))
-                    .foregroundColor(sticker.color)
-                Text("\((workout.distance/1000).formatted()) km")
-                    .font(.system(size: 32 * sticker.scale, weight: .bold))
-                    .foregroundColor(sticker.color)
-            }
-            VStack(alignment: .center, spacing: 2){
-                Text("Pace")
-                    .font(.system(size: 20 * sticker.scale, weight: .semibold))
-                    .foregroundColor(sticker.color)
-                Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
-                    .font(.system(size: 32 * sticker.scale, weight: .bold))
-                    .foregroundColor(sticker.color)
-            }
-            Image("a-viaSticker")
-                .resizable()
-                .frame(width:40 * sticker.scale, height: 40*sticker.scale)
-                .offset(x: -6, y: 0)
-                .colorMultiply(sticker.color)
+            HStack(alignment: .center, spacing: 10){
+                VStack(alignment: .center, spacing: 2){
+                    Text("Duração")
+                        .font(.system(size: 12 * sticker.scale , weight: .semibold))
+                        .foregroundColor(sticker.color)
+                    Text(formatDuration(workout.duration))
+                        .font(.system(size: 18 * sticker.scale, weight: .bold))
+                        .foregroundColor(sticker.color)
+                }
+                
+                VStack(alignment: .center, spacing: 2){
+                    Text("Distância")
+                        .font(.system(size: 12 * sticker.scale , weight: .semibold))
+                        .foregroundColor(sticker.color)
+                    Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
+                        .font(.system(size: 18 * sticker.scale, weight: .bold))
+                        .foregroundColor(sticker.color)
+                }
+                VStack(alignment: .center, spacing: 2){
+                    Text("Pace")
+                        .font(.system(size: 12 * sticker.scale, weight: .semibold))
+                        .foregroundColor(sticker.color)
+                    Text("\(paceformatter(workout.pace))/km")
+                        .font(.system(size: 18 * sticker.scale, weight: .bold))
+                        .foregroundColor(sticker.color)
+                }
+            
+                Image("a-viaSticker")
+                    .resizable()
+                    .frame(width:30 * sticker.scale, height: 30*sticker.scale)
+                    .offset(x: -6, y: 0)
+                    .colorMultiply(sticker.color)
         }
     }
 }

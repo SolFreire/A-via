@@ -9,7 +9,8 @@ import SwiftUI
 func magnificationGesture(sticker:Sticker) -> some Gesture{
     MagnifyGesture()
         .onChanged{value in
-            sticker.scale = sticker.lastScale * value.magnification
+            let newScale = min(max(0.5, sticker.lastScale * value.magnification), 2.0)
+            sticker.scale = newScale
         }
         .onEnded{_ in
             sticker.lastScale = sticker.scale
@@ -35,7 +36,7 @@ func dragAsMagnify(sticker:Sticker) -> some Gesture{
     DragGesture()
         .onChanged{ value in
             let delta = -value.translation.height / (75/2)
-            let newScale = max(0.5, sticker.lastScale + delta)
+            let newScale = min(max(0.5, sticker.lastScale + delta), 2.0)
             sticker.scale = newScale
         }
         .onEnded{ _ in
@@ -48,7 +49,9 @@ func dragasRotate(sticker:Sticker) -> some Gesture{
         .onChanged{ value in
             let base = sticker.lastRotation
             let center = sticker.position
-//            let startAngle = atan2(Double(value.startLocation.y - center.y),
+            let startAngle = atan2(Double(value.startLocation.y - center.y),Double(value.startLocation.x - center.x))
+            let currentAngle = atan2(Double(value.location.y - center.y),Double(value.location.x - center.x))
+            sticker.rotation = base + .radians(-(currentAngle - startAngle))
         }
         .onEnded{ _ in
             sticker.lastRotation = sticker.rotation
