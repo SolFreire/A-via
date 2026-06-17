@@ -19,7 +19,7 @@ struct WorkoutCardView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame( maxWidth: 72, idealHeight: 107,maxHeight: 147, alignment: .top)
+                        .frame( maxWidth: 72, idealHeight: 107, alignment: .top)
                         .clipped()
                 }
             }else{
@@ -32,6 +32,7 @@ struct WorkoutCardView: View {
                             .font(.system(size: 40))
                     }
             }
+            
             VStack(alignment: .leading, spacing : 12){
                 
                 Text(dateFormatter.string(from: workout.date))
@@ -70,7 +71,7 @@ struct WorkoutCardView: View {
                 
             }
         }
-        .frame(minWidth:287, maxWidth: .infinity, idealHeight: 107, maxHeight: 147, alignment: .leading)
+        .frame(minWidth:287, maxWidth: .infinity, alignment: .leading)
         .background(.carbonCards)
         .cornerRadius(10)
     }
