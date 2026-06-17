@@ -11,117 +11,59 @@ struct TemplateShareView: View {
     
     @State private var viewModel = SingleRunViewModel()
     @State private var showShareSheet: Bool = false
-    let metricViewType: ViewType?
-    let titleMetric: String
-    let imageTemplate: UIImage?
-    
-    let bestPace: Double?
-    let weeklyDistance: Int?
-    let bestTime: TimeInterval?
+    @Environment(\.dismiss) var dismiss
+    let imageTemplate: any View
     
     
     
-    var saveNewImage:UIImage?{
-        viewModel.renderFinalImage(view: imageSection()).flatMap{
+    var saveNewImage:UIImage? {
+        viewModel.renderFinalImage(view: imageTemplate).flatMap{
             UIImage(data:$0)
         }
     }
     
     var body: some View {
-        VStack (alignment: .leading) {
-            Text(titleMetric)
-                .font(.largeTitle)
-                .bold()
-            
-            imageSection()
-        }
-        .padding()
-        .toolbar {
-            if let saveNewImage = saveNewImage {
-                Button {
-                    showShareSheet = true
-                } label: {
-                    Image(systemName: "square.and.arrow.up")
-                }
-                .imageShareSheet(isPresented: $showShareSheet, image: saveNewImage)
+        NavigationStack {
+            VStack (alignment: .center) {
+                
+                AnyView(imageTemplate)
+                
             }
-        }
-        .toolbar(.hidden, for: .tabBar)
-        
-        Spacer()
-    }
-    
-    @ViewBuilder
-    func imageSection() -> some View {
-        if let imageTemplate = imageTemplate {
-            Image(uiImage: imageTemplate)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 318, height: 476)
-                .clipped()
-                .background(Color.black)
-                .cornerRadius(15)
-                .overlay(alignment: .center) {
-                    switch metricViewType {
-                        
-                    case .timeregular:
-                        VStack {
-                            Text("Uau!\nSua corrida mais\nlonga durou")
-                            Text("\(floor((bestTime ?? 0)/60).formatted()) minutos.")
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
+            .toolbar {
+                
+                ToolbarItem {
+                    if let saveNewImage = saveNewImage {
+                        Button {
+                            showShareSheet = true
+                        } label: {
+                            Image(systemName: "square.and.arrow.up")
                         }
-                        .font(.system(size: 23, weight: .bold))
-                        .fontWeight(.medium)
-                        .multilineTextAlignment(.center)
-                        .offset(y: -119)
-                        .foregroundStyle(.white)
-                        
-                    case .weeklydistance:
-                        VStack {
-                            Text("Essa semana você correu")
-                                .font(.system(size: 23, weight: .bold))
-                            Text("\(weeklyDistance ?? 0) km")
-                                .font(.system(size: 80, weight: .bold))
-                                .fontWeight(.bold)
-                        }
-                        .fontWeight(.medium)
-                        .multilineTextAlignment(.center)
-                        .offset(y: -115)
-                        .foregroundStyle(.white)
-                        
-                    case .bestpace:
-                        VStack {
-                            Text("Pace de ")
-                            Text("\((bestPace ?? 0.00).formatted(.number.precision(.fractionLength(2))))")
-                                .font(.largeTitle)
-                                .fontWeight(.bold)
-                            Text("Rápido como quem\nperdeu o ônibus")
-                        }
-                        .font(.system(size: 23, weight: .bold))
-                        .fontWeight(.medium)
-                        .multilineTextAlignment(.center)
-                        .offset(y: 119)
-                        .foregroundStyle(.white)
-                        
-                    default:
-                        Text("")
+                        .imageShareSheet(isPresented: $showShareSheet, image: saveNewImage)
                     }
                 }
                 
-        } else {
-            Text("No image selected")
+                ToolbarItem (placement: .title) {
+                    Text("Compartilhe")
+                        .font(.title)
+                        .fontWeight(.semibold)
+                }
+                
+                ToolbarItem (placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                }
+            }
+            
         }
+        .padding()
     }
 }
     
 #Preview {
     TemplateShareView(
-        metricViewType: .timeregular,
-        titleMetric: "Métricas",
-        imageTemplate: UIImage(named: "TimeRegularImage"),
-        bestPace: 1.43,
-        weeklyDistance: 34,
-        bestTime: 1800
+        imageTemplate: Text("")
     )
 }

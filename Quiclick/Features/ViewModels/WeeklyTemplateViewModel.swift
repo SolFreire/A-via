@@ -56,6 +56,48 @@ final class WeeklyTemplateViewModel{
         return bestDistance
     }
     
+    func BestDistance(Workouts:[WorkoutModel]) -> Double {
+        var bestDistance : Double = 0.0
+        for workout in Workouts{
+            if(workout.distance > bestDistance){
+                bestDistance = workout.distance
+            }
+        }
+//        if(bestDistance >= 5000){
+//            bestDistanceViewType = .distance5km
+//        }
+        
+        return bestDistance
+    }
+    
+    func templateDistanceBlocked (viewTypeTemplate: TypeTemplateView, bestDistance: Double) -> Bool {
+        var templateIsBlocked: Bool = false
+        
+        let templatesFree: [TypeTemplateView : Double] = [.distance5km:5000, .distance10km:10000, .distance15km:15000, .distance21km:21000, .distance42km:42000]
+        
+        for (template, distance) in templatesFree {
+            if(viewTypeTemplate == template && bestDistance >= distance){
+                templateIsBlocked = true
+            }
+        }
+        
+        return templateIsBlocked
+    }
+    
+    func templateTimeBlocked (viewTypeTemplate: TypeTemplateView, bestTime: Double) -> Bool {
+        var templateIsBlocked: Bool = false
+        
+        let templatesFree: [TypeTemplateView : Double] = [.timeregular:0, .time2hours:2]
+        
+        for (template, time) in templatesFree {
+            if(viewTypeTemplate == template && bestTime >= time){
+                templateIsBlocked = true
+            }
+        }
+        
+        return templateIsBlocked
+    }
+    
     func weeklyTotalDistance(weeklyWorkouts:[WorkoutModel]) -> Int {
         var totalDistance: Int = 0
         for workout in weeklyWorkouts {

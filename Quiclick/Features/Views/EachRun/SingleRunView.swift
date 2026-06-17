@@ -239,6 +239,7 @@ struct SingleRunView: View{
                     }
                     .buttonStyle(.plain)
                 }
+                .buttonStyle(.plain)
             }
             .frame(maxWidth: .infinity)
             Spacer()
@@ -257,6 +258,7 @@ struct SingleRunView: View{
                 .foregroundStyle(.limeButtons)
         
             VStack(alignment: .center){
+                
                 HStack (spacing: 5) {
                     ForEach(tabs, id: \.self) {tab in
                         Button (action: {
@@ -289,27 +291,30 @@ struct SingleRunView: View{
                 }
                 .padding(.bottom, 20)
                 
+                
                 ScrollView(.horizontal) {
 
-                            LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
-                                ForEach(contentStickers, id:\.self){ sticker in
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .frame(width: 80,height: 80)
-                                        .overlay{
-                                            Image(sticker)
-                                                .resizable()
-                                                .scaledToFit()
-                                                .padding(5)
-                                        }
-                                        .aspectRatio(contentMode: .fit)
-                                        .onTapGesture {
-                                            selectedStickers.append(Sticker(name:sticker))
-                                        }
-                                }.foregroundColor(.black.opacity(0.3))
+                    LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
+                        ForEach(contentStickers, id:\.self){ sticker in
+                            RoundedRectangle(cornerRadius: 10)
+                                .frame(width: 80,height: 80)
+                                .overlay{
+                                    Image(sticker)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .padding(5)
+                                }
+                                .aspectRatio(contentMode: .fit)
+                                .onTapGesture {
+                                    selectedStickers.append(Sticker(name:sticker))
+                                }
                         }
+                        .foregroundColor(.black.opacity(0.3))
+                    }
 
                 }
                 .padding(.bottom, 20)
+                
             }
             .padding(14)
             .background(.carbonCards)
