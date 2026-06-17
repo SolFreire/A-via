@@ -16,7 +16,7 @@ struct StickerView: View {
     var body: some View {
         
         if sticker.name == "Metrics"{
-            let scaledSize = 150 * sticker.scale
+            let scaledSize = 170 * sticker.scale
             let relativeHeight = -((scaledSize/2) * 1.732)
             ZStack{
                 MetricsVerticalSticker
@@ -117,7 +117,7 @@ struct StickerView: View {
             )
         }
         else if sticker.name == "MetricsH"{
-            let scaledSize = 280 * sticker.scale
+            let scaledSize = 300 * sticker.scale
             let relativeHeight = -((scaledSize/2) * 0.15)
             
             ZStack{
