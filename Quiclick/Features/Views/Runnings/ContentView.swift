@@ -69,7 +69,7 @@ struct ContentView: View {
                                         }
                                         VStack(alignment: .leading, spacing: 20) {
                                             VStack(alignment: .leading, spacing: 8) {
-                                                ForEach(workouts[0...6]) { workout in
+                                                ForEach(workouts) { workout in
                                                     NavigationLink {
                                                         SingleRunView(workout: workout)
                                                     } label: {
