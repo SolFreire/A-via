@@ -19,6 +19,10 @@ final class SingleRunViewModel {
     var type: SingleRunView.ViewType = .noImage
     var pickerImage: UIImage?
     var pickerImageData: Data?
+    var resizedImage : Data?
+    var cropFormat: CropFormat = .story
+    var cropScale: CGFloat = 1
+    var cropOffset: CGSize = .zero
     
     func readData(workout: WorkoutModel){
         if(workout.imageData != nil){
@@ -26,6 +30,36 @@ final class SingleRunViewModel {
         }
     }
     
+    func startResize(with image: Data) {
+        pickerImage = UIImage(data:image)
+        pickerImageData = image
+        type = .resize
+    }
+    
+    func selectFormat(_ format: CropFormat) {
+        cropFormat = format
+        cropScale = 1
+        cropOffset = .zero
+    }
+    
+    func confirmResize(){
+        guard let image = pickerImage,
+              let result = crop(image,
+                                cropSize: frameSize(for: cropFormat,
+                                                    maxWidth: 318, maxHeight: 600),
+                                scale: cropScale,
+                                offset: cropOffset,
+                                export: cropFormat.exportSize)
+        else { return }
+
+        resizedImage = result.pngData()
+        startEditing(with: resizedImage!)
+    }
+    func cancelResize(){
+        pickerImage = nil
+        pickerImageData = nil
+        type = .noImage
+    }
     func startEditing(with image: Data) {
         pickerImage = UIImage(data:image)
         pickerImageData = image

@@ -12,7 +12,7 @@ import SwiftData
 struct SingleRunView: View{
 
     enum ViewType {
-        case regular, edit, noImage
+        case regular, edit, noImage, resize
     }
 
     @State private var viewModel = SingleRunViewModel()
@@ -26,7 +26,7 @@ struct SingleRunView: View{
 
     
     var Stickers: [String: [String]] = [
-        "Métricas": ["Metrics"],
+        "Métricas": ["Metrics", "MetricsH","StickerMedal"],
         "Locais": ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"],
         "Acessórios": ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
     ]
@@ -44,7 +44,7 @@ struct SingleRunView: View{
     //Provisório:
     @State private var tabs: [String] = ["Métricas", "Locais", "Acessórios"]
     @State private var activeTab: String = "Métricas"
-    @State private var contentStickers: [String] = ["Metrics"]
+    @State private var contentStickers: [String] = ["Metrics", "MetricsH", "StickerMedal"]
     //---------------------------
     
     
@@ -53,26 +53,21 @@ struct SingleRunView: View{
         VStack {
             
             Group {
-                
-                if viewModel.type == .edit {
-                    
-                    
+                switch viewModel.type {
+                case .edit:
                     imageSection()
                     Spacer()
                     editSection
-                    
-                    
-                } else {
-                    ScrollView(.vertical, showsIndicators: false){
-                        
-                        imageSection()
-                        Spacer()
-                        infoSection
-                        
+                case .resize:
+                    imageSection()
+                    Spacer()
+                    resizeSection
+                default:
+                    ScrollView(.vertical, showsIndicators: false) {
+                        imageSection(); Spacer(); infoSection
                     }
                 }
             }
-            
             
                 
         }
@@ -83,7 +78,7 @@ struct SingleRunView: View{
             Task {
                 if let loaded = try? await pickerItem?.loadTransferable(type: Data.self){
                     pickerImage = loaded
-                    viewModel.startEditing(with: pickerImage!)
+                    viewModel.startResize(with: pickerImage!)
                 }else{
                     print("Failed to load image")
                 }
@@ -105,7 +100,20 @@ struct SingleRunView: View{
                 PhotosPicker(selection: $pickerItem, matching: .images) {
                     placeholder(icon: "photo.badge.plus")
                 }
-
+                
+            case .resize:
+                if let image = viewModel.pickerImage {
+                    CroppableImage(
+                        image: image,
+                        cropSize: frameSize(for: viewModel.cropFormat,
+                                            maxWidth: 318, maxHeight: 600),
+                        scale: $viewModel.cropScale,
+                        offset: $viewModel.cropOffset
+                    )
+                    .overlay{
+                        frameImageView(format : viewModel.cropFormat)
+                    }
+                }
             case .edit:
                 if(workout.imageData != nil){
                     if let image = workout.image {
@@ -117,7 +125,8 @@ struct SingleRunView: View{
                                 ForEach(selectedStickers.indices, id:\.self){ index in
                                     StickersView(for: index)
                                 }
-                        }                        
+                        }
+                        .onTapGesture{selectedStickers.forEach { $0.isSelected = false }}
                     }
                 }else{
                     if let image = viewModel.pickerImage {
@@ -130,6 +139,7 @@ struct SingleRunView: View{
                                 StickersView(for: index)
                             }
                         }
+                        .onTapGesture{selectedStickers.forEach { $0.isSelected = false }}
                     }
 
                 }
@@ -140,7 +150,9 @@ struct SingleRunView: View{
                               .resizable()
                               .scaledToFill()
                        }
+                
             }
+            
         }
         .frame(width: 318, height: 476)
         .clipped()
@@ -164,7 +176,7 @@ struct SingleRunView: View{
                                 .font(.body)
                                 .fontWeight(.medium)
                             
-                            Text("\((workout.distance/1000).formatted()) km")
+                            Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
                                 .font(.title3)
                                 .fontWeight(.medium)
                         }
@@ -181,7 +193,7 @@ struct SingleRunView: View{
                             Text("Pace")
                                 .font(.body)
                                 .fontWeight(.medium)
-                            Text("\(workout.pace.formatted(.number.precision(.fractionLength(2))))/km")
+                            Text("\(paceformatter(workout.pace))/km")
                                 .font(.title3)
                                 .fontWeight(.medium)
                         }
@@ -198,37 +210,44 @@ struct SingleRunView: View{
 
     }
     
-    var editSectionContent: some View {
-        HStack (alignment: .center, spacing: 5){
-            ForEach(tabs, id: \.self) {tab in
-                Button (action: {
-                    withAnimation(.snappy) {
-                        activeTab = tab
-                        for key in Stickers.keys {
-                            if tab == key {
-                                contentStickers = Stickers[key]!
-                            }
+    var resizeSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Redimensionamento")
+                .font(.headline)
+                .padding(.horizontal, 26)
+                .padding(.bottom, 12)
+                .foregroundStyle(.limeButtons)
+            Spacer()
+            HStack(spacing: 12) {
+                ForEach(CropFormat.allCases) { format in
+                    Button {
+                        withAnimation(.snappy) { viewModel.selectFormat(format) }
+                    } label: {
+                        VStack(spacing: 4) {
+                            Image(systemName: format.icon)
+                                .rotationEffect(format.iconRotation)
+                            Text(format.label).font(.caption)
                         }
-                    }
-                }) {
-                    Text(tab)
                         .frame(maxWidth: .infinity)
-                        .foregroundStyle(
-                            activeTab == tab ?
-                            Color(.limeButtons) :
-                                Color.white)
-                        .padding(2)
-                        .background(
-                            activeTab == tab ?
-                                Color(.limeButtons).opacity(0.2) :
-                                Color(.carbonCards)
-                        )
-                        .cornerRadius(6)
-                        .fontWeight(.semibold)
+                        .padding(.vertical, 8)
+                        .background(viewModel.cropFormat == format
+                                    ? Color(.limeButtons).opacity(0.2)
+                                    : Color(.carbonCards))
+                        .foregroundStyle(viewModel.cropFormat == format
+                                         ? Color(.limeButtons) : .white)
+                        .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
                 }
                 .buttonStyle(.plain)
             }
+            .frame(maxWidth: .infinity)
+            Spacer()
         }
+        .padding(16)
+        .frame( minHeight: 200, maxHeight: 250, alignment: .top)
+        .background(.carbonCards)
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 16, topTrailingRadius: 16))
     }
 
     var editSection: some View {
@@ -297,6 +316,13 @@ struct SingleRunView: View{
                     selectedStickers = []
                 }
             }
+            if viewModel.type == .resize {
+                Button("Cancel", systemImage: "xmark") {
+                    pickerItem = nil
+                    pickerImage = nil
+                    viewModel.cancelResize()
+                }
+            }
         }
 
         ToolbarItem(placement: .confirmationAction){
@@ -307,7 +333,13 @@ struct SingleRunView: View{
                     selectedStickers = []
                 }
             }
+            if viewModel.type == .resize{
+                Button("Done", systemImage: "checkmark"){
+                    viewModel.confirmResize()
+                }
+            }
         }
+        
 
 
         ToolbarItem(placement: .topBarTrailing) {
@@ -345,9 +377,7 @@ struct SingleRunView: View{
                 }
                 .imageShareSheet(isPresented: $showImageSheet, image: workout.image!)
             }
-
         }
-
     }
     
     @ViewBuilder
@@ -357,17 +387,6 @@ struct SingleRunView: View{
     }
    
 }
-
-func placeholder(icon: String) -> some View {
-    Rectangle()
-        .foregroundColor(.gray.opacity(0.2))
-        .overlay {
-            Image(systemName: icon)
-                .foregroundStyle(.white)
-                .font(.system(size: 50))
-        }
-}
-
 
 #Preview {
     SingleRunView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 2246, distance: 1020))

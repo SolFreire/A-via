@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+import LinkPresentation
 
 struct ImageShareSheet: UIViewControllerRepresentable {
     let images: [UIImage]
@@ -38,4 +38,16 @@ extension View {
     ) -> some View {
         return sheet(isPresented: isPresented, content: { ImageShareSheet(images: [image]) } )
     }
+    
+    func placeholder(icon: String) -> some View {
+        Rectangle()
+            .foregroundColor(.gray.opacity(0.2))
+            .overlay {
+                Image(systemName: icon)
+                    .foregroundStyle(.white)
+                    .font(.system(size: 50))
+            }
+    }
 }
+
+

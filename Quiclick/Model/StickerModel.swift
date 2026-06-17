@@ -12,6 +12,8 @@ class Sticker{
     let id = UUID()
     let name: String
     
+    var color: Color = .white
+    
     var offset: CGSize = CGSize()
     var position = CGPoint(x:200,y:200)
     var scale : CGFloat = 1.0

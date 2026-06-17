@@ -10,18 +10,24 @@ import SwiftData
 
 @main
 struct QuiclickApp: App {
-
+    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     var body: some Scene{
         WindowGroup{
-            TabView{
-                Tab("Corridas", systemImage: "figure.run") {
-                    ContentView()
-                }
-                Tab("Templates", systemImage:"photo.artframe"){
-                    WeeklyTemplateView()
-                }
+            if isFirstLaunch {
+                OnboardingView(isOnboarding: $isFirstLaunch)
             }
-            .tint(.limeButtons)
+            else{
+                TabView{
+                    Tab("Corridas", systemImage: "figure.run") {
+                        ContentView()
+                    }
+                    Tab("Templates", systemImage:"photo.artframe"){
+                        WeeklyTemplateView()
+                    }
+                }
+                .tint(.limeButtons)
+
+            }
         }
         .modelContainer(for: WorkoutModel.self)
     }
