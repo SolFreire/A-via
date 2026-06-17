@@ -259,14 +259,37 @@ struct SingleRunView: View{
         
             VStack(alignment: .center){
                 
-                ViewThatFits {
-                    editSectionContent
-                        .padding(.bottom, 20)
-                    ScrollView(.horizontal) {
-                        editSectionContent
-                            .padding(.bottom, 20)
+                HStack (spacing: 5) {
+                    ForEach(tabs, id: \.self) {tab in
+                        Button (action: {
+                            withAnimation(.snappy) {
+                                activeTab = tab
+                                for key in Stickers.keys {
+                                    if tab == key {
+                                        contentStickers = Stickers[key]!
+                                    }
+                                }
+                            }
+                        }) {
+                            Text(tab)
+                                .frame(maxWidth: .infinity)
+                                .foregroundStyle(
+                                    activeTab == tab ?
+                                    Color(.limeButtons) :
+                                        Color.white)
+                                .padding(2)
+                                .background(
+                                    activeTab == tab ?
+                                        Color(.limeButtons).opacity(0.2) :
+                                        Color(.carbonCards)
+                                )
+                                .cornerRadius(6)
+                                .fontWeight(.semibold)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
+                .padding(.bottom, 20)
                 
                 
                 ScrollView(.horizontal) {
