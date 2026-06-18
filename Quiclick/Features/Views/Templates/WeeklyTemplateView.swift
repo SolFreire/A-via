@@ -22,9 +22,12 @@ struct WeeklyTemplateView: View {
     let listTemplateTime: [TypeTemplateView] = [.timeregular, .time2hours]
     let templatePace: TypeTemplateView = .bestpace
     
-    
     private var bestDistance: Double {
         viewModel.BestDistance(Workouts: workouts)
+    }
+    //
+    private var weeklyTotalDistance: Int {
+        viewModel.weeklyTotalDistance(weeklyWorkouts: workouts)
     }
     
     private var bestTime: TimeInterval {
