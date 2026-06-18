@@ -30,6 +30,7 @@ struct MainCard: View {
                     .frame(width: 80, height: 80)
                     .overlay(
                         Image("a-viaStickerGreen")
+                            .resizable()
                     )
                     .foregroundStyle(Color.clear)
             }

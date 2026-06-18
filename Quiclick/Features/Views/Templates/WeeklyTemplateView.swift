@@ -22,16 +22,12 @@ struct WeeklyTemplateView: View {
     let listTemplateTime: [TypeTemplateView] = [.timeregular, .time2hours]
     let templatePace: TypeTemplateView = .bestpace
     
-    private var weeklyWorkouts: [WorkoutModel] {
-        workouts.filter { $0.date.isCurrentWeek }
-    }
-    
     private var bestDistance: Double {
         viewModel.BestDistance(Workouts: workouts)
     }
     //
     private var weeklyTotalDistance: Int {
-        viewModel.weeklyTotalDistance(weeklyWorkouts: weeklyWorkouts)
+        viewModel.weeklyTotalDistance(weeklyWorkouts: workouts)
     }
     
     private var bestTime: TimeInterval {
@@ -39,7 +35,7 @@ struct WeeklyTemplateView: View {
     }
     
     private var bestPace: Double {
-        viewModel.WeekBestPace(weeklyWorkouts: weeklyWorkouts)
+        viewModel.WeekBestPace(weeklyWorkouts: workouts)
     }
     
     private var weeklyCounterViewType: TypeTemplateView {
@@ -84,7 +80,7 @@ struct WeeklyTemplateView: View {
     var body: some View {
         NavigationStack {
             
-            if weeklyWorkouts.isEmpty {
+            if workouts.isEmpty {
                 EmptyWeekView()
             } else {
                 ScrollView(.vertical ,showsIndicators: false) {
