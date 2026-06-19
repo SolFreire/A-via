@@ -12,6 +12,7 @@ struct WeeklyTemplateView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \WorkoutModel.id)
     private var workouts: [WorkoutModel]
+    @Namespace private var topID
     
     @State private var viewModel = WeeklyTemplateViewModel()
     @State var shareImageTemplate: UIImage? = UIImage(named: "EmptyDistanceCardView")
@@ -39,146 +40,152 @@ struct WeeklyTemplateView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            
-            if workouts.isEmpty {
-                EmptyWeekView()
-            } else {
-                ScrollView(.vertical ,showsIndicators: false) {
-                    
-                    ScrollView (.horizontal, showsIndicators: false) {
-                        HStack(alignment: .center, spacing: 15) {
-                            ForEach(ShareMode.allCases, id: \.self) { mode in
-                                 let toShareTemplate = ToShareTemplate(
-                                    template: shareTemplate,
-                                    shareMode: mode,
-                                    bestPace: bestPace,
-                                    bestTime: bestTime
-                                )
-                                
-                                ImageTemplateView(
-                                    toShareTemplate: toShareTemplate
-                                )
-                                .onTapGesture {
-                                    self.toShareTemplateSheet = toShareTemplate
-                                }
-                                
-                            }
-                        }
-                        .scrollTargetLayout()
-                    }
-                    .scrollTargetBehavior(.viewAligned)
-                    .safeAreaPadding()
-                    .sheet(item: $toShareTemplateSheet) { shareTemplate in
-                        TemplateShareView(
-                            toShareTamplate: shareTemplate
-                        )
-                    }
-                    
-                    
-                    VStack (alignment: .leading, spacing: 40){
+        ScrollViewReader{ proxy in
+            NavigationStack {
+                
+                if workouts.isEmpty {
+                    EmptyWeekView()
+                } else {
+                    ScrollView(.vertical ,showsIndicators: false) {
                         
-                        VStack (alignment: .leading, spacing: 10) {
-                            Text("Templates de distância")
-                                .font(.title3)
-                                .fontWeight(.medium)
-                            
-                            ScrollView (.horizontal, showsIndicators: false) {
-                                HStack(alignment: .center, spacing: 10) {
+                        ScrollView (.horizontal, showsIndicators: false) {
+                            HStack(alignment: .center, spacing: 15) {
+                                ForEach(ShareMode.allCases, id: \.self) { mode in
+                                    let toShareTemplate = ToShareTemplate(
+                                        template: shareTemplate,
+                                        shareMode: mode,
+                                        bestPace: bestPace,
+                                        bestTime: bestTime
+                                    )
                                     
-                                    ForEach (listTemplateDistance, id: \.self) { templateDistance in
-                                        let isBlocked = viewModel.templateDistanceBlocked(viewTypeTemplate: templateDistance, bestDistance: bestDistance)
-                                        
-                                        Image(templateDistance.image)
-                                            .resizable()
-                                            .frame(width: 76, height: 165)
-                                            .cornerRadius(12)
-                                            .scaledToFit()
-                                            .overlay(
-                                                !isBlocked ?
-                                                ZStack{
-                                                    Rectangle()
-                                                        .frame(width: 76, height: 165)
-                                                        .cornerRadius(12)
-                                                        .foregroundStyle(Color.gray.opacity(0.7))
-                                                    Image(systemName: "lock.fill")
-                                                        .font(.title)
-                                                }
-                                                : nil
-                                                
-                                            )
-                                            .onTapGesture {
-                                                if (isBlocked){
-                                                    shareImageTemplate = UIImage(named: templateDistance.image)
-                                                    shareTemplate = templateDistance
-                                                }
-                                            }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        VStack (alignment: .leading, spacing: 10){
-                            Text("Templates de tempo")
-                                .font(.title3)
-                                .fontWeight(.medium)
-                            
-                            ScrollView (.horizontal) {
-                                HStack(alignment: .center, spacing: 10) {
-                                    
-                                    ForEach (listTemplateTime, id: \.self) { templateTime in
-                                        let isBlocked = viewModel.templateTimeBlocked(viewTypeTemplate: templateTime, bestTime: bestTime/3600)
-                                        
-                                        Image(templateTime.image)
-                                            .resizable()
-                                            .frame(width: 76, height: 165)
-                                            .cornerRadius(12)
-                                            .scaledToFit()
-                                            .overlay(
-                                                !isBlocked ?
-                                                ZStack{
-                                                    Rectangle()
-                                                        .frame(width: 76, height: 165)
-                                                        .cornerRadius(12)
-                                                        .foregroundStyle(Color.gray.opacity(0.7))
-                                                    Image(systemName: "lock.fill")
-                                                        .font(.title)
-                                                }
-                                                : nil
-                                            )
-                                            .onTapGesture {
-                                                if (isBlocked){
-                                                    shareImageTemplate = UIImage(named: templateTime.image)
-                                                    shareTemplate = templateTime
-                                                }
-                                            }
+                                    ImageTemplateView(
+                                        toShareTemplate: toShareTemplate
+                                    )
+                                    .onTapGesture {
+                                        self.toShareTemplateSheet = toShareTemplate
                                     }
                                     
                                 }
-                                
                             }
+                            .scrollTargetLayout()
                         }
+                        .scrollTargetBehavior(.viewAligned)
+                        .safeAreaPadding()
+                        .sheet(item: $toShareTemplateSheet) { shareTemplate in
+                            TemplateShareView(
+                                toShareTamplate: shareTemplate
+                            )
+                        }
+                        .id(topID)
                         
-                        VStack (alignment: .leading, spacing: 10) {
-                            Text("Templates de pace")
-                                .font(.title3)
-                                .fontWeight(.medium)
+                        
+                        VStack (alignment: .leading, spacing: 40){
                             
-                            Image(templatePace.image)
-                                .resizable()
-                                .frame(width: 76, height: 165)
-                                .cornerRadius(12)
-                                .scaledToFit()
-                                .onTapGesture {
-                                    shareImageTemplate = UIImage(named: templatePace.image)
-                                    shareTemplate = templatePace
+                            VStack (alignment: .leading, spacing: 10) {
+                                Text("Templates de distância")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                                
+                                ScrollView (.horizontal, showsIndicators: false) {
+                                    HStack(alignment: .center, spacing: 10) {
+                                        
+                                        ForEach (listTemplateDistance, id: \.self) { templateDistance in
+                                            let isBlocked = viewModel.templateDistanceBlocked(viewTypeTemplate: templateDistance, bestDistance: bestDistance)
+                                            
+                                            Image(templateDistance.image)
+                                                .resizable()
+                                                .frame(width: 76, height: 165)
+                                                .cornerRadius(12)
+                                                .scaledToFit()
+                                                .overlay(
+                                                    !isBlocked ?
+                                                    ZStack{
+                                                        Rectangle()
+                                                            .frame(width: 76, height: 165)
+                                                            .cornerRadius(12)
+                                                            .foregroundStyle(Color.gray.opacity(0.7))
+                                                        Image(systemName: "lock.fill")
+                                                            .font(.title)
+                                                    }
+                                                    : nil
+                                                    
+                                                )
+                                                .onTapGesture {
+                                                    if (isBlocked){
+                                                        shareImageTemplate = UIImage(named: templateDistance.image)
+                                                        shareTemplate = templateDistance
+                                                    }
+                                                    proxy.scrollTo(topID, anchor: .top)
+                                                }
+                                        }
+                                    }
                                 }
+                            }
+                            
+                            VStack (alignment: .leading, spacing: 10){
+                                Text("Templates de tempo")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                                
+                                ScrollView (.horizontal) {
+                                    HStack(alignment: .center, spacing: 10) {
+                                        
+                                        ForEach (listTemplateTime, id: \.self) { templateTime in
+                                            let isBlocked = viewModel.templateTimeBlocked(viewTypeTemplate: templateTime, bestTime: bestTime/3600)
+                                            
+                                            Image(templateTime.image)
+                                                .resizable()
+                                                .frame(width: 76, height: 165)
+                                                .cornerRadius(12)
+                                                .scaledToFit()
+                                                .overlay(
+                                                    !isBlocked ?
+                                                    ZStack{
+                                                        Rectangle()
+                                                            .frame(width: 76, height: 165)
+                                                            .cornerRadius(12)
+                                                            .foregroundStyle(Color.gray.opacity(0.7))
+                                                        Image(systemName: "lock.fill")
+                                                            .font(.title)
+                                                    }
+                                                    : nil
+                                                )
+                                                .onTapGesture {
+                                                    if (isBlocked){
+                                                        shareImageTemplate = UIImage(named: templateTime.image)
+                                                        shareTemplate = templateTime
+                                                    }
+                                                    proxy.scrollTo(topID, anchor: .top)
+                                                }
+                                        }
+                                        
+                                    }
+                                    
+                                }
+                            }
+                            
+                            VStack (alignment: .leading, spacing: 10) {
+                                Text("Templates de pace")
+                                    .font(.title3)
+                                    .fontWeight(.medium)
+                                
+                                Image(templatePace.image)
+                                    .resizable()
+                                    .frame(width: 76, height: 165)
+                                    .cornerRadius(12)
+                                    .scaledToFit()
+                                    .onTapGesture {
+                                        shareImageTemplate = UIImage(named: templatePace.image)
+                                        shareTemplate = templatePace
+                                        proxy.scrollTo(topID, anchor: .top)
+                                    }
+                            }
+                            
+                            
                         }
-                        
-                        
+                        .padding()
+                        .navigationTitle("Templates")
                     }
-                    .padding()
-                    .navigationTitle("Templates")
                 }
             }
         }
