@@ -8,15 +8,15 @@ import SwiftUI
 import SwiftData
 
 struct WeeklyTemplateView: View {
-    let calendar = Calendar.current
-    
-    @State private var viewModel = WeeklyTemplateViewModel()
-    @State private var viewModelShareView = SingleRunViewModel()
     
     @Environment(\.modelContext) private var context
-    
     @Query(sort: \WorkoutModel.id)
     private var workouts: [WorkoutModel]
+    
+    @State private var viewModel = WeeklyTemplateViewModel()
+    @State var shareImageTemplate: UIImage? = UIImage(named: "EmptyDistanceCardView")
+    @State var shareTemplate: TypeTemplateView = .distanceregular
+    @State var toShareTemplateSheet: ToShareTemplate? = nil
     
     let listTemplateDistance: [TypeTemplateView] = [.distance5km, .distance10km, .distance15km, .distance21km, .distance42km]
     let listTemplateTime: [TypeTemplateView] = [.timeregular, .time2hours]
@@ -38,45 +38,6 @@ struct WeeklyTemplateView: View {
         viewModel.WeekBestPace(weeklyWorkouts: workouts)
     }
     
-    private var weeklyCounterViewType: TypeTemplateView {
-        .weeklydistance
-    }
-    
-    //    private func distanceViewType: ViewType (TemplateImage: String) {
-    //        if bestDistance >= 5000 && bestDistance < 10000 {
-    //            .distance5km
-    //        }
-    //        else if bestDistance >= 10000 && bestDistance < 15000 {
-    //            .distance10km
-    //        }
-    //        else if bestDistance >= 15000 && bestDistance < 21000 {
-    //            .distance15km
-    //        }
-    //        else if bestDistance >= 21000 && bestDistance < 42000 {
-    //            .distance21km
-    //        }
-    //        else if bestDistance >= 42000 {
-    //            .distance42km
-    //        }
-    //        else {
-    //            .distanceregular
-    //        }
-    //    }
-    
-    private var timeViewType: TypeTemplateView {
-        bestTime >= 7200 ? .time2hours : .timeregular
-    }
-    
-    private var paceViewType: TypeTemplateView {
-        .bestpace
-    }
-    
-    @State private var metricViewType: TypeTemplateView? = nil
-    @State private var nameMetric: String? = nil
-    @State var shareImageTemplate: UIImage? = UIImage(named: "EmptyDistanceCardView")
-    @State var shareTemplate: TypeTemplateView = .distanceregular
-    @State private var showingSheetShare = false
-    
     var body: some View {
         NavigationStack {
             
@@ -87,27 +48,32 @@ struct WeeklyTemplateView: View {
                     
                     ScrollView (.horizontal, showsIndicators: false) {
                         HStack(alignment: .center, spacing: 15) {
-                            shareStory
+                            ForEach(ShareMode.allCases, id: \.self) { mode in
+                                 let toShareTemplate = ToShareTemplate(
+                                    template: shareTemplate,
+                                    shareMode: mode,
+                                    bestPace: bestPace,
+                                    bestTime: bestTime
+                                )
+                                
+                                ImageTemplateView(
+                                    toShareTemplate: toShareTemplate
+                                )
                                 .onTapGesture {
-                                    showingSheetShare = true
+                                    self.toShareTemplateSheet = toShareTemplate
                                 }
-                                .sheet(isPresented: $showingSheetShare){
-                                    TemplateShareView( imageTemplate: shareStory )
-                                }
-                            
-                            shareFeed
-                                .onTapGesture {
-                                    showingSheetShare = true
-                                }
-                                .sheet(isPresented: $showingSheetShare){
-                                    TemplateShareView( imageTemplate: shareFeed )
-                                }
+                                
+                            }
                         }
                         .scrollTargetLayout()
                     }
                     .scrollTargetBehavior(.viewAligned)
                     .safeAreaPadding()
-                    
+                    .sheet(item: $toShareTemplateSheet) { shareTemplate in
+                        TemplateShareView(
+                            toShareTamplate: shareTemplate
+                        )
+                    }
                     
                     
                     VStack (alignment: .leading, spacing: 40){
@@ -217,89 +183,7 @@ struct WeeklyTemplateView: View {
             }
         }
     }
-    @ViewBuilder
-    func imageSection(metricViewType: TypeTemplateView) -> some View {
-        switch metricViewType {
-        case .timeregular:
-            VStack {
-                Text("Uau!\nSua corrida mais\nlonga durou")
-                Text("\(floor((bestTime)/60).formatted()) minutos.")
-                    .font(.title)
-                    .fontWeight(.bold)
-            }
-            .font(.system(size: 22, weight: .bold))
-            .fontWeight(.medium)
-            .multilineTextAlignment(.center)
-            .foregroundStyle(.white)
-            .dynamicTypeSize(.large)
-            
-            
-        case .bestpace:
-            VStack {
-                Text("Pace de ")
-                Text("\((bestPace).formatted(.number.precision(.fractionLength(2))))" + " min/km")
-                    .font(.title)
-                    .fontWeight(.bold)
-                Text("Rápido como quem\nperdeu o ônibus")
-            }
-            .font(.system(size: 22, weight: .bold))
-            .fontWeight(.medium)
-            .multilineTextAlignment(.center)
-            .foregroundStyle(.white)
-            .dynamicTypeSize(.large)
-            
-        default:
-            Text("")
-        }
-    }
-    
-    var shareStory: some View{
-        Image(shareTemplate.image)
-            .resizable()
-            .scaledToFill()
-            .frame(width: 318, height: 600)
-            .clipped()
-            .cornerRadius(12)
-            .overlay {
-                if (shareTemplate == .bestpace) {
-                    imageSection(metricViewType: shareTemplate)
-                        .offset(y: 130)
-                }
-                else if (shareTemplate == .timeregular) {
-                    imageSection(metricViewType: shareTemplate)
-                        .offset(y: -150)
-                }
-                else {
-                    imageSection(metricViewType: shareTemplate)
-                }
-            }
-    }
-    
-    var shareFeed: some View {
-        Image(shareTemplate.image)
-            .resizable()
-            .scaledToFill()
-            .frame(width: 318, height: 396)
-            .clipped()
-            .cornerRadius(12)
-            .overlay {
-                if (shareTemplate == .bestpace) {
-                    imageSection(metricViewType: shareTemplate)
-                        .offset(y: 99)
-                }
-                else if (shareTemplate == .timeregular) {
-                    imageSection(metricViewType: shareTemplate)
-                        .offset(y: -99)
-                    
-                }
-                else {
-                    imageSection(metricViewType: shareTemplate)
-                }
-            }
-        }
 }
-
-
 
 #Preview {
     WeeklyTemplateView()

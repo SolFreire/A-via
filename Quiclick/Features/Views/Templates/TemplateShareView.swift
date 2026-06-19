@@ -12,12 +12,14 @@ struct TemplateShareView: View {
     @State private var viewModel = SingleRunViewModel()
     @State private var showShareSheet: Bool = false
     @Environment(\.dismiss) var dismiss
-    let imageTemplate: any View
+    let toShareTamplate: ToShareTemplate
     
+    var imageView: some View {
+        ImageTemplateView(toShareTemplate: toShareTamplate)
+    }
     
-    
-    var saveNewImage:UIImage? {
-        viewModel.renderFinalImage(view: imageTemplate).flatMap{
+    var saveNewImage: UIImage? {
+        viewModel.renderFinalImage(view: imageView).flatMap{
             UIImage(data:$0)
         }
     }
@@ -25,9 +27,7 @@ struct TemplateShareView: View {
     var body: some View {
         NavigationStack {
             VStack (alignment: .center) {
-                
-                AnyView(imageTemplate)
-                
+                imageView
             }
             .toolbar {
                 
@@ -64,6 +64,11 @@ struct TemplateShareView: View {
     
 #Preview {
     TemplateShareView(
-        imageTemplate: Text("")
+        toShareTamplate: ToShareTemplate(
+            template: .bestpace,
+            shareMode: .feed,
+            bestPace: 5.4,
+            bestTime: TimeInterval()
+        )
     )
 }
