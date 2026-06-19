@@ -11,6 +11,14 @@ import SwiftData
 @main
 struct QuiclickApp: App {
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
+    var container : ModelContainer
+    init(){
+        do{
+            container = try ModelContainer(for:WorkoutModel.self)
+        } catch {
+            fatalError("Could not initialize ModelContainer: \(error)")
+        }
+    }
     var body: some Scene{
         WindowGroup{
             if isFirstLaunch {
@@ -29,7 +37,7 @@ struct QuiclickApp: App {
 
             }
         }
-        .modelContainer(for: WorkoutModel.self)
+        .modelContainer(container)
     }
 }
 
