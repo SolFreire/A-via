@@ -26,7 +26,7 @@ struct WeeklyTemplateView: View {
     private var bestDistance: Double {
         viewModel.BestDistance(Workouts: workouts)
     }
-    //
+    
     private var weeklyTotalDistance: Int {
         viewModel.weeklyTotalDistance(weeklyWorkouts: workouts)
     }
@@ -64,7 +64,6 @@ struct WeeklyTemplateView: View {
                                     .onTapGesture {
                                         self.toShareTemplateSheet = toShareTemplate
                                     }
-                                    
                                 }
                             }
                             .scrollTargetLayout()
@@ -114,8 +113,8 @@ struct WeeklyTemplateView: View {
                                                     if (isBlocked){
                                                         shareImageTemplate = UIImage(named: templateDistance.image)
                                                         shareTemplate = templateDistance
+                                                        proxy.scrollTo(topID, anchor: .top)
                                                     }
-                                                    proxy.scrollTo(topID, anchor: .top)
                                                 }
                                         }
                                     }
@@ -154,8 +153,8 @@ struct WeeklyTemplateView: View {
                                                     if (isBlocked){
                                                         shareImageTemplate = UIImage(named: templateTime.image)
                                                         shareTemplate = templateTime
+                                                        proxy.scrollTo(topID, anchor: .top)
                                                     }
-                                                    proxy.scrollTo(topID, anchor: .top)
                                                 }
                                         }
                                         
@@ -180,8 +179,6 @@ struct WeeklyTemplateView: View {
                                         proxy.scrollTo(topID, anchor: .top)
                                     }
                             }
-                            
-                            
                         }
                         .padding()
                         .navigationTitle("Templates")

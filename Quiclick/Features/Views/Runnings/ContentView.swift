@@ -49,7 +49,6 @@ struct ContentView: View {
                                 }
                                 else {
                                     MainCard()
-//                                        .multilineTextAlignment(.leading)
                                         .padding(.vertical, 30)
                                         .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
                                 }
