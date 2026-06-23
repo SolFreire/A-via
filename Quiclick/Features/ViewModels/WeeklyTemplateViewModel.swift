@@ -8,16 +8,11 @@ import SwiftUI
 import Foundation
 import SwiftData
 
-
-
 @MainActor
 @Observable
 final class WeeklyTemplateViewModel{
     
     let calendar = Calendar.current
-//    var bestTimeViewType : BestTimeCardView.ViewType = .regular
-//    var bestDistanceViewType : ViewType = .distanceregular
-
     
     func WeekBestPace(weeklyWorkouts:[WorkoutModel]) -> Double {
         var bestPace: Double = 100.0
@@ -36,24 +31,8 @@ final class WeeklyTemplateViewModel{
                 bestTime = workout.duration
             }
         }
-//        if(bestTime >= 7200){
-//            bestTimeViewType = .twohoursrunning
-//        }
-        return bestTime
-    }
-    
-    func WeekBestDistance(weeklyWorkouts:[WorkoutModel]) -> Double {
-        var bestDistance : Double = 0.0
-        for workout in weeklyWorkouts{
-            if(workout.distance > bestDistance){
-                bestDistance = workout.distance
-            }
-        }
-//        if(bestDistance >= 5000){
-//            bestDistanceViewType = .distance5km
-//        }
         
-        return bestDistance
+        return bestTime
     }
     
     func BestDistance(Workouts:[WorkoutModel]) -> Double {
@@ -63,9 +42,6 @@ final class WeeklyTemplateViewModel{
                 bestDistance = workout.distance
             }
         }
-//        if(bestDistance >= 5000){
-//            bestDistanceViewType = .distance5km
-//        }
         
         return bestDistance
     }
@@ -107,6 +83,7 @@ final class WeeklyTemplateViewModel{
     }
     
 }
+
 extension Date {
     var isCurrentWeek: Bool {
         let week = Calendar.current.dateInterval(of: .weekOfYear, for: Date())
