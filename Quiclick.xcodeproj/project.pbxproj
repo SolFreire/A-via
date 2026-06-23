@@ -15,7 +15,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Model/MetricsSticker.swift,
 			);
 			target = 7961E0392F9A3F2500D45D8F /* a-via */;
 		};
@@ -154,9 +153,9 @@
 				INFOPLIST_FILE = Quiclick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "a-via";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Este aplicativo precisa acessar os seus dados de saúde para exibir seu histórico e informações atualizadas.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Este aplicativo precisa acessar os seus dados de saúde afim de buscar seus treinos de corrida especificamente, para exibir seu histórico de treinos com informações atualizadas e permitir o anexo e personalização de fotos a ele referenciados.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Precisamos de permissão para atualizar seus dados de saúde e manter seu progresso sincronizado com o Apple Health.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a foto editada na galeria de fotos para compartilhamento";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a foto referenciada a treino editada na galeria de fotos e  para compartilhamento";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -196,9 +195,9 @@
 				INFOPLIST_FILE = Quiclick/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "a-via";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "Este aplicativo precisa acessar os seus dados de saúde para exibir seu histórico e informações atualizadas.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Este aplicativo precisa acessar os seus dados de saúde afim de buscar seus treinos de corrida especificamente, para exibir seu histórico de treinos com informações atualizadas e permitir o anexo e personalização de fotos a ele referenciados.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Precisamos de permissão para atualizar seus dados de saúde e manter seu progresso sincronizado com o Apple Health.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a foto editada na galeria de fotos para compartilhamento";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Permissão para salvar a foto referenciada a treino editada na galeria de fotos e  para compartilhamento";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

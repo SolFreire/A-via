@@ -37,15 +37,19 @@ class WorkoutViewModel{
             let hkWorkouts = try await HKManager.shared.readWorkouts()
             let existing = try context.fetch(FetchDescriptor<WorkoutModel>())
             let existingIDs = Set(existing.map{$0.id})
-            let newWorkouts = hkWorkouts.filter{
-                !existingIDs.contains($0.uuid)
-            }
             
-            for hk in newWorkouts{
-                let model = mapToWorkoutModel(hk)
-                context.insert(model)
+            for hk in hkWorkouts{
+                guard !existingIDs.contains(hk.uuid)
+                else { continue }
+                    
+                context.insert(
+                    mapToWorkoutModel(hk)
+                )
             }
             try context.save()
+            
+            try recoverImagesFromCloud(context: context)
+            
         } catch{
             self.errorMessage = error.localizedDescription
         }

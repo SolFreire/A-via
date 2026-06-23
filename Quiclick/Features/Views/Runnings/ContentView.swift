@@ -49,7 +49,6 @@ struct ContentView: View {
                                 }
                                 else {
                                     MainCard()
-//                                        .multilineTextAlignment(.leading)
                                         .padding(.vertical, 30)
                                         .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
                                 }
@@ -60,35 +59,26 @@ struct ContentView: View {
                                         .font(.title3)
                                         .bold()
                                         .padding(.top, 10)
-                                    if viewModel.isLoading {
-                                        HealthLoadingView()
-                                    }
-                                    else{
-                                        if workouts.isEmpty {
-                                            EmptyView()
-                                                .padding(40)
-                                        }
-                                        else{
-                                            VStack(alignment: .leading, spacing: 20) {
-                                                VStack(alignment: .leading, spacing: 8) {
-                                                    ForEach(workouts.prefix(7)) { workout in
-                                                        NavigationLink {
-                                                            SingleRunView(workout: workout)
-                                                        } label: {
-                                                            WorkoutCardView(workout: workout)
-                                                        }
-                                                        .buttonStyle(PlainButtonStyle())
-                                                    }
+                                    if workouts.isEmpty {
+                                        EmptyView()
+                                    } else {
+                                        LazyVStack(alignment: .leading, spacing: 20) {
+                                            ForEach(workouts.prefix(7)) { workout in
+                                                NavigationLink {
+                                                    SingleRunView(workout: workout)
+                                                } label: {
+                                                    WorkoutCardView(workout: workout)
                                                 }
+                                                .buttonStyle(.plain)
                                             }
-
                                         }
                                     }
 
                                 }
                                 
                             }
-                            .padding()
+                .padding()
+                            
             }
             .refreshable {
                 Task{

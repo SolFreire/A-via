@@ -39,68 +39,70 @@ struct WorkoutCardView: View {
                     .font(.title3)
                     .fontWeight(.semibold)
                     .padding(.horizontal)
+                    .padding(.top, 6)
                 
                 HStack(spacing :2){
-                    VStack(alignment: .leading, spacing: 6){
-                        Text("Distância")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                        Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                    }
-                    Spacer()
-                    VStack(alignment: .leading, spacing: 6){
-                        Text("Tempo")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                        Text(formatDuration(workout.duration))
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                    }
-                    Spacer()
-                    VStack(alignment: .leading, spacing: 6){
-                        Text("Pace")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                        Text("\(paceformatter(workout.pace))/km")
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                    }
-                }.padding(.horizontal)
-                
+                    content
+                }
             }
         }
-        .frame(minWidth:287, maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .border(.clear)
         .background(.carbonCards)
         .cornerRadius(10)
     }
     
     @ViewBuilder
     var content: some View {
-        VStack(alignment: .leading, spacing: 8){
-            Text("Distância")
-                .font(.caption)
-                .fontWeight(.semibold)
-            Text("\((workout.distance/1000).formatted()) km")
-                .font(.headline)
-                .fontWeight(.semibold)
-        }
-        VStack(alignment: .leading, spacing: 8){
-            Text("Tempo")
-                .font(.caption)
-                .fontWeight(.semibold)
-            Text(formatDuration(workout.duration))
-                .font(.headline)
-                .fontWeight(.semibold)
-        }
-        VStack(alignment: .leading, spacing: 8){
-            Text("Pace")
-                .font(.caption)
-                .fontWeight(.semibold)
-            Text("\(paceformatter(workout.pace))/km")
-                .font(.headline)
-                .fontWeight(.semibold)
+        ViewThatFits{
+            HStack(spacing : 1){
+                VStack(alignment: .leading, spacing: 8){
+                    Text("Distância")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                    Text("\((workout.distance/1000).formatted()) km")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading, spacing: 8){
+                    Text("Tempo")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                    Text(formatDuration(workout.duration))
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading, spacing: 8){
+                    Text("Pace")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                    Text("\(paceformatter(workout.pace))/km")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                }
+            }.padding(.horizontal)
+            
+            VStack(alignment: .leading, spacing: 10){
+                HStack(spacing: 8){
+                    Text("Distância : \((workout.distance/1000).formatted()) km")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                }
+
+                HStack(spacing: 8){
+                    Text("Tempo : \(formatDuration(workout.duration))")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+
+                }
+                HStack(spacing: 8){
+                    Text("Pace : \(paceformatter(workout.pace))/km")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                }
+            }.padding()
         }
     }
 }

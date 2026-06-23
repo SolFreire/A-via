@@ -9,10 +9,11 @@ import SwiftUI
 
 struct Onb4View: View {
     @Binding var isOnboarding: Bool
+    @Environment(\.openURL) var openURL
     var body: some View {
         VStack(alignment:.center,spacing: 50){
 
-            Text("Para ter a experiência completa, conect-se ao Apple Health!")
+            Text("Para ter a experiência completa, conecte-se ao Apple Health!")
                 .font(Font.system(.largeTitle, design: .rounded).bold())
                 .multilineTextAlignment(.center)
                 .foregroundColor(.white)
@@ -30,9 +31,17 @@ struct Onb4View: View {
                 .dynamicTypeSize(.large)
             
             Button{
+                openURL(URL(string: "https://solfreire.github.io/avia-site/privacidade.html")!)
+            }label:{
+                Text("Leia nossa Política de Privacidade")
+            }
+            
+
+            
+            Button{
                 isOnboarding = false
             }label:{
-                Text("Conceder Permissão")
+                Text("Continuar")
             }
                 .buttonStyle(.borderedProminent)
                 .buttonBorderShape(.roundedRectangle)

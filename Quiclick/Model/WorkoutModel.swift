@@ -10,7 +10,7 @@ import SwiftData
 @Model
 class WorkoutModel: Identifiable{
     
-    var id : UUID?
+    var id : UUID
     var date: Date = Date()
     var duration: TimeInterval = 0.0
     var distance: Double  = 0.0

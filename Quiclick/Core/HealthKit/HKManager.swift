@@ -33,20 +33,13 @@ class HKManager{
     }
     
     private func workoutSamplesPredicate() -> NSPredicate {
-//        let week = calendar.dateInterval(of: .weekOfYear, for: Date())
-//        let firstDayOfWeek = week?.start ?? Date()
-        
-//        let datePredicate = HKQuery.predicateForSamples(
-//            withStart: firstDayOfWeek,
-//            end: .now
-//        )
         
         let runningPredicate = HKQuery.predicateForWorkouts(
             with: .running
         )
         
         return NSCompoundPredicate(
-            andPredicateWithSubpredicates: [/*datePredicate,*/runningPredicate]
+            andPredicateWithSubpredicates: [runningPredicate]
         )
     }
     
