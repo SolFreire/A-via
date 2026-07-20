@@ -29,14 +29,13 @@ struct ImageTemplateView: View {
         case .story:
             shareStory
         }
-         
     }
     
     var shareStory: some View{
         Image(toShareTemplate.template.image)
             .resizable()
             .scaledToFill()
-            .frame(width: 342, height: 608)
+            .frame(width: 257, height: 456)
             .clipped()
             .cornerRadius(12)
             .overlay {
@@ -56,7 +55,7 @@ struct ImageTemplateView: View {
     
     var shareFeed: some View {
         Image(toShareTemplate.template.image)
-            .frame(width: 320, height: 400)
+            .frame(width: 240, height: 300)
             .scaledToFill()
             .clipped()
             .cornerRadius(12)
