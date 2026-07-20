@@ -68,8 +68,10 @@ struct ContentView: View {
                                                     SingleRunView(workout: workout)
                                                 } label: {
                                                     WorkoutCardView(workout: workout)
+                                                        .border(.blue)
                                                 }
                                                 .buttonStyle(.plain)
+                                                .border(.red)
                                             }
                                         }
                                     }

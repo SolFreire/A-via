@@ -60,7 +60,7 @@ struct WorkoutCardView: View {
                     Text("Distância")
                         .font(.caption)
                         .fontWeight(.semibold)
-                    Text("\((workout.distance/1000).formatted()) km")
+                    Text("\((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
                         .font(.headline)
                         .fontWeight(.semibold)
                 }
@@ -86,7 +86,8 @@ struct WorkoutCardView: View {
             
             VStack(alignment: .leading, spacing: 10){
                 HStack(spacing: 8){
-                    Text("Distância : \((workout.distance/1000).formatted()) km")
+                    Text("Distância : \((workout.distance/1000).formatted(.number.precision(.fractionLength(2)))) km")
+
                         .font(.caption)
                         .fontWeight(.semibold)
                 }
@@ -121,6 +122,7 @@ func formatDuration(_ duration : Double) -> String{
     }
     return durationformated
 }
+
 
 #Preview {
     WorkoutCardView(workout: WorkoutModel(id: UUID(), date: Date(), duration: 1025, distance: 1234))
