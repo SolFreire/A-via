@@ -8,63 +8,60 @@ import SwiftUI
 import Foundation
 import SwiftData
 
-
-
 @MainActor
 @Observable
 final class WeeklyTemplateViewModel{
-    
-    let calendar = Calendar.current
-//    var bestTimeViewType : BestTimeCardView.ViewType = .regular
-//    var bestDistanceViewType : ViewType = .distanceregular
 
-    
-    func WeekBestPace(weeklyWorkouts:[WorkoutModel]) -> Double {
-        var bestPace: Double = 100.0
-        for workout in weeklyWorkouts{
-            if(workout.pace < bestPace){
-                bestPace = workout.pace
-            }
-        }
-        return bestPace
+    let calendar = Calendar.current
+
+    /// Distance (in meters) a runner must reach for each distance template to unlock.
+    private let distanceRequirements: [TypeTemplateView: Double] = [
+        .distance5km: 5000,
+        .distance10km: 10000,
+        .distance15km: 15000,
+        .distance21km: 21000,
+        .distance42km: 42000
+    ]
+
+    /// Duration (in hours) a runner must reach for each time template to unlock.
+    private let timeRequirements: [TypeTemplateView: Double] = [
+        .timeregular: 0,
+        .time2hours: 2
+    ]
+
+    /// The fastest (lowest) pace across the given workouts, in min/km.
+    func bestPace(in workouts: [WorkoutModel]) -> Double {
+        workouts.map(\.pace).min() ?? 100.0
     }
-    
-    func WeekBestTime(weeklyWorkouts:[WorkoutModel]) -> TimeInterval {
-        var bestTime : TimeInterval = 0.0
-        for workout in weeklyWorkouts{
-            if(workout.duration > bestTime){
-                bestTime = workout.duration
-            }
-        }
-//        if(bestTime >= 7200){
-//            bestTimeViewType = .twohoursrunning
-//        }
-        return bestTime
+
+    /// The longest single-run duration across the given workouts.
+    func bestTime(in workouts: [WorkoutModel]) -> TimeInterval {
+        workouts.map(\.duration).max() ?? 0
     }
-    
-    func WeekBestDistance(weeklyWorkouts:[WorkoutModel]) -> Double {
-        var bestDistance : Double = 0.0
-        for workout in weeklyWorkouts{
-            if(workout.distance > bestDistance){
-                bestDistance = workout.distance
-            }
-        }
-//        if(bestDistance >= 5000){
-//            bestDistanceViewType = .distance5km
-//        }
-        
-        return bestDistance
+
+    /// The longest single-run distance across the given workouts, in meters.
+    func bestDistance(in workouts: [WorkoutModel]) -> Double {
+        workouts.map(\.distance).max() ?? 0
     }
-    
-    func weeklyTotalDistance(weeklyWorkouts:[WorkoutModel]) -> Int {
-        var totalDistance: Int = 0
-        for workout in weeklyWorkouts {
-            totalDistance += Int(workout.distance)/1000
-        }
-        return totalDistance
+
+    /// A distance template is unlocked once the runner's best distance reaches its requirement.
+    func isDistanceTemplateUnlocked(_ template: TypeTemplateView, bestDistance: Double) -> Bool {
+        guard let required = distanceRequirements[template] else { return false }
+        return bestDistance >= required
     }
-    
+
+    /// A time template is unlocked once the runner's best time (in hours) reaches its requirement.
+    func isTimeTemplateUnlocked(_ template: TypeTemplateView, bestTimeInHours: Double) -> Bool {
+        guard let required = timeRequirements[template] else { return false }
+        return bestTimeInHours >= required
+    }
+
+    func weeklyTotalDistance(weeklyWorkouts: [WorkoutModel]) -> Int {
+        weeklyWorkouts.reduce(0) { $0 + Int($1.distance) / 1000 }
+    }
+
 }
+
 extension Date {
     var isCurrentWeek: Bool {
         let week = Calendar.current.dateInterval(of: .weekOfYear, for: Date())

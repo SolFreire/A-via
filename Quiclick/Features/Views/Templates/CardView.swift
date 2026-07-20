@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ViewType : String, CaseIterable, Identifiable{
+enum TypeTemplateView : String, CaseIterable, Identifiable{
     case distanceregular, distance5km, distance10km, distance15km, distance21km, distance42km
     case bestpace
     case timeregular,time2hours
@@ -26,14 +26,14 @@ enum ViewType : String, CaseIterable, Identifiable{
         case .bestpace: return "BestPaceImage"
         case .timeregular: return "TimeRegularImage"
         case .time2hours: return "Time2HoursImage"
-        case .weeklydistance: return "WeeklyDistanceCardImage"
+        case .weeklydistance: return "WeeklyDistanceImage"
         }
     }
 }
 
 struct CardView: View{
     
-    var viewtype: ViewType
+    var viewtype: TypeTemplateView
     
     var body: some View{
         switch viewtype {

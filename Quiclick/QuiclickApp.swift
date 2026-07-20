@@ -10,20 +10,53 @@ import SwiftData
 
 @main
 struct QuiclickApp: App {
-
+    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     var body: some Scene{
         WindowGroup{
-            TabView{
-                Tab("Corridas", systemImage: "figure.run") {
-                    ContentView()
+            if isFirstLaunch {
+                OnboardingView(isOnboarding: $isFirstLaunch)
+            }
+            else{
+                TabView{
+                    Tab("Corridas", systemImage: "figure.run") {
+                        ContentView()
+                    }
+                    Tab("Templates", systemImage:"photo.artframe"){
+                        WeeklyTemplateView()
+                    }
                 }
-                Tab("Templates", systemImage:"photo.artframe"){
-                    WeeklyTemplateView()
-                }
+                .tint(.limeButtons)
+
             }
         }
-        .modelContainer(for: WorkoutModel.self)
+        .modelContainer(container)
     }
+    
+    var container : ModelContainer = {
+        do {
+            let cloud = ModelConfiguration(
+                "Cloud",
+                schema: Schema([
+                    WorkoutModelCloud.self
+                ]),
+                cloudKitDatabase: .private("iCloud.personalproject.Quiclick")
+            )
+            let local = ModelConfiguration(
+                "Local",
+                schema: Schema([WorkoutModel.self
+                ]),
+                cloudKitDatabase: .none
+            )
+            return try  ModelContainer(
+                for: Schema([WorkoutModelCloud.self,
+                             WorkoutModel.self
+                ]),
+                configurations: [cloud,local]
+            )
+        }
+        catch{
+            fatalError("Container init failed \(error)")
+        }
+    }()
 }
-
 

@@ -7,8 +7,21 @@
 import SwiftUI
 
 struct EmptyWeekView: View {
+    @State private var showingSheet: Bool = false
     var body: some View {
         VStack(spacing: 16) {
+            HStack(spacing: 16) {
+                Spacer()
+                Button{
+                    showingSheet = true
+                } label: {
+                    Image(systemName: "questionmark.circle")
+                        .resizable()
+                        .foregroundStyle(Color.gray)
+                        .frame(width: 36, height: 36)
+                }
+            }.padding()
+
             Spacer()
 
             Image(systemName: "figure.run.circle")
