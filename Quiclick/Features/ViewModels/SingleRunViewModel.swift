@@ -115,7 +115,7 @@ final class SingleRunViewModel {
             
         }
         do{
-            try syncWorkoutImageToCloud(workout: workout, context: context)
+            try WorkoutImageRepository.syncToCloud(workout: workout, context: context)
         }catch{print("cloud save error")}
     }
     
