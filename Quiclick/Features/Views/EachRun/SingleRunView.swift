@@ -105,8 +105,7 @@ struct SingleRunView: View{
                 if let image = viewModel.pickerImage {
                     CroppableImage(
                         image: image,
-                        cropSize: frameSize(for: viewModel.cropFormat,
-                                            maxWidth: 318, maxHeight: 600),
+                        cropSize: viewModel.cropFormat.previewSize,
                         scale: $viewModel.cropScale,
                         offset: $viewModel.cropOffset
                     )
@@ -154,8 +153,17 @@ struct SingleRunView: View{
             }
             
         }
-        .frame(width: 318, height: 476)
+        .frame(width: previewSize.width, height: previewSize.height)
         .clipped()
+    }
+
+    /// Área do preview. Fora do estado sem imagem ela segue a proporção do
+    /// formato escolhido, para que o recorte não seja cortado de novo aqui
+    /// nem na renderização final.
+    private var previewSize: CGSize {
+        viewModel.type == .noImage
+        ? CGSize(width: CropFormat.previewMaxWidth, height: CropFormat.previewMaxHeight)
+        : viewModel.cropFormat.previewSize
     }
 
     var infoSection: some View{
