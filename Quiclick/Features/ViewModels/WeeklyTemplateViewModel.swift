@@ -61,11 +61,3 @@ final class WeeklyTemplateViewModel{
     }
 
 }
-
-extension Date {
-    var isCurrentWeek: Bool {
-        let week = Calendar.current.dateInterval(of: .weekOfYear, for: Date())
-        let firstDayOfWeek = week?.start ?? Date()
-        return self >= firstDayOfWeek
-    }
-}

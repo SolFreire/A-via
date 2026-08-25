@@ -1,5 +1,5 @@
 //
-//  EmptyView.swift
+//  NoRunsView.swift
 //  Quiclick
 //
 //  Created by Soraia Freire Batista on 07/05/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EmptyView: View {
+struct NoRunsView: View {
 
     var body: some View {
 
@@ -52,5 +52,5 @@ struct EmptyView: View {
 }
 
 #Preview {
-    EmptyView()
+    NoRunsView()
 }

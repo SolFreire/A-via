@@ -86,19 +86,6 @@ final class SingleRunViewModel {
         do{
             try syncWorkoutImageToCloud(workout: workout, context: context)
         }catch{print("cloud save error")}
-        
-        
-        do{
-            let cloud = try context.fetch(
-                FetchDescriptor<WorkoutModelCloud>()
-            )
-            
-            print("CLOUD COUNT:", cloud.count)
-            print(cloud.map(\.id))
-            
-        }catch{print("Error to find Images In cloude")}
-
-
     }
     
     

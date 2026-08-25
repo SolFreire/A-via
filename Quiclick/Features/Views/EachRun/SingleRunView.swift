@@ -19,7 +19,6 @@ struct SingleRunView: View{
     @Environment(\.modelContext) private var context
     @State private var pickerItem: PhotosPickerItem?
     @State private var pickerImage: Data?
-    @State var hasPictureSaved: Bool?
     @State var showImageSheet = false
 
     @State var selectedStickers : [Sticker] = []
@@ -110,7 +109,7 @@ struct SingleRunView: View{
                         offset: $viewModel.cropOffset
                     )
                     .overlay{
-                        frameImageView(format : viewModel.cropFormat)
+                        CropGuideView(format : viewModel.cropFormat)
                     }
                 }
             case .edit:

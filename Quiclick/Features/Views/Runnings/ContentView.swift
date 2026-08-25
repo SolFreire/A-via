@@ -14,7 +14,6 @@ struct ContentView: View {
     @Query(sort: \WorkoutModel.date, order: .reverse)
     private var workouts: [WorkoutModel]
     @State private var viewModel = WorkoutViewModel()
-    private var recentWorkouts:[WorkoutModel] = []
     var body: some View {
         NavigationStack{
             ScrollView(.vertical) {
@@ -60,7 +59,7 @@ struct ContentView: View {
                                         .bold()
                                         .padding(.top, 10)
                                     if workouts.isEmpty {
-                                        EmptyView()
+                                        NoRunsView()
                                     } else {
                                         LazyVStack(alignment: .leading, spacing: 20) {
                                             ForEach(workouts.prefix(7)) { workout in

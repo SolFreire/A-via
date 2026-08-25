@@ -1,5 +1,5 @@
 //
-//  CropableImageView.swift
+//  CroppableImage.swift
 //  a-via
 //
 //  Created by Soraia Freire Batista on 11/06/26.
