@@ -9,17 +9,16 @@ import SwiftUI
 
 struct TemplateShareView: View {
     
-    @State private var viewModel = SingleRunViewModel()
     @State private var showShareSheet: Bool = false
     @Environment(\.dismiss) var dismiss
     let toShareTamplate: ToShareTemplate
-    
+
     var imageView: some View {
         ImageTemplateView(toShareTemplate: toShareTamplate)
     }
-    
+
     var saveNewImage: UIImage? {
-        viewModel.renderFinalImage(view: imageView).flatMap{
+        ImageExporter.png(from: imageView).flatMap{
             UIImage(data:$0)
         }
     }

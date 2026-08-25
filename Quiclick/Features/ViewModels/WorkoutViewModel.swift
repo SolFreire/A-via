@@ -48,7 +48,7 @@ class WorkoutViewModel{
             }
             try context.save()
             
-            try recoverImagesFromCloud(context: context)
+            try WorkoutImageRepository.restoreFromCloud(context: context)
             
         } catch{
             self.errorMessage = error.localizedDescription

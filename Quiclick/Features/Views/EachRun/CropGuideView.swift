@@ -1,12 +1,12 @@
 //
-//  frameImageView.swift
+//  CropGuideView.swift
 //  a-via
 //
 //  Created by Soraia Freire Batista on 12/06/26.
 //
 import SwiftUI
 
-struct frameImageView: View {
+struct CropGuideView: View {
     var format : CropFormat
 
     var body: some View {
@@ -31,5 +31,5 @@ struct frameImageView: View {
     }
 }
 #Preview{
-    frameImageView(format: .feed)
+    CropGuideView(format: .feed)
 }

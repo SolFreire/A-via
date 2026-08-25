@@ -17,21 +17,8 @@ struct SingleRunView: View{
 
     @State private var viewModel = SingleRunViewModel()
     @Environment(\.modelContext) private var context
-    @State private var pickerItem: PhotosPickerItem?
-    @State private var pickerImage: Data?
-    @State var hasPictureSaved: Bool?
     @State var showImageSheet = false
 
-    @State var selectedStickers : [Sticker] = []
-
-    
-    var Stickers: [String: [String]] = [
-        "Métricas": ["Metrics", "MetricsH","StickerMedal"],
-        "Locais": ["StickerCoco", "StickerIracema" ,"StickerUnifor" ,"StickerIguatemi"],
-        "Acessórios": ["StickerTenis", "StickerOculos", "StickerGarrafa", "StickerRelogio"]
-    ]
-
-    
     let workout: WorkoutModel
     var showsBackButton: Bool {
         if viewModel.type == .edit {
@@ -40,14 +27,8 @@ struct SingleRunView: View{
             return false
         }
     }
-    
-    //Provisório:
-    @State private var tabs: [String] = ["Métricas", "Locais", "Acessórios"]
-    @State private var activeTab: String = "Métricas"
-    @State private var contentStickers: [String] = ["Metrics", "MetricsH", "StickerMedal"]
-    //---------------------------
-    
-    
+
+
     var body : some View{
 
         VStack {
@@ -74,21 +55,15 @@ struct SingleRunView: View{
         .toolbar {
             toolbarContent
         }
-        .onChange(of: pickerItem){
-            Task {
-                if let loaded = try? await pickerItem?.loadTransferable(type: Data.self){
-                    pickerImage = loaded
-                    viewModel.startResize(with: pickerImage!)
-                }else{
-                    print("Failed to load image")
-                }
-            }
+        .onChange(of: viewModel.pickerItem){
+            Task { await viewModel.loadPickedImage() }
         }
         .navigationBarBackButtonHidden(showsBackButton)
         .toolbar(.hidden, for: .tabBar)
         .onAppear(){
             viewModel.readData(workout: workout)
         }
+        .errorAlert($viewModel.errorMessage)
         .ignoresSafeArea(edges: .bottom)    }
 
     @ViewBuilder
@@ -97,7 +72,7 @@ struct SingleRunView: View{
             switch viewModel.type {
 
             case .noImage:
-                PhotosPicker(selection: $pickerItem, matching: .images) {
+                PhotosPicker(selection: $viewModel.pickerItem, matching: .images) {
                     placeholder(icon: "photo.badge.plus")
                 }
                 
@@ -110,37 +85,23 @@ struct SingleRunView: View{
                         offset: $viewModel.cropOffset
                     )
                     .overlay{
-                        frameImageView(format : viewModel.cropFormat)
+                        CropGuideView(format : viewModel.cropFormat)
                     }
                 }
             case .edit:
-                if(workout.imageData != nil){
-                    if let image = workout.image {
-                        ZStack{
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFill()
+                // A imagem já salva tem precedência sobre a recém-escolhida;
+                // antes isso eram dois blocos idênticos em um if/else.
+                if let image = workout.image ?? viewModel.pickerImage {
+                    ZStack{
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
 
-                                ForEach(selectedStickers.indices, id:\.self){ index in
-                                    StickersView(for: index)
-                                }
+                        ForEach(viewModel.selectedStickers.indices, id:\.self){ index in
+                            StickersView(for: index)
                         }
-                        .onTapGesture{selectedStickers.forEach { $0.isSelected = false }}
                     }
-                }else{
-                    if let image = viewModel.pickerImage {
-                        ZStack{
-                            Image(uiImage:image)
-                                .resizable()
-                                .scaledToFill()
-
-                            ForEach(selectedStickers.indices, id:\.self){ index in
-                                StickersView(for: index)
-                            }
-                        }
-                        .onTapGesture{selectedStickers.forEach { $0.isSelected = false }}
-                    }
-
+                    .onTapGesture{ viewModel.deselectAllStickers() }
                 }
 
             case .regular:
@@ -268,26 +229,21 @@ struct SingleRunView: View{
             VStack(alignment: .center){
                 
                 HStack (spacing: 5) {
-                    ForEach(tabs, id: \.self) {tab in
+                    ForEach(StickerCategory.allCases) { category in
                         Button (action: {
                             withAnimation(.snappy) {
-                                activeTab = tab
-                                for key in Stickers.keys {
-                                    if tab == key {
-                                        contentStickers = Stickers[key]!
-                                    }
-                                }
+                                viewModel.activeCategory = category
                             }
                         }) {
-                            Text(tab)
+                            Text(category.title)
                                 .frame(maxWidth: .infinity)
                                 .foregroundStyle(
-                                    activeTab == tab ?
+                                    viewModel.activeCategory == category ?
                                     Color(.limeButtons) :
                                         Color.white)
                                 .padding(2)
                                 .background(
-                                    activeTab == tab ?
+                                    viewModel.activeCategory == category ?
                                         Color(.limeButtons).opacity(0.2) :
                                         Color(.carbonCards)
                                 )
@@ -303,7 +259,7 @@ struct SingleRunView: View{
                 ScrollView(.horizontal) {
 
                     LazyHGrid(rows: Array(repeating: .init(.flexible(minimum: 75, maximum: 75), spacing: 6.0), count: 1), spacing: 6.0){
-                        ForEach(contentStickers, id:\.self){ sticker in
+                        ForEach(viewModel.activeCategory.stickerNames, id:\.self){ sticker in
                             RoundedRectangle(cornerRadius: 10)
                                 .frame(width: 80,height: 80)
                                 .overlay{
@@ -314,7 +270,7 @@ struct SingleRunView: View{
                                 }
                                 .aspectRatio(contentMode: .fit)
                                 .onTapGesture {
-                                    selectedStickers.append(Sticker(name:sticker))
+                                    viewModel.addSticker(named: sticker)
                                 }
                         }
                         .foregroundColor(.black.opacity(0.3))
@@ -339,18 +295,11 @@ struct SingleRunView: View{
         ToolbarItem(placement: .cancellationAction) {
             if viewModel.type == .edit {
                 Button("Cancel", systemImage: "xmark") {
-                    pickerItem = nil
-                    pickerImage = nil
                     viewModel.cancelEditing(workout: workout)
-                    pickerItem = nil
-                    pickerImage = nil
-                    selectedStickers = []
                 }
             }
             if viewModel.type == .resize {
                 Button("Cancel", systemImage: "xmark") {
-                    pickerItem = nil
-                    pickerImage = nil
                     viewModel.cancelResize()
                 }
             }
@@ -359,9 +308,15 @@ struct SingleRunView: View{
         ToolbarItem(placement: .confirmationAction){
             if viewModel.type == .edit{
                 Button("Done", systemImage: "checkmark"){
-                    selectedStickers.forEach { $0.isSelected = false }
-                    viewModel.confirmEdit(workout:workout, context: context, ImageView: imageSection())
-                    selectedStickers = []
+                    // Tira as alças de seleção antes de renderizar, senão elas
+                    // entram na imagem final.
+                    viewModel.deselectAllStickers()
+                    // A View renderiza — é ela que conhece SwiftUI — e entrega
+                    // os bytes para a ViewModel salvar. A escala vem do formato
+                    // escolhido, preservando o redimensionamento.
+                    let rendered = ImageExporter.png(from: imageSection(),
+                                                     scale: viewModel.cropFormat.exportScale)
+                    viewModel.confirmEdit(workout: workout, context: context, imageData: rendered)
                 }
             }
             if viewModel.type == .resize{
@@ -386,7 +341,6 @@ struct SingleRunView: View{
             if viewModel.type == .edit{
 
                 Button {
-                    selectedStickers = []
                     viewModel.discardImage(workout: workout, context: context)
                 } label: {
                     Image(systemName: "trash")
@@ -413,8 +367,8 @@ struct SingleRunView: View{
     
     @ViewBuilder
     func StickersView(for index: Int) -> some View {
-        let sticker = selectedStickers[index]
-        StickerView(selectedStickers: $selectedStickers, index: index, sticker: sticker, workout: workout)
+        let sticker = viewModel.selectedStickers[index]
+        StickerView(selectedStickers: $viewModel.selectedStickers, index: index, sticker: sticker, workout: workout)
     }
    
 }

@@ -30,8 +30,3 @@ let dayFormatterString: DateFormatter = {
 func paceformatter(_ pace: Double) -> String {
     return String(format: "%02d:%02d", Int(pace), Int((pace.truncatingRemainder(dividingBy: 1)) * 60))
 }
-extension String {
-    var firstUppercased: String {
-        prefix(1).uppercased() + dropFirst()
-    }
-}

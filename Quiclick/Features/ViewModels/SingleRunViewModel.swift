@@ -1,28 +1,36 @@
 //
-//  EditImageViewModel.swift
+//  SingleRunViewModel.swift
 //  Quiclick
 //
 //  Created by Soraia Freire Batista on 28/04/26.
-//
 //
 
 import SwiftUI
 import Foundation
 import SwiftData
+import PhotosUI
 
 @MainActor
 @Observable
 
 final class SingleRunViewModel {
-    
+
     var type: SingleRunView.ViewType = .noImage
+    /// Falha a ser mostrada ao usuário. Um `print` no catch some no console
+    /// e deixa a pessoa achando que salvou.
+    var errorMessage: String?
+    var pickerItem: PhotosPickerItem?
     var pickerImage: UIImage?
-    var pickerImageData: Data?
-    var resizedImage : Data?
     var cropFormat: CropFormat = .story
     var cropScale: CGFloat = 1
     var cropOffset: CGSize = .zero
-    
+
+    // Estado da edição. Vive aqui, e não na View, para existir em um lugar
+    // só: enquanto a View mantinha cópias próprias, cada botão da toolbar
+    // precisava lembrar de zerar as duas metades na mão.
+    var selectedStickers: [Sticker] = []
+    var activeCategory: StickerCategory = .metrics
+
     func readData(workout: WorkoutModel){
         if let image = workout.image {
             // Recupera o formato a partir da imagem já salva para que
@@ -32,13 +40,33 @@ final class SingleRunViewModel {
         }
     }
 
+    /// Carrega a foto escolhida no PhotosPicker e entra no redimensionamento.
+    /// O carregamento é responsabilidade da ViewModel: a View só declara o
+    /// picker e observa o resultado.
+    func loadPickedImage() async {
+        guard let pickerItem,
+              let data = try? await pickerItem.loadTransferable(type: Data.self)
+        else { return }
+
+        startResize(with: data)
+    }
+
     func startResize(with image: Data) {
         pickerImage = UIImage(data:image)
-        pickerImageData = image
         cropFormat = .story
         cropScale = 1
         cropOffset = .zero
         type = .resize
+    }
+
+    // MARK: - Stickers
+
+    func addSticker(named name: String) {
+        selectedStickers.append(Sticker(name: name))
+    }
+
+    func deselectAllStickers() {
+        selectedStickers.forEach { $0.isSelected = false }
     }
     
     func selectFormat(_ format: CropFormat) {
@@ -53,87 +81,70 @@ final class SingleRunViewModel {
                                 cropSize: cropFormat.previewSize,
                                 scale: cropScale,
                                 offset: cropOffset,
-                                export: cropFormat.exportSize)
-        else { return }
+                                export: cropFormat.exportSize),
+              let resized = result.pngData()
+        else {
+            errorMessage = "Não foi possível recortar a imagem."
+            return
+        }
 
-        resizedImage = result.pngData()
-        startEditing(with: resizedImage!)
+        startEditing(with: resized)
     }
     func cancelResize(){
-        pickerImage = nil
-        pickerImageData = nil
+        resetEditingState()
         type = .noImage
     }
     func startEditing(with image: Data) {
         pickerImage = UIImage(data:image)
-        pickerImageData = image
         type = .edit
     }
     
-    func confirmEdit(workout: WorkoutModel, context: ModelContext, ImageView: some View) {
-        // Renderiza o preview na escala que reproduz o tamanho de exportação
-        // do formato escolhido, preservando o redimensionamento até o save.
-        pickerImageData = renderFinalImage(view: ImageView, scale: cropFormat.exportScale)
-        workout.imageData = pickerImageData
+    /// Recebe a imagem já renderizada pela View. A ViewModel decide o que
+    /// salvar; a View decide como desenhar.
+    func confirmEdit(workout: WorkoutModel, context: ModelContext, imageData: Data?) {
+        guard let imageData else {
+            errorMessage = "Não foi possível gerar a imagem editada."
+            return
+        }
+
+        workout.imageData = imageData
+        selectedStickers = []
         type = .regular
-        
+
         do{
             try context.save()
+            try WorkoutImageRepository.syncToCloud(workout: workout, context: context)
         }catch{
-            print("Erro ao Salvar")
-            
+            errorMessage = "Não foi possível salvar a imagem: \(error.localizedDescription)"
         }
-        do{
-            try syncWorkoutImageToCloud(workout: workout, context: context)
-        }catch{print("cloud save error")}
-        
-        
-        do{
-            let cloud = try context.fetch(
-                FetchDescriptor<WorkoutModelCloud>()
-            )
-            
-            print("CLOUD COUNT:", cloud.count)
-            print(cloud.map(\.id))
-            
-        }catch{print("Error to find Images In cloude")}
-
-
     }
-    
-    
+
+
     func discardImage(workout: WorkoutModel, context: ModelContext){
-        pickerImage = nil
+        resetEditingState()
         workout.imageData = nil
-        pickerImageData = nil
         type = .noImage
         do{
             try context.save()
         }catch{
-            print("Erro ao Salvar")
-            
+            errorMessage = "Não foi possível remover a imagem: \(error.localizedDescription)"
         }
     }
     
     func cancelEditing(workout: WorkoutModel) {
-        pickerImage = nil
-        pickerImageData = nil
+        resetEditingState()
         if(workout.imageData == nil){
             type = .noImage
         }else{
             type = .regular
         }
     }
-    
-    func renderFinalImage(view: some View, scale: CGFloat? = nil) -> Data? {
-        let renderer = ImageRenderer(content: view)
 
-        renderer.scale = scale ?? UIScreen.main.scale
-
-        if let uiImage = renderer.uiImage {
-            return uiImage.pngData()
-        }
-        
-        return nil
+    /// Zera tudo o que pertence a uma sessão de edição. Um único ponto de
+    /// limpeza evita que um caminho de saída esqueça metade do estado.
+    private func resetEditingState() {
+        pickerItem = nil
+        pickerImage = nil
+        selectedStickers = []
     }
 }
