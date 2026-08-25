@@ -17,6 +17,9 @@ import PhotosUI
 final class SingleRunViewModel {
 
     var type: SingleRunView.ViewType = .noImage
+    /// Falha a ser mostrada ao usuário. Um `print` no catch some no console
+    /// e deixa a pessoa achando que salvou.
+    var errorMessage: String?
     var pickerItem: PhotosPickerItem?
     var pickerImage: UIImage?
     var pickerImageData: Data?
@@ -101,7 +104,10 @@ final class SingleRunViewModel {
     /// Recebe a imagem já renderizada pela View. A ViewModel decide o que
     /// salvar; a View decide como desenhar.
     func confirmEdit(workout: WorkoutModel, context: ModelContext, imageData: Data?) {
-        guard let imageData else { return }
+        guard let imageData else {
+            errorMessage = "Não foi possível gerar a imagem editada."
+            return
+        }
 
         pickerImageData = imageData
         workout.imageData = imageData
@@ -110,16 +116,13 @@ final class SingleRunViewModel {
 
         do{
             try context.save()
-        }catch{
-            print("Erro ao Salvar")
-            
-        }
-        do{
             try WorkoutImageRepository.syncToCloud(workout: workout, context: context)
-        }catch{print("cloud save error")}
+        }catch{
+            errorMessage = "Não foi possível salvar a imagem: \(error.localizedDescription)"
+        }
     }
-    
-    
+
+
     func discardImage(workout: WorkoutModel, context: ModelContext){
         resetEditingState()
         workout.imageData = nil
@@ -127,8 +130,7 @@ final class SingleRunViewModel {
         do{
             try context.save()
         }catch{
-            print("Erro ao Salvar")
-            
+            errorMessage = "Não foi possível remover a imagem: \(error.localizedDescription)"
         }
     }
     

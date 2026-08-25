@@ -90,6 +90,7 @@ struct ContentView: View {
                 await viewModel.requestAuthorization(context:context)
             }
         }
+        .errorAlert($viewModel.errorMessage)
     }
 }
 

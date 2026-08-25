@@ -63,6 +63,7 @@ struct SingleRunView: View{
         .onAppear(){
             viewModel.readData(workout: workout)
         }
+        .errorAlert($viewModel.errorMessage)
         .ignoresSafeArea(edges: .bottom)    }
 
     @ViewBuilder
