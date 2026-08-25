@@ -24,14 +24,20 @@ final class SingleRunViewModel {
     var cropOffset: CGSize = .zero
     
     func readData(workout: WorkoutModel){
-        if(workout.imageData != nil){
+        if let image = workout.image {
+            // Recupera o formato a partir da imagem já salva para que
+            // reabrir a edição não volte ao formato padrão.
+            cropFormat = CropFormat.matching(image.size)
             type = .regular
         }
     }
-    
+
     func startResize(with image: Data) {
         pickerImage = UIImage(data:image)
         pickerImageData = image
+        cropFormat = .story
+        cropScale = 1
+        cropOffset = .zero
         type = .resize
     }
     
@@ -44,8 +50,7 @@ final class SingleRunViewModel {
     func confirmResize(){
         guard let image = pickerImage,
               let result = crop(image,
-                                cropSize: frameSize(for: cropFormat,
-                                                    maxWidth: 318, maxHeight: 600),
+                                cropSize: cropFormat.previewSize,
                                 scale: cropScale,
                                 offset: cropOffset,
                                 export: cropFormat.exportSize)
@@ -66,7 +71,9 @@ final class SingleRunViewModel {
     }
     
     func confirmEdit(workout: WorkoutModel, context: ModelContext, ImageView: some View) {
-        pickerImageData = renderFinalImage(view: ImageView)
+        // Renderiza o preview na escala que reproduz o tamanho de exportação
+        // do formato escolhido, preservando o redimensionamento até o save.
+        pickerImageData = renderFinalImage(view: ImageView, scale: cropFormat.exportScale)
         workout.imageData = pickerImageData
         type = .regular
         
@@ -118,11 +125,11 @@ final class SingleRunViewModel {
         }
     }
     
-    func renderFinalImage(view: some View) -> Data? {
+    func renderFinalImage(view: some View, scale: CGFloat? = nil) -> Data? {
         let renderer = ImageRenderer(content: view)
-        
-        renderer.scale = UIScreen.main.scale
-        
+
+        renderer.scale = scale ?? UIScreen.main.scale
+
         if let uiImage = renderer.uiImage {
             return uiImage.pngData()
         }
