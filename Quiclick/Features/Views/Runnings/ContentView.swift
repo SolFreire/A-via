@@ -44,12 +44,17 @@ struct ContentView: View {
                                             .multilineTextAlignment(.leading)
                                     }
                                     .padding(.vertical, 30)
-                                    .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
+                                    // Sem minWidth: um piso de 344pt estoura o
+                                    // padding em telas estreitas (SE, ou qualquer
+                                    // iPhone com Zoom de Tela) e ainda impede o
+                                    // ViewThatFits do MainCard de cair no layout
+                                    // compacto.
+                                    .frame(maxWidth: .infinity, maxHeight: 900)
                                 }
                                 else {
                                     MainCard()
                                         .padding(.vertical, 30)
-                                        .frame(minWidth: 344, maxWidth: .infinity, maxHeight: 900)
+                                        .frame(maxWidth: .infinity, maxHeight: 900)
                                 }
                                 
                                 

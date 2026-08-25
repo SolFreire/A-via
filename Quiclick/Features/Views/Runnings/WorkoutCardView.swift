@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct WorkoutCardView: View {
-    
+
+    /// Miniatura da linha. A imagem salva pode ter qualquer proporção
+    /// (Story ou Feed), então o tamanho da célula não pode depender dela.
+    private static let thumbnailSize = CGSize(width: 72, height: 107)
+
     let workout: WorkoutModel
-    
+
     var body: some View {
         
         HStack(spacing: 0) {
@@ -19,12 +23,18 @@ struct WorkoutCardView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame( maxWidth: 72, idealHeight: 107, alignment: .top)
+                    // Altura fixa: com maxWidth/idealHeight a frame adotava a
+                    // altura do scaledToFill, então a linha inteira crescia
+                    // conforme a proporção da imagem salva em vez de recortá-la.
+                        .frame(width: Self.thumbnailSize.width,
+                               height: Self.thumbnailSize.height,
+                               alignment: .top)
                         .clipped()
                 }
             }else{
                 Rectangle()
-                    .frame( maxWidth: 72, idealHeight: 107,maxHeight: 147)
+                    .frame(width: Self.thumbnailSize.width,
+                           height: Self.thumbnailSize.height)
                     .foregroundColor(.blankCard)
                     .overlay {
                         Image(systemName: "plus.circle.fill")
