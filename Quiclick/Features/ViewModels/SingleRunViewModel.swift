@@ -1,9 +1,8 @@
 //
-//  EditImageViewModel.swift
+//  SingleRunViewModel.swift
 //  Quiclick
 //
 //  Created by Soraia Freire Batista on 28/04/26.
-//
 //
 
 import SwiftUI
@@ -22,8 +21,6 @@ final class SingleRunViewModel {
     var errorMessage: String?
     var pickerItem: PhotosPickerItem?
     var pickerImage: UIImage?
-    var pickerImageData: Data?
-    var resizedImage : Data?
     var cropFormat: CropFormat = .story
     var cropScale: CGFloat = 1
     var cropOffset: CGSize = .zero
@@ -56,7 +53,6 @@ final class SingleRunViewModel {
 
     func startResize(with image: Data) {
         pickerImage = UIImage(data:image)
-        pickerImageData = image
         cropFormat = .story
         cropScale = 1
         cropOffset = .zero
@@ -85,11 +81,14 @@ final class SingleRunViewModel {
                                 cropSize: cropFormat.previewSize,
                                 scale: cropScale,
                                 offset: cropOffset,
-                                export: cropFormat.exportSize)
-        else { return }
+                                export: cropFormat.exportSize),
+              let resized = result.pngData()
+        else {
+            errorMessage = "Não foi possível recortar a imagem."
+            return
+        }
 
-        resizedImage = result.pngData()
-        startEditing(with: resizedImage!)
+        startEditing(with: resized)
     }
     func cancelResize(){
         resetEditingState()
@@ -97,7 +96,6 @@ final class SingleRunViewModel {
     }
     func startEditing(with image: Data) {
         pickerImage = UIImage(data:image)
-        pickerImageData = image
         type = .edit
     }
     
@@ -109,7 +107,6 @@ final class SingleRunViewModel {
             return
         }
 
-        pickerImageData = imageData
         workout.imageData = imageData
         selectedStickers = []
         type = .regular
@@ -148,8 +145,6 @@ final class SingleRunViewModel {
     private func resetEditingState() {
         pickerItem = nil
         pickerImage = nil
-        pickerImageData = nil
-        resizedImage = nil
         selectedStickers = []
     }
 }
