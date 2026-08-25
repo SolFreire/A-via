@@ -70,13 +70,15 @@ final class SingleRunViewModel {
         type = .edit
     }
     
-    func confirmEdit(workout: WorkoutModel, context: ModelContext, ImageView: some View) {
-        // Renderiza o preview na escala que reproduz o tamanho de exportação
-        // do formato escolhido, preservando o redimensionamento até o save.
-        pickerImageData = renderFinalImage(view: ImageView, scale: cropFormat.exportScale)
-        workout.imageData = pickerImageData
+    /// Recebe a imagem já renderizada pela View. A ViewModel decide o que
+    /// salvar; a View decide como desenhar.
+    func confirmEdit(workout: WorkoutModel, context: ModelContext, imageData: Data?) {
+        guard let imageData else { return }
+
+        pickerImageData = imageData
+        workout.imageData = imageData
         type = .regular
-        
+
         do{
             try context.save()
         }catch{
@@ -110,17 +112,5 @@ final class SingleRunViewModel {
         }else{
             type = .regular
         }
-    }
-    
-    func renderFinalImage(view: some View, scale: CGFloat? = nil) -> Data? {
-        let renderer = ImageRenderer(content: view)
-
-        renderer.scale = scale ?? UIScreen.main.scale
-
-        if let uiImage = renderer.uiImage {
-            return uiImage.pngData()
-        }
-        
-        return nil
     }
 }

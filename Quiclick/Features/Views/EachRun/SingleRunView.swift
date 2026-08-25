@@ -359,7 +359,12 @@ struct SingleRunView: View{
             if viewModel.type == .edit{
                 Button("Done", systemImage: "checkmark"){
                     selectedStickers.forEach { $0.isSelected = false }
-                    viewModel.confirmEdit(workout:workout, context: context, ImageView: imageSection())
+                    // A View renderiza — é ela que conhece SwiftUI — e entrega
+                    // os bytes para a ViewModel salvar. A escala vem do formato
+                    // escolhido, preservando o redimensionamento.
+                    let rendered = ImageExporter.png(from: imageSection(),
+                                                     scale: viewModel.cropFormat.exportScale)
+                    viewModel.confirmEdit(workout: workout, context: context, imageData: rendered)
                     selectedStickers = []
                 }
             }
