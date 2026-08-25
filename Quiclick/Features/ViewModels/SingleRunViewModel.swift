@@ -9,20 +9,28 @@
 import SwiftUI
 import Foundation
 import SwiftData
+import PhotosUI
 
 @MainActor
 @Observable
 
 final class SingleRunViewModel {
-    
+
     var type: SingleRunView.ViewType = .noImage
+    var pickerItem: PhotosPickerItem?
     var pickerImage: UIImage?
     var pickerImageData: Data?
     var resizedImage : Data?
     var cropFormat: CropFormat = .story
     var cropScale: CGFloat = 1
     var cropOffset: CGSize = .zero
-    
+
+    // Estado da edição. Vive aqui, e não na View, para existir em um lugar
+    // só: enquanto a View mantinha cópias próprias, cada botão da toolbar
+    // precisava lembrar de zerar as duas metades na mão.
+    var selectedStickers: [Sticker] = []
+    var activeCategory: StickerCategory = .metrics
+
     func readData(workout: WorkoutModel){
         if let image = workout.image {
             // Recupera o formato a partir da imagem já salva para que
@@ -32,6 +40,17 @@ final class SingleRunViewModel {
         }
     }
 
+    /// Carrega a foto escolhida no PhotosPicker e entra no redimensionamento.
+    /// O carregamento é responsabilidade da ViewModel: a View só declara o
+    /// picker e observa o resultado.
+    func loadPickedImage() async {
+        guard let pickerItem,
+              let data = try? await pickerItem.loadTransferable(type: Data.self)
+        else { return }
+
+        startResize(with: data)
+    }
+
     func startResize(with image: Data) {
         pickerImage = UIImage(data:image)
         pickerImageData = image
@@ -39,6 +58,16 @@ final class SingleRunViewModel {
         cropScale = 1
         cropOffset = .zero
         type = .resize
+    }
+
+    // MARK: - Stickers
+
+    func addSticker(named name: String) {
+        selectedStickers.append(Sticker(name: name))
+    }
+
+    func deselectAllStickers() {
+        selectedStickers.forEach { $0.isSelected = false }
     }
     
     func selectFormat(_ format: CropFormat) {
@@ -60,8 +89,7 @@ final class SingleRunViewModel {
         startEditing(with: resizedImage!)
     }
     func cancelResize(){
-        pickerImage = nil
-        pickerImageData = nil
+        resetEditingState()
         type = .noImage
     }
     func startEditing(with image: Data) {
@@ -77,6 +105,7 @@ final class SingleRunViewModel {
 
         pickerImageData = imageData
         workout.imageData = imageData
+        selectedStickers = []
         type = .regular
 
         do{
@@ -92,9 +121,8 @@ final class SingleRunViewModel {
     
     
     func discardImage(workout: WorkoutModel, context: ModelContext){
-        pickerImage = nil
+        resetEditingState()
         workout.imageData = nil
-        pickerImageData = nil
         type = .noImage
         do{
             try context.save()
@@ -105,12 +133,21 @@ final class SingleRunViewModel {
     }
     
     func cancelEditing(workout: WorkoutModel) {
-        pickerImage = nil
-        pickerImageData = nil
+        resetEditingState()
         if(workout.imageData == nil){
             type = .noImage
         }else{
             type = .regular
         }
+    }
+
+    /// Zera tudo o que pertence a uma sessão de edição. Um único ponto de
+    /// limpeza evita que um caminho de saída esqueça metade do estado.
+    private func resetEditingState() {
+        pickerItem = nil
+        pickerImage = nil
+        pickerImageData = nil
+        resizedImage = nil
+        selectedStickers = []
     }
 }
